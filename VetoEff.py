@@ -1,8 +1,7 @@
 from ROOT import TH1, TH1D, TH1F, TCanvas,TFile, gROOT, gDirectory, gSystem, TGraph, TChain, TEfficiency
 import numpy as np
-import argparse
 import ROOT
-import os
+import os, sys
 import time as t
 from glob import glob
 import csv
@@ -39,15 +38,15 @@ def compute_time(map, board_id, tofpet_id, tofpet_channel, tfine, tac):
 DS_SPEED = .2 #channels per tfine units
 CLK2NS = 6.25
 
-#prepare output file
-outfile = ROOT.TFile.Open("output.root", "RECREATE")
 
-#print(f"creating write file: {outfile}",flush=True)
+runN = sys.argv[1]
+runDirectory = f"/eos/experiment/sndlhc/raw_data/commissioning/veto/run_{runN}/"
+
 
 
 mapDS = read_csv_file("./DS_SiPM_mapping.csv")
 mapVeto = read_csv_file("./Veto_SiPM_mapping.csv")
-calibration = read_csv_file("./qdc_cal.csv")
+calibration = read_csv_file(f"{runDirectory}qdc_cal.csv")
 
 
 
@@ -56,14 +55,16 @@ calibration = read_csv_file("./qdc_cal.csv")
 data = ROOT.TChain("data")
 
 
-#runList = glob("run_100*/")
-runList = ['run_100793/']
-for runN in runList:
-    filelist = glob(f"{runN}data_*.root")
-    #print(filelist)
-    for file in filelist:
-        #print(f"Reading {file}")
-        data.Add(file)
+
+#prepare output file
+outfile = ROOT.TFile.Open(f"output_run{runN}.root", "RECREATE")
+
+filelist = glob(f"{runDirectory}data_*.root")
+print(filelist)
+
+for file in filelist:
+    data.Add(file)
+
 
 
 #data.Add("run_100793/data_0000.root")
