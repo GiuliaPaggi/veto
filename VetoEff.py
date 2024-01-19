@@ -40,7 +40,7 @@ mapVeto = read_csv_file("./SiPMmaps/Veto_SiPM_mapping.csv")
 calibration = read_csv_file(f"{runDirectory}qdc_cal.csv")
 
 #prepare output file
-filename = f"output_run{runN}.root"
+filename = f"./results/rootfiles/output_run{runN}.root"
 outfile = ROOT.TFile.Open(filename, "RECREATE")
 
 #################
@@ -260,7 +260,7 @@ Noise_VetoQdc.Write()
 outfile.Close()
 
 
-with open(f'textfile_run{runN}.csv', 'w') as f:
+with open(f'./results/csvfiles/textfile_run{runN}.csv', 'w') as f:
      f.write('first_eff,centre_eff,last_eff,first/lats,centre/last\n'+
             str(first_eff)+','+str(centre_eff)+ ','+str(last_eff)+','+str(first_eff/last_eff)+','+str(centre_eff/last_eff))
 
