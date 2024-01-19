@@ -38,7 +38,7 @@ def compute_time(map, board_id, tofpet_id, tofpet_channel, tfine, tac):
 DS_SPEED = .2 #channels per tfine units
 CLK2NS = 6.25
 
-print(str(sys.argv[1]))
+#print(str(sys.argv[1]))
 
 runN = sys.argv[1]
 runDirectory = f"/eos/experiment/sndlhc/raw_data/commissioning/veto/run_{runN}/"
@@ -58,7 +58,8 @@ data = ROOT.TChain("data")
 
 
 #prepare output file
-outfile = ROOT.TFile.Open(f"output_run{runN}.root", "RECREATE")
+filename = f"output_run{runN}.root"
+outfile = ROOT.TFile.Open(filename, "RECREATE")
 
 filelist = glob(f"{runDirectory}data_all*.root")
 
@@ -105,7 +106,7 @@ relative_eff = 0
 # loop on entries
 for i in range(Nentries):
     if i%10000 == 0:
-        print(f"Processing event {i}", end= '\r') 
+ #       print(f"Processing event {i}", end= '\r') 
     entry = data.GetEntry(i)
     
     #select ds event
