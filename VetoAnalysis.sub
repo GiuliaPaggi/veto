@@ -4,7 +4,6 @@ output = output/VetoAnalysis.$(ClusterId).$(ProcId).out
 error = error/VetoAnalysis.$(ClusterId).$(ProcId).err
 log = log/VetoAnalysis.$(ClusterId).log
 +JobFlavour = "workday"
-request_memory = 4GB
 notification = Never
 on_exit_remove          = (ExitBySignal == False) && ((ExitCode == 1) || (ExitCode == 0))
 max_retries             = 3

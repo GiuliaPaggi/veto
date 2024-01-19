@@ -2,4 +2,7 @@
 
 cd /afs/cern.ch/work/g/gpsndlhc/veto
 
-python3 VetoEff.py RUNN
+run =  $RUNN
+echo $run
+
+python3 VetoEff.py $run
