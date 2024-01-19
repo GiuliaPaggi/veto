@@ -52,20 +52,23 @@ DSx_min = -.5
 DSx_max = 62.5
 
 # Hits info 
-DSVHits = ROOT.TH1D("DSVHits", "DS Vertical Hits", DSn_bins, DSx_min, DSx_max) 
-DSHHits = ROOT.TH1D("DSHHits", "DS Horizontal Hits", DSn_bins, DSx_min, DSx_max)
-VetoHits = ROOT.TH1D("VetoHits", "Veto Hits", DSn_bins, DSx_min, DSx_max)
-All_VetoHitMultiplcity = ROOT.TH1D("All_VetoHitMultiplcity", "Veto Hit Multiplcity in all events", 20, -.5, 19.5)
-Cosmic_VetoHitMultiplcity = ROOT.TH1D("Cosmic_VetoHitMultiplcity", "Veto Hit Multiplcity in cosmic ray events", 20, -.5, 19.5)
+DSVHits = ROOT.TH1D("DSVHits", "DS Vertical Hits; # ds v channel; entries", DSn_bins, DSx_min, DSx_max) 
+DSHHits = ROOT.TH1D("DSHHits", "DS Horizontal Hits; # ds h channel; entries", DSn_bins, DSx_min, DSx_max)
+VetoHits = ROOT.TH1D("VetoHits", "Veto Hits; # veto channel; entries", DSn_bins, DSx_min, DSx_max)
+VetoHitMultiplicity = ROOT.TH1D("VetoHitMultiplicity", "Veto Hit Multiplicity; # hits per event; entries", 20, -.5, 19.5)
+Cosmic_VetoHits = ROOT.TH1D("Cosmic_VetoHits", "Veto Hits in cosmics events; # veto channel; entries", DSn_bins, DSx_min, DSx_max)
+Cosmic_VetoHitMultiplicity = ROOT.TH1D("Cosmic_VetoHitMultiplicity", "Veto Hit Multiplicity in cosmic ray events; # hits per event; entries", 20, -.5, 19.5)
+Bkg_VetoHits = ROOT.TH1D("Bkg_VetoHits", "Veto Hits in not cosmics events; # veto channel; entries", DSn_bins, DSx_min, DSx_max)
+Bkg_VetoMultiplicity = ROOT.TH1D("Bkg_VetoMultiplicity", "Veto Hit Multiplicity in not cosmics; # hits per event; entries", 20, -.5, 19.5)
 
 # qdc
-DSLQdc = ROOT.TH1D("DSLQdc", "DSLQdc", DSn_bins, DSx_min, DSx_max)
-DSRQdc = ROOT.TH1D("DSRQdc", "DSRQdc", DSn_bins, DSx_min, DSx_max)
-DSVQdc = ROOT.TH1D("DSVQdc", "DSVQdc", DSn_bins, DSx_min, 150)
-VetoQdc = ROOT.TH1D("VetoQdc", "VetoQdc", 83, -20.5, DSx_max)
-VetoQdcPerBar = ROOT.TH2D("VetoQdcPerBar", "VetoQdcPerBar", 83, -20.5, DSx_max, 83, -20.5, DSx_max) 
-VetoQDCPerChannel = ROOT.TH2D("VetoQDCPerChannel", "VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, 83, -20.5, DSx_max)
-Cosmic_VetoQdc = ROOT.TH1D("VetoQdc", "VetoQdc", 83, -20.5, DSx_max)
+DSLQdc = ROOT.TH1D("DSLQdc", "DSLQdc; qdc; entries", DSn_bins, DSx_min, DSx_max)
+DSRQdc = ROOT.TH1D("DSRQdc", "DSRQdc; qdc; entries", DSn_bins, DSx_min, DSx_max)
+DSVQdc = ROOT.TH1D("DSVQdc", "DSVQdc; qdc; entries", DSn_bins, DSx_min, 150)
+VetoQdc = ROOT.TH1D("VetoQdc", "VetoQdc; qdc; entries", 68, -5.5, DSx_max)
+VetoQDCPerChannel = ROOT.TH2D("VetoQDCPerChannel", "VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, 68, -5.5, DSx_max)
+Cosmic_VetoQdc = ROOT.TH1D("Cosmic_VetoQdc", "Cosmic_VetoQdc; veto channel; qdc ", 68, -5.5, DSx_max)
+Bkg_VetoQdc = ROOT.TH1D("Bkg_VetoQdc", "Bkg_VetoQdc; veto channel; qdc ", 68, -5.5, DSx_max)
 
 # Efficiency
 Denominatore = ROOT.TH2D("Denominatore", "Denominatore", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min, DSx_max)
@@ -86,8 +89,6 @@ relative_eff = 0
 
 Nentries = data.GetEntries()
 for i in range(Nentries):
-#    if i%10000 == 0:
- #       print(f"Processing event {i}", end= '\r') 
     entry = data.GetEntry(i)
     
     #select ds event
@@ -106,7 +107,7 @@ for i in range(Nentries):
         # veto info
         vetoId = tofID[boardID == 48]
         vetoMultiplicity = len(vetoId)
-        All_VetoHitMultiplcity.Fill(vetoMultiplicity)
+        VetoHitMultiplicity.Fill(vetoMultiplicity)
 
         vetoCh = tofChannel[boardID == 48]
         vetoQdc = qdc[boardID == 48]
@@ -119,6 +120,7 @@ for i in range(Nentries):
                 if (vetoId[i]%2 == 1) and (vetoCh[i] == 53): print(f'Sto cercando 19 e trovo {vetoBars[i]}')
                 if (vetoId[i]%2 == 1) and (vetoCh[i] == 37): print(f'Sto cercando 23 e trovo {vetoBars[i]}')
                 
+                VetoHits.Fill(vetoBars[i])
                 VetoQdc.Fill(vetoQdc[i])
                 VetoQDCPerChannel.Fill(vetoBars[i], vetoQdc[i])
 
@@ -164,21 +166,30 @@ for i in range(Nentries):
                 DSVHits.Fill(DSVBar)
                 DSHHits.Fill(DSLBar)
                 Denominatore.Fill(DSVBar, DSLBar)
-                vetohit = True if len( tofID[boardID == 48] ) > 0 else False
+                vetohit = True if vetoMultiplicity > 0 else False
                 Eff_Hch.Fill(vetohit, DSLBar)
                 Eff_Vch.Fill(vetohit, DSVBar)
                 Eff_DS.Fill(vetohit, DSVBar, DSLBar)
                 
+                if vetoMultiplicity > 0: 
 
-                Cosmic_VetoHitMultiplcity.Fill(len(vetoId))
+                    Cosmic_VetoHitMultiplicity.Fill(vetoMultiplicity)
 
-                for i in vetoBars :
-                    VetoHits.Fill(i)
+                    for i in vetoBars : Cosmic_VetoHits.Fill(i)
+                    
+                    for i in vetoQdc : Cosmic_VetoQdc.Fill(i)
+
+                    if vetoMultiplicity>0: 
+                        counterVeto+=1
+            else:
                 
-                Cosmic_VetoQdc.Fill(i for i in vetoQdc)
+                Bkg_VetoMultiplicity.Fill(vetoMultiplicity)
 
-                if len(vetoId)>0: 
-                    counterVeto+=1
+                if vetoMultiplicity > 0:
+                    for i in vetoBars : Bkg_VetoHits.Fill(i)
+                    
+                    for i in vetoQdc : Bkg_VetoQdc.Fill(i)
+                
 
 
 # compute relative efficiency
@@ -202,8 +213,11 @@ last_eff = last/10
 DSVHits.Write() 
 DSHHits.Write()
 VetoHits.Write()
-All_VetoHitMultiplcity.Write()
-Cosmic_VetoHitMultiplcity.Write()
+VetoHitMultiplicity.Write()
+Cosmic_VetoHits.Write()
+Cosmic_VetoHitMultiplicity.Write()
+Bkg_VetoHits.Write()
+Bkg_VetoMultiplicity.Write()
 
 #efficiencies histo
 Denominatore.Write()
@@ -217,11 +231,10 @@ DSRQdc.Write()
 DSVQdc.Write()
 
 #veto qdc distribution
-VetoQdcPerBar.Write()
 VetoQDCPerChannel.Write()
 VetoQdc.Write()
 Cosmic_VetoQdc.Write()
-
+Bkg_VetoQdc.Write()
 
 
 outfile.Close()
