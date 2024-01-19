@@ -261,7 +261,7 @@ outfile.Close()
 
 
 with open(f'./results/csvfiles/textfile_run{runN}.csv', 'w') as f:
-     f.write('first_eff,centre_eff,last_eff,first/lats,centre/last\n'+
+     f.write('first_eff,centre_eff,last_eff,first/last,centre/last\n'+
             str(first_eff)+','+str(centre_eff)+ ','+str(last_eff)+','+str(first_eff/last_eff)+','+str(centre_eff/last_eff))
 
 print('Done')
