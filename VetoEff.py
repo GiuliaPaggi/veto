@@ -260,8 +260,8 @@ Noise_VetoQdc.Write()
 outfile.Close()
 
 
-with open(f'textfile_run{runN}.txt', 'w') as f:
-     f.write('Mean efficiency in first region '+str(first_eff)+' in the central region '+str(centre_eff)+ ' and in the last region '+str(last_eff)+
-             '\nThe relative efficiency first/last is '+ str(first_eff/last_eff)+', the central/last is '+str(centre_eff/last_eff))
+with open(f'textfile_run{runN}.csv', 'w') as f:
+     f.write('first_eff,centre_eff,last_eff,first/lats,centre/last\n'+
+            str(first_eff)+','+str(centre_eff)+ ','+str(last_eff)+','+str(first_eff/last_eff)+','+str(centre_eff/last_eff))
 
 print('Done')
