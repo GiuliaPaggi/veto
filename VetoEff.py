@@ -105,7 +105,7 @@ relative_eff = 0
 
 # loop on entries
 for i in range(Nentries):
-    if i%10000 == 0:
+#    if i%10000 == 0:
  #       print(f"Processing event {i}", end= '\r') 
     entry = data.GetEntry(i)
     
@@ -230,7 +230,8 @@ Cosmic_VetoHitMultiplcity.Write()
 
 outfile.Close()
 
-with open('textfile_run{runN}.txt', 'w') as f:
+
+with open(f'textfile_run{runN}.txt', 'w') as f:
      f.write('Mean efficiency in first region '+str(first_eff)+' in the central region '+str(centre_eff)+ ' and in the last region '+str(last_eff)+
              '\nThe relative efficiency first/last is '+ str(first_eff/last_eff)+', the central/last is '+str(centre_eff/last_eff))
 
