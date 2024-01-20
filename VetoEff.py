@@ -71,6 +71,7 @@ DSVQdc = ROOT.TH1D("DSVQdc", "DSVQdc; qdc; entries", DSn_bins, DSx_min, 150)
 VetoQdc = ROOT.TH1D("VetoQdc", "VetoQdc; qdc; entries", 68, -5.5, DSx_max)
 VetoQDCPerChannel = ROOT.TH2D("VetoQDCPerChannel", "VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, 68, -5.5, DSx_max)
 Cosmic_VetoQdc = ROOT.TH1D("Cosmic_VetoQdc", "Cosmic_VetoQdc; veto channel; qdc ", 68, -5.5, DSx_max)
+Cosmic_VetoQDCPerChannel = ROOT.TH2D("Cosmic_VetoQDCPerChannel", "Cosmic_VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, 68, -5.5, DSx_max)
 Bkg_VetoQdc = ROOT.TH1D("Bkg_VetoQdc", "Bkg_VetoQdc; veto channel; qdc ", 68, -5.5, DSx_max)
 Noise_VetoQdc = ROOT.TH1D("Noise_VetoQdc", "Noise_VetoQdc; veto channel; qdc ", 68, -5.5, DSx_max)
 
@@ -81,10 +82,7 @@ Eff_Hch = ROOT.TEfficiency( "Eff_Hch", "Efficiency per DS horizontal channel; ds
 Eff_Vch = ROOT.TEfficiency( "Eff_Vch", "Efficiency per DS vertical channel; ds v channel number; veto efficiency", DSn_bins, DSx_min, DSx_max)
 Eff_DS  = ROOT.TEfficiency( "Eff_ch", "Efficiency per DS channel; ds v channel number; ds h channel number", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min, DSx_max)
 
-counter = 0
-counter2 = 0
-counterSameCh = 0
-counterVeto = 0
+
 relative_eff = 0
 
 ###################
@@ -103,14 +101,23 @@ for i in range(Nentries):
     # veto info
     vetoId = tofID[boardID == 48]
     vetoCh = tofChannel[boardID == 48]
+    vetoQdc = qdc[boardID == 48]
 
     vetoMultiplicity = len(vetoId)
     VetoHitMultiplicity.Fill(vetoMultiplicity)
+
     if vetoMultiplicity > 0:        
         vetoBars = [return_bar(mapVeto, vetoId[i], vetoCh[i]) for i in range(vetoMultiplicity)]
+        
+        for i in range(vetoMultiplicity):
+            if (vetoId[i]%2 == 1) and (vetoCh[i] == 53): print(f'Sto cercando 19 e trovo {vetoBars[i]}')
+            if (vetoId[i]%2 == 1) and (vetoCh[i] == 37): print(f'Sto cercando 23 e trovo {vetoBars[i]}')
+            
+            VetoHits.Fill(vetoBars[i])
+            VetoQdc.Fill(vetoQdc[i])
+            VetoQDCPerChannel.Fill(vetoBars[i], vetoQdc[i])
 
 
-    vetoQdc = qdc[boardID == 48]
     
     # DS info
     DStofID = tofID[boardID == 1]
@@ -125,18 +132,8 @@ for i in range(Nentries):
 
     if DsMultiplicity == 3:
 
-        counter+=1
         # DS boardID 1, V=[0,1], L=[2,3], R=[4,5]
         # Veto boardID 48 [6,7]
-            
-        for i in range(vetoMultiplicity):
-            if (vetoId[i]%2 == 1) and (vetoCh[i] == 53): print(f'Sto cercando 19 e trovo {vetoBars[i]}')
-            if (vetoId[i]%2 == 1) and (vetoCh[i] == 37): print(f'Sto cercando 23 e trovo {vetoBars[i]}')
-            
-            VetoHits.Fill(vetoBars[i])
-            VetoQdc.Fill(vetoQdc[i])
-            VetoQDCPerChannel.Fill(vetoBars[i], vetoQdc[i])
-
         DSRID = DStofID[DStofID>3]
         DSLID = DStofID[(DStofID>1) & (DStofID<4)]
         DSVID = DStofID[DStofID<2]
@@ -148,7 +145,6 @@ for i in range(Nentries):
         #ask for 3 hit in total in ds-> 1 ds R 1 ds L and 1 ds V     
 
         if len(DSLID) == 1 and len(DSRID) == 1 and len(DSVID) == 1:
-            counter2+=1
 
             DSLCh = DStofCh[(DStofID>1) & (DStofID<4)]
             DSRCh = DStofCh[DStofID>3]
@@ -183,12 +179,12 @@ for i in range(Nentries):
 
                     Cosmic_VetoHitMultiplicity.Fill(vetoMultiplicity)
 
-                    for i in vetoBars : Cosmic_VetoHits.Fill(i)
-                    
-                    for i in vetoQdc : Cosmic_VetoQdc.Fill(i)
+                    for i in range (vetoMultiplicity) :
+                        Cosmic_VetoHits.Fill(vetoBars[i])
+                        Cosmic_VetoQdc.Fill(vetoQdc[i])
+                        Cosmic_VetoQDCPerChannel.Fill(vetoBars[i], vetoQdc[i])
 
-                    if vetoMultiplicity>0: 
-                        counterVeto+=1
+                    
             else:
                 
                 Bkg_VetoMultiplicity.Fill(vetoMultiplicity)
@@ -222,6 +218,9 @@ for i in range(10) :
 first_eff = first/10
 centre_eff = centre/10
 last_eff = last/10
+
+ratio_first_last = first_eff/last_eff if last_eff > 0 else -1
+ratio_centre_last = centre_eff/last_eff if last_eff > 0 else -1
 
 ############################
 # write histo to root file #
@@ -259,9 +258,12 @@ Noise_VetoQdc.Write()
 
 outfile.Close()
 
+#######################################
+# Write average efficiency and ratios #
+#######################################
 
 with open(f'./results/csvfiles/textfile_run{runN}.csv', 'w') as f:
      f.write('first_eff,centre_eff,last_eff,first/last,centre/last\n'+
-            str(first_eff)+','+str(centre_eff)+ ','+str(last_eff)+','+str(first_eff/last_eff)+','+str(centre_eff/last_eff))
+            str(first_eff)+' '+str(centre_eff)+ ' '+str(last_eff)+' '+str(ratio_first_last)+' '+str(ratio_centre_last))
 
 print('Done')
