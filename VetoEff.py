@@ -82,6 +82,9 @@ Eff_Hch = ROOT.TEfficiency( "Eff_Hch", "Efficiency per DS horizontal channel; ds
 Eff_Vch = ROOT.TEfficiency( "Eff_Vch", "Efficiency per DS vertical channel; ds v channel number; veto efficiency", DSn_bins, DSx_min, DSx_max)
 Eff_DS  = ROOT.TEfficiency( "Eff_ch", "Efficiency per DS channel; ds v channel number; ds h channel number", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min, DSx_max)
 
+# Alignment
+DsH_vs_Veto = ROOT.TH2D("DsH_vs_Veto", "DsH_vs_Veto; DS H ch; Veto ch", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min, DSx_max) 
+DsV_vs_Veto = ROOT.TH2D("DsV_vs_Veto", "DsV_vs_Veto; DS V ch; Veto ch", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min, DSx_max) 
 
 relative_eff = 0
 
@@ -184,7 +187,9 @@ for i in range(Nentries):
                         Cosmic_VetoQdc.Fill(vetoQdc[i])
                         Cosmic_VetoQDCPerChannel.Fill(vetoBars[i], vetoQdc[i])
 
-                    
+                        DsH_vs_Veto.Fill(DSLBar, vetoBars[i])
+                        DsV_vs_Veto.Fill(DSVBar, vetoBars[i])
+
             else:
                 
                 Bkg_VetoMultiplicity.Fill(vetoMultiplicity)
@@ -238,6 +243,10 @@ VetoQdc.Write()
 Cosmic_VetoQdc.Write()
 Bkg_VetoQdc.Write()
 Noise_VetoQdc.Write()
+
+# relative alignment
+DsH_vs_Veto.Write()
+DsV_vs_Veto.Write()
 
 outfile.Close()
 
