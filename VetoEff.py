@@ -205,23 +205,6 @@ for i in range(Nentries):
             Noise_VetoHits.Fill(vetoBars[i])
             Noise_VetoQdc.Fill(vetoQdc[i])
 
-
-# compute relative efficiency
-first = 0
-centre = 0
-last = 0 
-# compute mean over intervals of 10 channels
-for i in range(10) :
-    first += Eff_Vch.GetEfficiency(15+i)
-    centre += Eff_Vch.GetEfficiency(25+i)
-    last += Eff_Vch.GetEfficiency(35+i)
-first_eff = first/10
-centre_eff = centre/10
-last_eff = last/10
-
-ratio_first_last = first_eff/last_eff if last_eff > 0 else -1
-ratio_centre_last = centre_eff/last_eff if last_eff > 0 else -1
-
 ############################
 # write histo to root file #
 ############################
@@ -257,13 +240,5 @@ Bkg_VetoQdc.Write()
 Noise_VetoQdc.Write()
 
 outfile.Close()
-
-#######################################
-# Write average efficiency and ratios #
-#######################################
-
-with open(f'./results/csvfiles/textfile_run{runN}.csv', 'w') as f:
-     f.write('first_eff,centre_eff,last_eff,first/last,centre/last\n'+
-            str(first_eff)+' '+str(centre_eff)+ ' '+str(last_eff)+' '+str(ratio_first_last)+' '+str(ratio_centre_last))
 
 print('Done')
