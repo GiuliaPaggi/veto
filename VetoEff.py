@@ -40,7 +40,7 @@ mapVeto = read_csv_file("./SiPMmaps/Veto_SiPM_mapping.csv")
 calibration = read_csv_file(f"{runDirectory}qdc_cal.csv")
 
 #prepare output file
-filename = f"./results/rootfiles/output_run{runN}.root"
+filename = f"./results/output_run{runN}.root"
 outfile = ROOT.TFile.Open(filename, "RECREATE")
 
 #################

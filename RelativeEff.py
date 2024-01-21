@@ -52,10 +52,10 @@ first_to_last = first_eff/last_eff
 centre_to_last = centre_eff/last_eff
 
 print(f'In [15,25] the efficiency is {round(first_eff,2)} + {round(first_err_up,2)} - {round(first_err_low,2)}')
-print(f'\nIn [25,35] the efficiency is {round(centre_eff,2)} + {round(centre_err_up,2)} - {round(centre_err_low,2)}')
-print(f'\nIn [35,45] the efficiency is {round(last_eff,2)} + {round(last_err_up,2)} - {round(last_err_low,2)}')
+print(f'In [25,35] the efficiency is {round(centre_eff,2)} + {round(centre_err_up,2)} - {round(centre_err_low,2)}')
+print(f'In [35,45] the efficiency is {round(last_eff,2)} + {round(last_err_up,2)} - {round(last_err_low,2)}')
 print(f'\nRelative eff of [15,25] wrt [35,45] is {round(first_to_last,2)}')
-print(f'\nRelative eff of [25,35] wrt [35,45] is {round(centre_to_last,2)}')
+print(f'Relative eff of [25,35] wrt [35,45] is {round(centre_to_last,2)}')
 
 
 
