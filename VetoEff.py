@@ -24,7 +24,7 @@ def return_bar(map, tofpet_id, tofpet_channel):
 #############
 
 runN = sys.argv[1]
-#runDirectory = f"/eos/experiment/sndlhc/raw_data/commissioning/veto/run_{runN}/"
+csvDirectory = f"/eos/experiment/sndlhc/raw_data/commissioning/veto/run_{runN}/"
 runDirectory = f"/afs/cern.ch/work/g/gpsndlhc/veto/vetoRuns/run_{runN}/"
 
 
@@ -38,7 +38,7 @@ for file in filelist:
 # read mapping cvs
 mapDS = read_csv_file("./SiPMmaps/DS_SiPM_mapping.csv")
 mapVeto = read_csv_file("./SiPMmaps/Veto_SiPM_mapping.csv")
-calibration = read_csv_file(f"{runDirectory}qdc_cal.csv")
+calibration = read_csv_file(f"{csvDirectory}qdc_cal.csv")
 
 #prepare output file
 filename = f"./results/output_run{runN}.root"
