@@ -5,6 +5,9 @@ error = condorJob/error/VetoAnalysis.$(ClusterId).$(ProcId).err
 log = condorJob/log/VetoAnalysis.$(ClusterId).log
 +JobFlavour = "workday"
 notification = Never
-queue RUNN in 100828
+queue RUNN in 100828,100829,100789,100791,100792,100793,100794,100796,100797
 
 #100789,100791,100792,100793,100794,100796,100797
+
+#missing other channels in dsv, 0 in veto dsh
+#100828,100829

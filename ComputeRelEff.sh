@@ -2,7 +2,7 @@
 echo Add the results files 
 echo " "
 
-hadd -f ./results/output.root ./results/output_run* 
+hadd -f ./results/output$1.root ./results/output_run100$1* 
 
 echo " "
 echo " "
