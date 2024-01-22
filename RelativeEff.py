@@ -7,6 +7,8 @@ import ROOT
 f = ROOT.TFile.Open('./results/output.root', 'read')
 eff = f.Get('Eff_Vch')
 
+roundDigits = 5
+
 # compute relative efficiency
 first = 0
 first_err_low = 0
@@ -44,18 +46,18 @@ centre_err_up = (centre_err_up)**.5
 last_err_low = (last_err_low)**.5
 last_err_up = (last_err_up)**.5
 
-first_eff = round(first/10,2)
-centre_eff = round(centre/10,2)
-last_eff = round(last/10,2)
+first_eff = round(first/10,roundDigits)
+centre_eff = round(centre/10,roundDigits)
+last_eff = round(last/10,roundDigits)
 
 first_to_last = first_eff/last_eff
 centre_to_last = centre_eff/last_eff
 
-print(f'In [15,25] the efficiency is {round(first_eff,2)} + {round(first_err_up,2)} - {round(first_err_low,2)}')
-print(f'In [25,35] the efficiency is {round(centre_eff,2)} + {round(centre_err_up,2)} - {round(centre_err_low,2)}')
-print(f'In [35,45] the efficiency is {round(last_eff,2)} + {round(last_err_up,2)} - {round(last_err_low,2)}')
-print(f'\nRelative eff of [15,25] wrt [35,45] is {round(first_to_last,2)}')
-print(f'Relative eff of [25,35] wrt [35,45] is {round(centre_to_last,2)}')
+print(f'In [15,25] the efficiency is {round(first_eff,roundDigits)} + {round(first_err_up,roundDigits)} - {round(first_err_low,roundDigits)}')
+print(f'In [25,35] the efficiency is {round(centre_eff,roundDigits)} + {round(centre_err_up,roundDigits)} - {round(centre_err_low,roundDigits)}')
+print(f'In [35,45] the efficiency is {round(last_eff,roundDigits)} + {round(last_err_up,roundDigits)} - {round(last_err_low,roundDigits)}')
+print(f'\nRelative eff of [15,25] wrt [35,45] is {round(first_to_last,roundDigits)}')
+print(f'Relative eff of [25,35] wrt [35,45] is {round(centre_to_last,roundDigits)}')
 
 
 
