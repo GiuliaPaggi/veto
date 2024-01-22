@@ -1,8 +1,10 @@
 executable = VetoAnalysis.sh
 arguments = $(ClusterId) $(ProcId) $(RUNN)
-output = output/VetoAnalysis.$(ClusterId).$(ProcId).out
-error = error/VetoAnalysis.$(ClusterId).$(ProcId).err
-log = log/VetoAnalysis.$(ClusterId).log
+output = condorJob/output/VetoAnalysis.$(ClusterId).$(ProcId).out
+error = condorJob/error/VetoAnalysis.$(ClusterId).$(ProcId).err
+log = condorJob/log/VetoAnalysis.$(ClusterId).log
 +JobFlavour = "workday"
 notification = Never
-queue RUNN in 100789,100791,100792,100793,100794,100796,100797
+queue RUNN in 100828
+
+#100789,100791,100792,100793,100794,100796,100797

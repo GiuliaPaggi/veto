@@ -4,7 +4,7 @@ from ROOT import TFile, TChain, gROOT
 import ROOT
 
 
-f = ROOT.TFile.Open('./results/rootfiles/output.root', 'read')
+f = ROOT.TFile.Open('./results/output.root', 'read')
 eff = f.Get('Eff_Vch')
 
 # compute relative efficiency

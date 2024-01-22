@@ -24,7 +24,8 @@ def return_bar(map, tofpet_id, tofpet_channel):
 #############
 
 runN = sys.argv[1]
-runDirectory = f"/eos/experiment/sndlhc/raw_data/commissioning/veto/run_{runN}/"
+#runDirectory = f"/eos/experiment/sndlhc/raw_data/commissioning/veto/run_{runN}/"
+runDirectory = f"/afs/cern.ch/work/g/gpsndlhc/veto/vetoRuns/run_{runN}/"
 
 
 data = ROOT.TChain("data")
