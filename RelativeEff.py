@@ -63,7 +63,7 @@ print(f'Relative eff of [25,35] wrt [35,45] is {round(centre_to_last,roundDigits
 
 with open(f'./results/RelEff_run{nRun}.txt', 'w') as f:
     f.write(f'In [15,25] the efficiency is {round(first_eff,roundDigits)} + {round(first_err_up,roundDigits)} - {round(first_err_low,roundDigits)}')
-    f.write(f'In [25,35] the efficiency is {round(centre_eff,roundDigits)} + {round(centre_err_up,roundDigits)} - {round(centre_err_low,roundDigits)}')
-    f.write(f'In [35,45] the efficiency is {round(last_eff,roundDigits)} + {round(last_err_up,roundDigits)} - {round(last_err_low,roundDigits)}')
-    f.write(f'\nRelative eff of [15,25] wrt [35,45] is {round(first_to_last,roundDigits)}')
-    f.write(f'Relative eff of [25,35] wrt [35,45] is {round(centre_to_last,roundDigits)}')
+    f.write(f'\nIn [25,35] the efficiency is {round(centre_eff,roundDigits)} + {round(centre_err_up,roundDigits)} - {round(centre_err_low,roundDigits)}')
+    f.write(f'\nIn [35,45] the efficiency is {round(last_eff,roundDigits)} + {round(last_err_up,roundDigits)} - {round(last_err_low,roundDigits)}')
+    f.write(f'\n\nRelative eff of [15,25] wrt [35,45] is {round(first_to_last,roundDigits)}')
+    f.write(f'\nRelative eff of [25,35] wrt [35,45] is {round(centre_to_last,roundDigits)}')
