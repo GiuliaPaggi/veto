@@ -9,5 +9,5 @@ echo " "
 echo Compute efficiency
 echo " "
 
-python3 RelativeEff.py
+python3 RelativeEff.py $1
 echo " "

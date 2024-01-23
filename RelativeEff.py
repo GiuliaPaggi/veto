@@ -1,10 +1,12 @@
 import csv 
+import sys
 from glob import glob
 from ROOT import TFile, TChain, gROOT
 import ROOT
 
+nRun=sys.argv[1]
 
-f = ROOT.TFile.Open('./results/output.root', 'read')
+f = ROOT.TFile.Open(f'./results/output{nRun}.root', 'read')
 eff = f.Get('Eff_Vch')
 
 roundDigits = 5
@@ -59,10 +61,9 @@ print(f'In [35,45] the efficiency is {round(last_eff,roundDigits)} + {round(last
 print(f'\nRelative eff of [15,25] wrt [35,45] is {round(first_to_last,roundDigits)}')
 print(f'Relative eff of [25,35] wrt [35,45] is {round(centre_to_last,roundDigits)}')
 
-
-
-
-# for i in range(len(filelist)):
-#     average_first += data[i][0]
-#     average_centre += data[i][1]
-#     average_last += data[i][2]
+with open(f'./results/RelEff_run{nRun}.txt', 'w') as f:
+    f.write(f'In [15,25] the efficiency is {round(first_eff,roundDigits)} + {round(first_err_up,roundDigits)} - {round(first_err_low,roundDigits)}')
+    f.write(f'In [25,35] the efficiency is {round(centre_eff,roundDigits)} + {round(centre_err_up,roundDigits)} - {round(centre_err_low,roundDigits)}')
+    f.write(f'In [35,45] the efficiency is {round(last_eff,roundDigits)} + {round(last_err_up,roundDigits)} - {round(last_err_low,roundDigits)}')
+    f.write(f'\nRelative eff of [15,25] wrt [35,45] is {round(first_to_last,roundDigits)}')
+    f.write(f'Relative eff of [25,35] wrt [35,45] is {round(centre_to_last,roundDigits)}')
