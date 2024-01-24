@@ -27,6 +27,8 @@ runN = sys.argv[1]
 runDirectory = f"/eos/experiment/sndlhc/raw_data/commissioning/veto/run_{runN}/"
 #runDirectory = f"/afs/cern.ch/work/g/gpsndlhc/veto/vetoRun/run_100834/"
 
+#DSPROPSPEED = 14.3 #cm/ns -> 1ch is 1cm 
+DSPROPSPEED = 30/(4*6.25) #cm/ns -> 1ch is 1cm 
 
 data = ROOT.TChain("data")
 
@@ -95,7 +97,6 @@ PositionCut_Eff_DS  = ROOT.TEfficiency( "PositionCut_Eff_ch", "Efficiency per DS
 DsH_vs_Veto = ROOT.TH2D("DsH_vs_Veto", "DsH_vs_Veto; DS H ch; Veto ch", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min, DSx_max) 
 DsV_vs_Veto = ROOT.TH2D("DsV_vs_Veto", "DsV_vs_Veto; DS V ch; Veto ch", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min, DSx_max) 
 
-relative_eff = 0
 
 ###################
 # loop on entries #
@@ -167,7 +168,7 @@ for i in range(Nentries):
             LQdc = DSQdc[(DStofID>1) & (DStofID<4)]
             RQdc = DSQdc[DStofID>3]
             VQdc = DSQdc[DStofID<2]
-            
+
             DSVHits.Fill(DSVBar)
             
             if DSRBar == DSLBar: 
@@ -181,18 +182,17 @@ for i in range(Nentries):
             
             # cut on qdc to ensure is a MIP signal 
 
-            #if (10 < LQdc[0] < 30) and (10 < RQdc[0] < 20) and (15 < VQdc[0] < 30) and DSRBar == DSLBar: #and (10 < RQdc[0] < 30) weird shape of ds r qdc
+            #if (LQdc[0] >10 ) and ( RQdc[0] > 10) and ( VQdc[0] > 10) and DSRBar == DSLBar: #weird shape of ds r qdc
             if VQdc[0] > 10 and DSRBar == DSLBar:
                 Denominatore.Fill(DSVBar, DSLBar)
                 Cosmic_DSVHits.Fill(DSVBar)
                 Cosmic_DSHHits.Fill(DSRBar)
 
-                vetohit = True if vetoMultiplicity > 0 else False
-                Eff_Hch.Fill(vetohit, DSLBar)
-                Eff_Vch.Fill(vetohit, DSVBar)
-                Eff_DS.Fill(vetohit, DSVBar, DSLBar)
-                
+                vetohit = False
+                PositionCut_vetohit = False
+
                 if vetoMultiplicity > 0: 
+                    vetohit = True
 
                     Cosmic_VetoHitMultiplicity.Fill(vetoMultiplicity)
 
@@ -205,18 +205,22 @@ for i in range(Nentries):
                         DsH_vs_Veto.Fill(DSLBar, vetoBars[i])
                         DsV_vs_Veto.Fill(DSVBar, vetoBars[i])
 
-                        PositionCut_vetohit = False
-                        if (10 < DSRBar < 33     and 48 < vetoBars[i] < 57 ) : PositionCut_vetohit = True
+                        
+                        if   (10 < DSRBar < 33  and 48 < vetoBars[i] < 57 ) : PositionCut_vetohit = True
                         elif (15 < DSRBar < 36  and 39 < vetoBars[i] < 49 ) : PositionCut_vetohit = True
                         elif (20 < DSRBar < 42  and 32 < vetoBars[i] < 40 ) : PositionCut_vetohit = True
                         elif (25 < DSRBar < 50  and 24 < vetoBars[i] < 33 ) : PositionCut_vetohit = True
                         elif (32 < DSRBar < 55  and 15 < vetoBars[i] < 25 ) : PositionCut_vetohit = True
                         elif (38 < DSRBar < 58  and  8 < vetoBars[i] < 16 ) : PositionCut_vetohit = True
                         elif (45 < DSRBar < 60  and  0 < vetoBars[i] < 9  ) : PositionCut_vetohit = True
+        
+                Eff_Hch.Fill(vetohit, DSLBar)
+                Eff_Vch.Fill(vetohit, DSVBar)
+                Eff_DS.Fill(vetohit, DSVBar, DSLBar)
 
-                        PositionCut_Eff_Hch.Fill(PositionCut_vetohit, DSLBar)
-                        PositionCut_Eff_Vch.Fill(PositionCut_vetohit, DSVBar)
-                        PositionCut_Eff_DS.Fill(PositionCut_vetohit, DSVBar, DSLBar)
+                PositionCut_Eff_Hch.Fill(PositionCut_vetohit, DSLBar)
+                PositionCut_Eff_Vch.Fill(PositionCut_vetohit, DSVBar)
+                PositionCut_Eff_DS.Fill(PositionCut_vetohit, DSVBar, DSLBar)
 
             else:
                 
@@ -286,5 +290,3 @@ DsH_vs_Veto.Write()
 DsV_vs_Veto.Write()
 
 outfile.Close()
-
-print('Done')
