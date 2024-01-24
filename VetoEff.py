@@ -71,17 +71,17 @@ Noise_VetoMultiplicity = ROOT.TH1D("Noise_VetoMultiplicity", "Veto Hit Multiplic
 
 
 # qdc
-DSLQdc = ROOT.TH1D("DSLQdc", "DSLQdc; qdc; entries", DSn_bins, DSx_min+2, DSx_max+2)
-DSRQdc = ROOT.TH1D("DSRQdc", "DSRQdc; qdc; entries", DSn_bins, DSx_min+2, DSx_max+2)
-DSVQdc = ROOT.TH1D("DSVQdc", "DSVQdc; qdc; entries", DSn_bins, DSx_min+2, 152)
-DSQdc_RvsL = ROOT.TH2D("DSQdc_RvsL", "DSQdc_RvsL; ds R channel; ds L channel", DSn_bins, DSx_min+2, DSx_max+2, DSn_bins, DSx_min+2, DSx_max+2)
-VetoQdc = ROOT.TH1D("VetoQdc", "VetoQdc; qdc; entries", DSn_bins, DSx_min+2, DSx_max+2)
-VetoQDCPerChannel = ROOT.TH2D("VetoQDCPerChannel", "VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min+2, DSx_max+2)
-VetoQDCPerPosition = ROOT.TH2D("VetoQDCPerPosition", "VetoQDCPerPosition; dsV channel; qdc ", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min+2, DSx_max+2)
-Cosmic_VetoQdc = ROOT.TH1D("Cosmic_VetoQdc", "Cosmic_VetoQdc; veto channel; qdc ", DSn_bins, DSx_min+2, DSx_max+2)
-Cosmic_VetoQDCPerChannel = ROOT.TH2D("Cosmic_VetoQDCPerChannel", "Cosmic_VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min+2, DSx_max+2)
-Bkg_VetoQdc = ROOT.TH1D("Bkg_VetoQdc", "Bkg_VetoQdc; veto channel; qdc ", DSn_bins, DSx_min+2, DSx_max+2)
-Noise_VetoQdc = ROOT.TH1D("Noise_VetoQdc", "Noise_VetoQdc; veto channel; qdc ", DSn_bins, DSx_min+2, DSx_max+2)
+DSLQdc = ROOT.TH1D("DSLQdc", "DSLQdc; qdc; entries", DSn_bins, DSx_min+2, 200)
+DSRQdc = ROOT.TH1D("DSRQdc", "DSRQdc; qdc; entries", DSn_bins, DSx_min+2, 200)
+DSVQdc = ROOT.TH1D("DSVQdc", "DSVQdc; qdc; entries", DSn_bins, DSx_min+2, 200)
+DSQdc_RvsL = ROOT.TH2D("DSQdc_RvsL", "DSQdc_RvsL; ds R channel; ds L channel", DSn_bins, 200, DSx_max+2, DSn_bins, DSx_min+2, 200)
+VetoQdc = ROOT.TH1D("VetoQdc", "VetoQdc; qdc; entries", DSn_bins, DSx_min+2, 200)
+VetoQDCPerChannel = ROOT.TH2D("VetoQDCPerChannel", "VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min+2, 200)
+VetoQDCPerPosition = ROOT.TH2D("VetoQDCPerPosition", "VetoQDCPerPosition; dsV channel; qdc ", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min+2, 200)
+Cosmic_VetoQdc = ROOT.TH1D("Cosmic_VetoQdc", "Cosmic_VetoQdc; veto channel; qdc ", DSn_bins, DSx_min+2, 200)
+Cosmic_VetoQDCPerChannel = ROOT.TH2D("Cosmic_VetoQDCPerChannel", "Cosmic_VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min+2, 200)
+Bkg_VetoQdc = ROOT.TH1D("Bkg_VetoQdc", "Bkg_VetoQdc; veto channel; qdc ", DSn_bins, DSx_min+2, 200)
+Noise_VetoQdc = ROOT.TH1D("Noise_VetoQdc", "Noise_VetoQdc; veto channel; qdc ", DSn_bins, DSx_min+2, 200)
 
 # Efficiency
 Denominatore = ROOT.TH2D("Denominatore", "Denominatore", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min, DSx_max)
@@ -182,8 +182,7 @@ for i in range(Nentries):
             
             # cut on qdc to ensure is a MIP signal 
 
-            #if (LQdc[0] >10 ) and ( RQdc[0] > 10) and ( VQdc[0] > 10) and DSRBar == DSLBar: #weird shape of ds r qdc
-            if VQdc[0] > 10 and DSRBar == DSLBar:
+            if ( LQdc[0] > 40 ) and ( RQdc[0] > 40 ) and ( VQdc[0] > 90 ) and DSRBar == DSLBar: 
                 Denominatore.Fill(DSVBar, DSLBar)
                 Cosmic_DSVHits.Fill(DSVBar)
                 Cosmic_DSHHits.Fill(DSRBar)
@@ -205,7 +204,6 @@ for i in range(Nentries):
                         DsH_vs_Veto.Fill(DSLBar, vetoBars[i])
                         DsV_vs_Veto.Fill(DSVBar, vetoBars[i])
 
-                        
                         if   (10 < DSRBar < 33  and 48 < vetoBars[i] < 57 ) : PositionCut_vetohit = True
                         elif (15 < DSRBar < 36  and 39 < vetoBars[i] < 49 ) : PositionCut_vetohit = True
                         elif (20 < DSRBar < 42  and 32 < vetoBars[i] < 40 ) : PositionCut_vetohit = True
