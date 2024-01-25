@@ -136,8 +136,8 @@ for i in range(Nentries):
         VetoHitMultiplicity.Fill(vetoMultiplicity)
         
         vetoBars = [return_bar(mapVeto, vetoId[i], vetoCh[i]) for i in range(vetoMultiplicity)]
-        vetoBarId = [int((i-1)/8) for i in vetoBars]
-        #print(vetoBarId)
+        vetoBarId = [int(np.floor((i-1)/8)) for i in vetoBars]
+
         vetoBarQDC = np.zeros(8)
 
         for i in range(vetoMultiplicity):
@@ -228,9 +228,6 @@ for i in range(Nentries):
                     for i in range(vetoMultiplicity) : Cosmic_vetoBarQDC[vetoBarId[i]] += vetoQdc[i]
 
                     for i in vetoBarId : 
-                        Cosmic_VetoQDCPerBar.Fill(i, Cosmic_vetoBarQDC[i])
-                        Cosmic_VetoHitsperBar.Fill(i)
-                        Cosmic_VetoHitsperPosition.Fill(DSVBar)
                         Simp_perBar.Fill(i, len(vetoBarId))
                     
                     vetohit = False
@@ -242,9 +239,13 @@ for i in range(Nentries):
 
                         Cosmic_VetoHitMultiplicity.Fill(vetoMultiplicity)
 
-                        for i in range (vetoMultiplicity) : 
-
+                        for i in range(vetoMultiplicity) : 
+                            
+                            Cosmic_VetoQDCPerBar.Fill(vetoBarId[i], Cosmic_vetoBarQDC[vetoBarId[i]])
                             Cosmic_VetoHits.Fill(vetoBars[i])
+                            Cosmic_VetoHitsperBar.Fill(vetoBarId[i])
+                            Cosmic_VetoHitsperPosition.Fill(DSVBar)
+                            
                             Cosmic_VetoQdc.Fill(vetoQdc[i])
                             Cosmic_VetoQDCPerChannel.Fill(vetoBars[i], vetoQdc[i])
                             VetoQDCPerPosition.Fill(DSVBar, vetoQdc[i])
@@ -332,6 +333,9 @@ VetoHitMultiplicity.Write()
 Cosmic_DSVHits.Write() 
 Cosmic_DSHHits.Write()
 Cosmic_VetoHits.Write()
+Cosmic_VetoHitsperBar.Write()
+Cosmic_VetoQDCPerChannel.Write()
+Cosmic_VetoHitsperPosition.Write()
 Cosmic_VetoHitMultiplicity.Write()
 Bkg_VetoHits.Write()
 Bkg_VetoMultiplicity.Write()
