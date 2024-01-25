@@ -64,6 +64,8 @@ VetoHitMultiplicity = ROOT.TH1D("VetoHitMultiplicity", "Veto Hit Multiplicity;  
 Cosmic_DSVHits = ROOT.TH1D("Cosmic_DSVHits", "Cosmic_DS Vertical Hits;  ds v channel; entries", DSn_bins, DSx_min, DSx_max) 
 Cosmic_DSHHits = ROOT.TH1D("Cosmic_DSHHits", "Cosmic_DS Horizontal Hits; ds h channel; entries", DSn_bins, DSx_min, DSx_max)
 Cosmic_VetoHits = ROOT.TH1D("Cosmic_VetoHits", "Veto Hits in cosmics events;  veto channel; entries", DSn_bins, DSx_min, DSx_max)
+Cosmic_VetoHitsperBar = ROOT.TH1D("Cosmic_VetoHitsperBar", "Cosmic_Veto Hits per Bar; veto channel; entries", 7, 0, 7)
+Cosmic_VetoHitsperPosition = ROOT.TH1D("Cosmic_VetoHitsperPosition", "Cosmic_VetoHitsperPosition; ds V channel; entries", DSn_bins, DSx_min, DSx_max)
 Cosmic_VetoHitMultiplicity = ROOT.TH1D("Cosmic_VetoHitMultiplicity", "Veto Hit Multiplicity in cosmic ray events;  hits per event; entries", 20, -.5, 19.5)
 Bkg_VetoHits = ROOT.TH1D("Bkg_VetoHits", "Veto Hits in not cosmics events; veto channel; entries", DSn_bins, DSx_min, DSx_max)
 Bkg_VetoMultiplicity = ROOT.TH1D("Bkg_VetoMultiplicity", "Veto Hit Multiplicity in not cosmics; hits per event; entries", 20, -.5, 19.5)
@@ -227,6 +229,8 @@ for i in range(Nentries):
 
                     for i in vetoBarId : 
                         Cosmic_VetoQDCPerBar.Fill(i, Cosmic_vetoBarQDC[i])
+                        Cosmic_VetoHitsperBar.Fill(i)
+                        Cosmic_VetoHitsperPosition.Fill(DSVBar)
                         Simp_perBar.Fill(i, len(vetoBarId))
                     
                     vetohit = False
