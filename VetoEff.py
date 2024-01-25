@@ -27,8 +27,6 @@ runN = sys.argv[1]
 runDirectory = f"/eos/experiment/sndlhc/raw_data/commissioning/veto/run_{runN}/"
 #runDirectory = f"/afs/cern.ch/work/g/gpsndlhc/veto/vetoRun/run_100834/"
 
-#DSPROPSPEED = 14.3 #cm/ns -> 1ch is 1cm 
-DSPROPSPEED = 30/(4*6.25) #cm/ns -> 1ch is 1cm 
 
 data = ROOT.TChain("data")
 
@@ -100,7 +98,15 @@ Eff_DS  = ROOT.TEfficiency( "Eff_ch", "Efficiency per DS channel; ds v channel n
 PositionCut_Eff_Hch = ROOT.TEfficiency( "PositionCut_Eff_Hch", "Efficiency per DS horizontal channel; ds h channel number; veto efficiency", DSn_bins, DSx_min, DSx_max)
 PositionCut_Eff_Vch = ROOT.TEfficiency( "PositionCut_Eff_Vch", "Efficiency per DS vertical channel; ds v channel number; veto efficiency", DSn_bins, DSx_min, DSx_max)
 PositionCut_Eff_DS  = ROOT.TEfficiency( "PositionCut_Eff_ch", "Efficiency per DS channel; ds v channel number; ds h channel number", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min, DSx_max)
-PositionCut_Eff_GroupVch = ROOT.TEfficiency( "PositionCut_Eff_GroupVch", "Efficiency per DS vertical channel; ds v channel number; veto efficiency", 12 , 0, 12)
+PositionCut_Eff_GroupVch = ROOT.TEfficiency( "PositionCut_Eff_GroupVch", "Efficiency per DS vertical channel; ds v channel number; veto efficiency", 3 , 0, 3)
+PositionCut_Bar0Eff_GroupVch = ROOT.TEfficiency ( "PositionCut_Bar0Eff_GroupVch", "PositionCut_Bar0Eff_GroupVch", 3, 0, 3 )
+PositionCut_Bar1Eff_GroupVch = ROOT.TEfficiency ( "PositionCut_Bar1Eff_GroupVch", "PositionCut_Bar1Eff_GroupVch", 3, 0, 3 )
+PositionCut_Bar2Eff_GroupVch = ROOT.TEfficiency ( "PositionCut_Bar2Eff_GroupVch", "PositionCut_Bar2Eff_GroupVch", 3, 0, 3 )
+PositionCut_Bar3Eff_GroupVch = ROOT.TEfficiency ( "PositionCut_Bar3Eff_GroupVch", "PositionCut_Bar3Eff_GroupVch", 3, 0, 3 )
+PositionCut_Bar4Eff_GroupVch = ROOT.TEfficiency ( "PositionCut_Bar4Eff_GroupVch", "PositionCut_Bar4Eff_GroupVch", 3, 0, 3 )
+PositionCut_Bar5Eff_GroupVch = ROOT.TEfficiency ( "PositionCut_Bar5Eff_GroupVch", "PositionCut_Bar5Eff_GroupVch", 3, 0, 3 )
+PositionCut_Bar6Eff_GroupVch = ROOT.TEfficiency ( "PositionCut_Bar6Eff_GroupVch", "PositionCut_Bar6Eff_GroupVch", 3, 0, 3 )
+PositionCut_Bar7Eff_GroupVch = ROOT.TEfficiency ( "PositionCut_Bar7Eff_GroupVch", "PositionCut_Bar7Eff_GroupVch", 3, 0, 3 )
 
 # Alignment
 DsH_vs_Veto = ROOT.TH2D("DsH_vs_Veto", "DsH_vs_Veto; DS H ch; Veto ch", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min, DSx_max) 
@@ -119,7 +125,6 @@ for i in range(Nentries):
     tofChannel = np.uint8(data.tofpet_channel)
     tofID = np.uint8(data.tofpet_id)
     qdc = np.asarray(data.value, float)
-    time = np.asarray(data)
 
     # DS boardID 1, V=[0,1], L=[2,3], R=[4,5]
     # Veto boardID 48 [6,7]
@@ -253,42 +258,15 @@ for i in range(Nentries):
                             DsH_vs_Veto.Fill(DSLBar, vetoBars[i])
                             DsV_vs_Veto.Fill(DSVBar, vetoBars[i])
 
-                            
-                            # if   (10 < DSRBar < 33  and 48 < vetoBars[i] < 57 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                            # elif (15 < DSRBar < 36  and 39 < vetoBars[i] < 49 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                            # elif (20 < DSRBar < 42  and 32 < vetoBars[i] < 40 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                            # elif (25 < DSRBar < 50  and 24 < vetoBars[i] < 33 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                            # elif (32 < DSRBar < 55  and 15 < vetoBars[i] < 25 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                            # elif (38 < DSRBar < 58  and  8 < vetoBars[i] < 16 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                            # elif (45 < DSRBar < 60  and  0 < vetoBars[i] < 9  and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-            
-                            # if   (10 < DSRBar < 33  and vetoBarId[i] == 7 and Cosmic_vetoBarQDC[7] > veto_cut) : PositionCut_vetohit = True
-                            # elif (15 < DSRBar < 36  and vetoBarId[i] == 6 and Cosmic_vetoBarQDC[6] > veto_cut) : PositionCut_vetohit = True
-                            # elif (20 < DSRBar < 42  and vetoBarId[i] == 5 and Cosmic_vetoBarQDC[5] > veto_cut) : PositionCut_vetohit = True
-                            # elif (25 < DSRBar < 50  and vetoBarId[i] == 4 and Cosmic_vetoBarQDC[4] > veto_cut) : PositionCut_vetohit = True
-                            # elif (32 < DSRBar < 55  and vetoBarId[i] == 3 and Cosmic_vetoBarQDC[3] > veto_cut) : PositionCut_vetohit = True
-                            # elif (38 < DSRBar < 58  and vetoBarId[i] == 2 and Cosmic_vetoBarQDC[2] > veto_cut) : PositionCut_vetohit = True
-                            # elif (45 < DSRBar < 60  and vetoBarId[i] == 1 and Cosmic_vetoBarQDC[1] > veto_cut) : PositionCut_vetohit = True
-
                             veto_cut = 30
-                            if vetoMultiplicity > 5:
-                                if   (10 < DSRBar < 33  and vetoBarId[i] == 6 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                                elif (15 < DSRBar < 36  and vetoBarId[i] == 5 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                                elif (20 < DSRBar < 42  and vetoBarId[i] == 4 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                                elif (25 < DSRBar < 50  and vetoBarId[i] == 3 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                                elif (32 < DSRBar < 55  and vetoBarId[i] == 2 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                                elif (38 < DSRBar < 58  and vetoBarId[i] == 1 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                                elif (45 < DSRBar < 60  and vetoBarId[i] == 0 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-
-                    # if vetoMultiplicity > 5 :
-                    #     if   (10 < DSRBar < 33  and vetoBarId[i] == 6 ) : PositionCut_vetohit = True
-                    #     elif (15 < DSRBar < 36  and vetoBarId[i] == 5 ) : PositionCut_vetohit = True
-                    #     elif (20 < DSRBar < 42  and vetoBarId[i] == 4 ) : PositionCut_vetohit = True
-                    #     elif (25 < DSRBar < 50  and vetoBarId[i] == 3 ) : PositionCut_vetohit = True
-                    #     elif (32 < DSRBar < 55  and vetoBarId[i] == 2 ) : PositionCut_vetohit = True
-                    #     elif (38 < DSRBar < 58  and vetoBarId[i] == 1 ) : PositionCut_vetohit = True
-                    #     elif (45 < DSRBar < 60  and vetoBarId[i] == 0 ) : PositionCut_vetohit = True
-            
+                            if   (10 < DSRBar < 33  and vetoBarId[i] == 6 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
+                            elif (15 < DSRBar < 36  and vetoBarId[i] == 5 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
+                            elif (20 < DSRBar < 42  and vetoBarId[i] == 4 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
+                            elif (25 < DSRBar < 50  and vetoBarId[i] == 3 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
+                            elif (32 < DSRBar < 55  and vetoBarId[i] == 2 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
+                            elif (38 < DSRBar < 58  and vetoBarId[i] == 1 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
+                            elif (45 < DSRBar < 60  and vetoBarId[i] == 0 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
+        
                     Eff_Hch.Fill(vetohit, DSLBar)
                     Eff_Vch.Fill(vetohit, DSVBar)
                     Eff_DS.Fill(vetohit, DSVBar, DSLBar)
@@ -296,7 +274,22 @@ for i in range(Nentries):
                     PositionCut_Eff_Hch.Fill(PositionCut_vetohit, DSLBar)
                     PositionCut_Eff_Vch.Fill(PositionCut_vetohit, DSVBar)
                     PositionCut_Eff_DS.Fill(PositionCut_vetohit, DSVBar, DSLBar)
-                    PositionCut_Eff_GroupVch.Fill(PositionCut_vetohit, DSVBar/5)
+                    
+
+                    #fill eff plots
+                    if 21 < DSVBar < 59:
+                        bin = int((DSVBar-23)/12)
+                        for i in range(vetoMultiplicity) :
+                            PositionCut_Eff_GroupVch.Fill(PositionCut_vetohit, bin)
+                            if vetoBarId[i] == 0 : PositionCut_Bar0Eff_GroupVch.Fill(PositionCut_vetohit, bin)
+                            if vetoBarId[i] == 1 : PositionCut_Bar1Eff_GroupVch.Fill(PositionCut_vetohit, bin)
+                            if vetoBarId[i] == 2 : PositionCut_Bar2Eff_GroupVch.Fill(PositionCut_vetohit, bin)
+                            if vetoBarId[i] == 3 : PositionCut_Bar3Eff_GroupVch.Fill(PositionCut_vetohit, bin)
+                            if vetoBarId[i] == 4 : PositionCut_Bar4Eff_GroupVch.Fill(PositionCut_vetohit, bin)
+                            if vetoBarId[i] == 5 : PositionCut_Bar5Eff_GroupVch.Fill(PositionCut_vetohit, bin)
+                            if vetoBarId[i] == 6 : PositionCut_Bar6Eff_GroupVch.Fill(PositionCut_vetohit, bin)
+
+
 
             else:
                 
@@ -346,6 +339,13 @@ PositionCut_Eff_Hch.Write()
 PositionCut_Eff_Vch.Write()
 PositionCut_Eff_DS.Write()
 PositionCut_Eff_GroupVch.Write()
+PositionCut_Bar0Eff_GroupVch.Write()
+PositionCut_Bar1Eff_GroupVch.Write()
+PositionCut_Bar2Eff_GroupVch.Write()
+PositionCut_Bar3Eff_GroupVch.Write()
+PositionCut_Bar4Eff_GroupVch.Write()
+PositionCut_Bar5Eff_GroupVch.Write()
+PositionCut_Bar6Eff_GroupVch.Write()
 
 #ds qdc distribution
 DSLQdc.Write()
