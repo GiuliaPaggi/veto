@@ -5,7 +5,11 @@ error = condorJob/error/VetoAnalysis.$(ClusterId).$(ProcId).err
 log = condorJob/log/VetoAnalysis.$(ClusterId).log
 +JobFlavour = "workday"
 notification = Never
-queue RUNN in 100828,100829,100789,100791,100792,100793,100794,100796,100797
+queue RUNN in 5059, 5056
+
+#new veto position : 100834, 100835, 100836, 100837, 100838, 100839
+
+#100789,100791,100792,100793,100794,100796,100797,100828,100829,100830,100831
 
 #100789,100791,100792,100793,100794,100796,100797
 
