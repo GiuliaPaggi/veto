@@ -26,6 +26,10 @@ def return_bar(map, tofpet_id, tofpet_channel):
             return int(np.floor((int(row[0])-1)/8))
     return -1
 
+def is_single_bar(list):
+    if all(i == list[0] for i in list) :
+        return int(list[0])+1
+
 # scifi 1x [11,17,28] 1y [29,3,30]
 
 #############
@@ -105,6 +109,23 @@ V2RQdc = ROOT.TH1D("V2RQdc", "V2RQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 V2Qdc_RvsL = ROOT.TH2D("V2Qdc_RvsL", "V2Qdc_RvsL; V2 R channel; V2 L channel", qdcbin, qdc_min, qdc_max, qdcbin, qdc_min, qdc_max)
 V2QdcDiff = ROOT.TH1D("V2QdcDiff", "V2Qdc Difference; R-L QDC; Entries", 200, -100, 100)
 
+
+V1RQdc_max = ROOT.TH1D("V1RQdc_max", "V1RQdc_max; v1r qdc; entries", qdcbin, qdc_min, qdc_max)
+V1RQdc_others = ROOT.TH1D("V1RQdc_others", "V1RQdc_others; v1r qdc; entries", qdcbin, qdc_min, qdc_max)
+V1RQdc_single = ROOT.TH1D("V1RQdc_single", "V1RQdc_single; v1r qdc; entries", qdcbin, qdc_min, qdc_max)
+
+V1LQdc_max = ROOT.TH1D("V1LQdc_max", "V1LQdc_max; v1l qdc; entries", qdcbin, qdc_min, qdc_max)
+V1LQdc_others = ROOT.TH1D("V1LQdc_others", "V1LQdc_others; v1l qdc; entries", qdcbin, qdc_min, qdc_max)
+V1LQdc_single = ROOT.TH1D("V1LQdc_single", "V1LQdc_single; v1l qdc; entries", qdcbin, qdc_min, qdc_max)
+
+V2RQdc_max = ROOT.TH1D("V2RQdc_max", "V2RQdc_max; v2r qdc; entries", qdcbin, qdc_min, qdc_max)
+V2RQdc_others = ROOT.TH1D("V2RQdc_others", "V2RQdc_others; v2r qdc; entries", qdcbin, qdc_min, qdc_max)
+V2RQdc_single = ROOT.TH1D("V2RQdc_single", "V2RQdc_single; v2r qdc; entries", qdcbin, qdc_min, qdc_max)
+
+V2LQdc_max = ROOT.TH1D("V2LQdc_max", "V2LQdc_max; v2L qdc; entries", qdcbin, qdc_min, qdc_max)
+V2LQdc_others = ROOT.TH1D("V2LQdc_others", "V2LQdc_others; v2L qdc; entries", qdcbin, qdc_min, qdc_max)
+V2LQdc_single = ROOT.TH1D("V2LQdc_single", "V2LQdc_single; v2L qdc; entries", qdcbin, qdc_min, qdc_max)
+
 VetoQdc = ROOT.TH1D("VetoQdc", "VetoQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 VetoQDCPerChannel = ROOT.TH2D("VetoQDCPerChannel", "VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, qdcbin, qdc_min, qdc_max)
 VetoQDCPerPosition = ROOT.TH2D("VetoQDCPerPosition", "VetoQDCPerPosition; dsV channel; qdc ", DSn_bins, DSx_min, DSx_max, qdcbin, qdc_min, qdc_max)
@@ -135,6 +156,10 @@ V2_vs_V3 = ROOT.TH2D("V2_vs_V3", "V2_vs_V3; v2 bar; v3 bar", 7, 0, 7, 7, 0, 7)
 Ch_V1_vs_V2 = ROOT.TH2D("Ch_V1_vs_V2", "Ch_V1_vs_V2; v1 channel; v2 channel", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min, DSx_max)
 Ch_V1_vs_V3 = ROOT.TH2D("Ch_V1_vs_V3", "Ch_V1_vs_V3; v1 channel; v3 channel", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min, DSx_max)
 Ch_V2_vs_V3 = ROOT.TH2D("Ch_V2_vs_V3", "Ch_V2_vs_V3; v2 channel; v3 channel", DSn_bins, DSx_min, DSx_max, DSn_bins, DSx_min, DSx_max)
+Ch_V1_vs_scifi1x = ROOT.TH2D("Ch_V1_vs_scifi1x", "Ch_V1_vs_scifi1x; v1 channel; scifi1x channel", DSn_bins, DSx_min, DSx_max, 2000, 0, 2000)
+Ch_V1_vs_scifi1y = ROOT.TH2D("Ch_V1_vs_scifi1y", "Ch_V1_vs_scifi1y; v1 channel; scifi1y channel", DSn_bins, DSx_min, DSx_max, 2000, 0, 2000)
+Ch_V2_vs_scifi1x = ROOT.TH2D("Ch_V2_vs_scifi1x", "Ch_V2_vs_scifi1x; v2 channel; scifi1x channel", DSn_bins, DSx_min, DSx_max, 2000, 0, 2000)
+Ch_V2_vs_scifi1y = ROOT.TH2D("Ch_V2_vs_scifi1y", "Ch_V2_vs_scifi1y; v2 channel; scifi1y channel", DSn_bins, DSx_min, DSx_max, 2000, 0, 2000)
 
 ###################
 # loop on entries #
@@ -205,34 +230,24 @@ for i in range(Nentries):
 
     # ask hits in left and right for both the first two veto planes
 
-    if len(v1LId) > 1 and len(v1RId) > 1 and len(v2LId) > 1 and len(v2RId) > 1 :       
+    if len(v1LId) > 0 and len(v1RId) > 0 and len(v2LId) > 0 and len(v2RId) > 0 :       
         
         v1LPin = vetoCh[(vetoId<2)]
         v1RPin = vetoCh[(vetoId>5)]
         v2LPin = vetoCh[(vetoId>1) & (vetoId<4)]
         v2RPin = vetoCh[(vetoId>3) & (vetoId<6)]
 
-        for i in range(len(v1LId)) : 
-            V1LHits.Fill(return_ch(mapVeto, v1LId[i], v1LPin[i]))
-            V1LHitsperBar.Fill(return_bar(mapVeto, v1LId[i], v1LPin[i]))
-
-        for i in range(len(v1RId)) : 
-            V1RHits.Fill(return_ch(mapVeto, v1RId[i], v1RPin[i]))
-            V1RHitsperBar.Fill(return_bar(mapVeto, v1RId[i], v1RPin[i]))
-            
-        for i in range(len(v2LId)) : 
-            V2LHits.Fill(return_ch(mapVeto, v2LId[i], v2LPin[i]))
-            V2LHitsperBar.Fill(return_bar(mapVeto, v2LId[i], v2LPin[i]))
-            
-        for i in range(len(v2RId)) : 
-            V2RHits.Fill(return_ch(mapVeto, v2RId[i], v2RPin[i]))
-            V2RHitsperBar.Fill(return_bar(mapVeto, v2RId[i], v2RPin[i]))
-
         v1LQdc = vetoQdc[(vetoId<2)]
         v1RQdc = vetoQdc[(vetoId>5)]
         v2LQdc = vetoQdc[(vetoId>1) & (vetoId<4)]
         v2RQdc = vetoQdc[(vetoId>3) & (vetoId<6)]
 
+        v1LBars = [return_bar(mapVeto, v1LId[i], v1LPin[i]) for i in range(len(v1LId))]
+        v1RBars = [return_bar(mapVeto, v1RId[i], v1RPin[i]) for i in range(len(v1RId))]
+        v2LBars = [return_bar(mapVeto, v2LId[i], v2LPin[i]) for i in range(len(v2LId))]
+        v2RBars = [return_bar(mapVeto, v2RId[i], v2RPin[i]) for i in range(len(v2RId))]
+
+        # probabilmente cazzata
         v1LHitPin = v1LPin[np.array(v1LQdc).argmax()]
         v1RHitPin = v1RPin[np.array(v1RQdc).argmax()]
         v2LHitPin = v2LPin[np.array(v2LQdc).argmax()]
@@ -252,16 +267,70 @@ for i in range(Nentries):
         v1RBar = return_bar(mapVeto, v1RHitID, v1RHitPin)
         v2LBar = return_bar(mapVeto, v2LHitID, v2LHitPin)
         v2RBar = return_bar(mapVeto, v2RHitID, v2RHitPin)
+        
+        v1LhitQdc = np.max(v1LQdc)
+        v1RhitQdc = np.max(v1RQdc)
+        v2LhitQdc = np.max(v2LQdc)
+        v2RhitQdc = np.max(v2RQdc)
 
+        v1RBarQDC = np.zeros(8)
+        for i in range(len(v1RId)) : v1RBarQDC[v1RBars[i]] += v1RQdc[i]
+        
+        v1LBarQDC = np.zeros(8)
+        for i in range(len(v1LId)) : v1LBarQDC[v1LBars[i]] += v1LQdc[i]
+
+        v2RBarQDC = np.zeros(8)
+        for i in range(len(v2RId)) : v2RBarQDC[v2RBars[i]] += v2RQdc[i]
+
+        v2LBarQDC = np.zeros(8)
+        for i in range(len(v2LId)) : v2LBarQDC[v2LBars[i]] += v2LQdc[i]
+
+        
+        if is_single_bar(v1LBars) and is_single_bar(v1RBars) and is_single_bar(v2RBars) and is_single_bar(v2LBars):
+
+            V1LQdc_single.Fill(v1LBarQDC[(is_single_bar(v1LBars) - 1)])
+            V1RQdc_single.Fill(v1RBarQDC[(is_single_bar(v1RBars) - 1)])
+            V2LQdc_single.Fill(v2LBarQDC[(is_single_bar(v2LBars) - 1)])
+            V2RQdc_single.Fill(v2RBarQDC[(is_single_bar(v2RBars) - 1)])
+
+        else :
+            V1LQdc_max.Fill(np.max(v1LBarQDC))
+            V1RQdc_max.Fill(np.max(v1RBarQDC))
+            V2RQdc_max.Fill(np.max(v2RBarQDC))
+            V2LQdc_max.Fill(np.max(v2LBarQDC))
+
+            for v in v1LBarQDC: 
+                if v != np.max(v1LBarQDC) : V1LQdc_others.Fill(v)
+
+            for v in v1RBarQDC: 
+                if v != np.max(v1RBarQDC) : V1RQdc_others.Fill(v)
+
+            for v in v2LBarQDC: 
+                if v != np.max(v2LBarQDC) : V2LQdc_others.Fill(v)
+
+            for v in v2RBarQDC: 
+                if v != np.max(v2RBarQDC) : V2RQdc_others.Fill(v)
+
+
+        for i in range(len(v1LId)) : 
+            V1LHits.Fill(return_ch(mapVeto, v1LId[i], v1LPin[i]))
+            V1LHitsperBar.Fill(return_bar(mapVeto, v1LId[i], v1LPin[i]))
+
+        for i in range(len(v1RId)) : 
+            V1RHits.Fill(return_ch(mapVeto, v1RId[i], v1RPin[i]))
+            V1RHitsperBar.Fill(return_bar(mapVeto, v1RId[i], v1RPin[i]))
+            
+        for i in range(len(v2LId)) : 
+            V2LHits.Fill(return_ch(mapVeto, v2LId[i], v2LPin[i]))
+            V2LHitsperBar.Fill(return_bar(mapVeto, v2LId[i], v2LPin[i]))
+            
+        for i in range(len(v2RId)) : 
+            V2RHits.Fill(return_ch(mapVeto, v2RId[i], v2RPin[i]))
+            V2RHitsperBar.Fill(return_bar(mapVeto, v2RId[i], v2RPin[i]))
         # ask for same bar hit in left and right
 
         if v1LBar == v1RBar and v2LBar == v2RBar:
             
-            v1LhitQdc = np.max(v1LQdc)
-            v1RhitQdc = np.max(v1RQdc)
-            v2LhitQdc = np.max(v2LQdc)
-            v2RhitQdc = np.max(v2RQdc)
-
             V1LQdc.Fill(v1LhitQdc)
             V1RQdc.Fill(v1RhitQdc)
             V2LQdc.Fill(v2LhitQdc)
@@ -275,7 +344,7 @@ for i in range(Nentries):
 
             # cut on qdc signal 
 
-            if v1LhitQdc > 0 and v1RhitQdc > 0 and v2RhitQdc > 0 and v2LhitQdc > 0:
+            if v1LhitQdc > 0 and v1RhitQdc > 0 and v2RhitQdc > 0 and v2LhitQdc > 0 and v3Multiplicity > 0:
                 v3BarQDC = np.zeros(8)
                 for i in range(v3Multiplicity):
                     
@@ -287,13 +356,24 @@ for i in range(Nentries):
                     Ch_V2_vs_V3.Fill(v2LCh, v3Ch[i])
                     v3BarQDC[v3Bars[i]] += v3Qdc[i]
                 
-                for i in v3BarId : 
+                for i in v3BarId :
                     Cosmic_VetoQDCPerBar.Fill(i, v3BarQDC[i])
                     V1_vs_V3.Fill(v1LBar, i)
                     V2_vs_V3.Fill(v2LBar, i)
 
             vetoCounter+=1
-            if len(scifi1xId) > 0 and len(scifi1yId) > 0 and any(v > 0 for v in scifi1xQdc) and any(v > 0 for v in scifi1yQdc) : scifiCounter+=1
+            if len(scifi1xId) > 0 and len(scifi1yId) > 0:
+                    scifiCounter +=1 
+                    scifi1xHitCh = scifi1xId[np.array(scifi1xQdc).argmax()]*64 + 63 - scifi1xPin[np.array(scifi1xQdc).argmax()]
+                    scifi1yHitCh = scifi1yId[np.array(scifi1yQdc).argmax()]*64 + 63 - scifi1yPin[np.array(scifi1yQdc).argmax()]
+
+                    Ch_V1_vs_scifi1x.Fill(v1LCh, scifi1xHitCh)
+                    Ch_V1_vs_scifi1y.Fill(v1LCh, scifi1yHitCh)
+                    Ch_V2_vs_scifi1x.Fill(v2LCh, scifi1xHitCh)
+                    Ch_V2_vs_scifi1y.Fill(v2LCh, scifi1yHitCh)
+
+                #64*sf_hit->GetTofpetID(0)+63-sf_hit->Getchannel(0)
+                #and any(v > 0 for v in scifi1xQdc) and any(v > 0 for v in scifi1yQdc) : scifiCounter+=1
             
 ############################
 # write histo to root file #
@@ -315,6 +395,10 @@ V2_vs_V3.Write()
 Ch_V1_vs_V2.Write()
 Ch_V1_vs_V3.Write()
 Ch_V2_vs_V3.Write()
+Ch_V1_vs_scifi1x.Write()
+Ch_V1_vs_scifi1y.Write()
+Ch_V2_vs_scifi1x.Write()
+Ch_V2_vs_scifi1y.Write()
 
 V1LHits.Write()
 V1LHitsperBar.Write()
@@ -324,6 +408,20 @@ V2LHits.Write()
 V2LHitsperBar.Write()
 V2RHits.Write()
 V2RHitsperBar.Write()
+
+V1LQdc_max.Write()
+V1LQdc_others.Write()
+V1LQdc_single.Write()
+V1RQdc_max.Write()
+V1RQdc_others.Write()
+V1RQdc_single.Write()
+V2LQdc_max.Write()
+V2LQdc_others.Write()
+V2LQdc_single.Write()
+V2RQdc_max.Write()
+V2RQdc_others.Write()
+V2RQdc_single.Write()
+
 
 VetoHits.Write()
 VetoHitsperBar.Write()
