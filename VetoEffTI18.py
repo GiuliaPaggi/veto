@@ -100,6 +100,12 @@ qdc_max = 200
 
 Scifi1xQdc = ROOT.TH1D("Scifi1xQdc", "Scifi1xQdc; qdc; entries", 100, -24.5, 25.5)
 Scifi1yQdc = ROOT.TH1D("Scifi1yQdc", "Scifi1yQdc; qdc; entries", 100, -24.5, 25.5)
+Scifi1xQdc_max = ROOT.TH1D("Scifi1xQdc_max", "Scifi1xQdc_max; qdc_max; entries", 100, -24.5, 25.5)
+Scifi1yQdc_max = ROOT.TH1D("Scifi1yQdc_max", "Scifi1yQdc_max; qdc_max; entries", 100, -24.5, 25.5)
+Scifi1xQdc_others = ROOT.TH1D("Scifi1xQdc_others", "Scifi1xQdc_others; qdc_others; entries", 100, -24.5, 25.5)
+Scifi1yQdc_others = ROOT.TH1D("Scifi1yQdc_others", "Scifi1yQdc_others; qdc_others; entries", 100, -24.5, 25.5)
+Scifi1xQdc_residual = ROOT.TH1D("Scifi1xQdc_residual", "Scifi1xQdc_residual; qdc max - others; entries", 70, 0, 70)
+Scifi1yQdc_residual = ROOT.TH1D("Scifi1yQdc_residual", "Scifi1yQdc_residual; qdc max - others; entries", 70, 0, 70)
 
 V1LQdc = ROOT.TH1D("V1LQdc", "V1LQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 V1RQdc = ROOT.TH1D("V1RQdc", "V1RQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
@@ -115,22 +121,22 @@ V2QdcDiff = ROOT.TH1D("V2QdcDiff", "V2Qdc Difference; R-L QDC; Entries", 200, -1
 V1RQdc_max = ROOT.TH1D("V1RQdc_max", "V1RQdc_max; v1r qdc; entries", qdcbin, qdc_min, qdc_max)
 V1RQdc_others = ROOT.TH1D("V1RQdc_others", "V1RQdc_others; v1r qdc; entries", qdcbin, qdc_min, qdc_max)
 V1RQdc_single = ROOT.TH1D("V1RQdc_single", "V1RQdc_single; v1r qdc; entries", qdcbin, qdc_min, qdc_max)
-V1RQdc_residual = ROOT.TH1D("V1RQdc_residual", "V1RQdc_residual; v1R qdc max - others; entries", 400, -200, 200)
+V1RQdc_residual = ROOT.TH1D("V1RQdc_residual", "V1RQdc_residual; v1R qdc max - others; entries", 200, 0, 200)
 
 V1LQdc_max = ROOT.TH1D("V1LQdc_max", "V1LQdc_max; v1l qdc; entries", qdcbin, qdc_min, qdc_max)
 V1LQdc_others = ROOT.TH1D("V1LQdc_others", "V1LQdc_others; v1l qdc; entries", qdcbin, qdc_min, qdc_max)
 V1LQdc_single = ROOT.TH1D("V1LQdc_single", "V1LQdc_single; v1l qdc; entries", qdcbin, qdc_min, qdc_max)
-V1LQdc_residual = ROOT.TH1D("V1LQdc_residual", "V1LQdc_residual; v1L qdc max - others; entries", 400, -200, 200)
+V1LQdc_residual = ROOT.TH1D("V1LQdc_residual", "V1LQdc_residual; v1L qdc max - others; entries", 200, 0, 200)
 
 V2RQdc_max = ROOT.TH1D("V2RQdc_max", "V2RQdc_max; v2r qdc; entries", qdcbin, qdc_min, qdc_max)
 V2RQdc_others = ROOT.TH1D("V2RQdc_others", "V2RQdc_others; v2r qdc; entries", qdcbin, qdc_min, qdc_max)
 V2RQdc_single = ROOT.TH1D("V2RQdc_single", "V2RQdc_single; v2r qdc; entries", qdcbin, qdc_min, qdc_max)
-V2RQdc_residual = ROOT.TH1D("V2RQdc_residual", "V2RQdc_residual; v2R qdc max - others; entries", 400, -200, 200)
+V2RQdc_residual = ROOT.TH1D("V2RQdc_residual", "V2RQdc_residual; v2R qdc max - others; entries", 200, 0, 200)
 
 V2LQdc_max = ROOT.TH1D("V2LQdc_max", "V2LQdc_max; v2L qdc; entries", qdcbin, qdc_min, qdc_max)
 V2LQdc_others = ROOT.TH1D("V2LQdc_others", "V2LQdc_others; v2L qdc; entries", qdcbin, qdc_min, qdc_max)
 V2LQdc_single = ROOT.TH1D("V2LQdc_single", "V2LQdc_single; v2L qdc; entries", qdcbin, qdc_min, qdc_max)
-V2LQdc_residual = ROOT.TH1D("V2LQdc_residual", "V2LQdc_residual; v2L qdc max - others; entries", 400, -200, 200)
+V2LQdc_residual = ROOT.TH1D("V2LQdc_residual", "V2LQdc_residual; v2L qdc max - others; entries", 200, 0, 200)
 
 VetoQdc = ROOT.TH1D("VetoQdc", "VetoQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 VetoQDCPerChannel = ROOT.TH2D("VetoQDCPerChannel", "VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, qdcbin, qdc_min, qdc_max)
@@ -159,6 +165,9 @@ V1_vs_scifi1x = ROOT.TH2D("V1_vs_scifi1x", "V1_vs_scifi1x; v1 channel; scifi1x c
 V1_vs_scifi1y = ROOT.TH2D("V1_vs_scifi1y", "V1_vs_scifi1y; v1 channel; scifi1y channel", 7, 0, 7, 1536, 0, 1536)
 V2_vs_scifi1x = ROOT.TH2D("V2_vs_scifi1x", "V2_vs_scifi1x; v2 channel; scifi1x channel", 7, 0, 7, 1536, 0, 1536)
 V2_vs_scifi1y = ROOT.TH2D("V2_vs_scifi1y", "V2_vs_scifi1y; v2 channel; scifi1y channel", 7, 0, 7, 1536, 0, 1536)
+V3_vs_scifi1x = ROOT.TH2D("V3_vs_scifi1x", "V3_vs_scifi1x; v3 channel; scifi1x channel", 7, 0, 7, 1536, 0, 1536)
+V3_vs_scifi1y = ROOT.TH2D("V3_vs_scifi1y", "V3_vs_scifi1y; v3 channel; scifi1y channel", 7, 0, 7, 1536, 0, 1536)
+
 
 ###################
 # loop on entries #
@@ -372,12 +381,14 @@ for i in range(Nentries):
                         V1_vs_V3.Fill(v1LHitBar, i)
                         V2_vs_V3.Fill(v2LHitBar, i)
 
+                # coincidence of v1 and v2 
                 if abs(v1LHitBar-v2LHitBar) < 2 : 
                     vetoCounter+=1
                     V1BarEfficiency.Fill((v3Multiplicity > 0), v1LHitBar)
                     V2BarEfficiency.Fill((v3Multiplicity > 0), v2LHitBar)
                     Efficiency2D.Fill((v3Multiplicity > 0), v1LHitBar, v2LHitBar)
-
+                
+                # study scifi behaviour in cosmics events
                 if len(scifi1xId) > 0  and len(scifi1yId) > 0 :
                         
                         scifiCounter +=1 
@@ -387,9 +398,29 @@ for i in range(Nentries):
                         for i in scifi1xHitCh : 
                             V1_vs_scifi1x.Fill(v1LHitBar, i)
                             V2_vs_scifi1x.Fill(v2LHitBar, i)
+                            for b in v3Bars : V3_vs_scifi1x.Fill(b, i)
+
                         for i in scifi1yHitCh :
                             V1_vs_scifi1y.Fill(v1LHitBar, i)
                             V2_vs_scifi1y.Fill(v2LHitBar, i)
+                            for b in v3Bars : V3_vs_scifi1y.Fill(b, i)
+                        
+                        if len(scifi1xId) > 1  and len(scifi1yId) > 1 :
+                            scifi1xQdcMax = np.max(scifi1xQdc)
+                            scifi1yQdcMax = np.max(scifi1yQdc)
+
+                            Scifi1xQdc_max.Fill(scifi1xQdcMax)
+                            Scifi1yQdc_max.Fill(scifi1yQdcMax)
+
+                            for v in scifi1xQdc :
+                                if v != scifi1xQdcMax : 
+                                    Scifi1xQdc_residual.Fill(scifi1xQdcMax - v)
+                                    Scifi1xQdc_others.Fill(v)
+                            
+                            for v in scifi1yQdc:
+                                if v != scifi1yQdcMax : 
+                                    Scifi1yQdc_residual.Fill(scifi1yQdcMax - v)
+                                    Scifi1yQdc_others.Fill(v)
             
 ############################
 # write histo to root file #
@@ -412,6 +443,8 @@ V1_vs_scifi1x.Write()
 V1_vs_scifi1y.Write()
 V2_vs_scifi1x.Write()
 V2_vs_scifi1y.Write()
+V3_vs_scifi1x.Write()
+V3_vs_scifi1y.Write()
 
 V1LHits.Write()
 V1LHitsperBar.Write()
@@ -441,6 +474,13 @@ V2RQdc_max.Write()
 V2RQdc_others.Write()
 V2RQdc_single.Write()
 V2RQdc_residual.Write()
+
+Scifi1xQdc_residual.Write()
+Scifi1xQdc_max.Write()
+Scifi1xQdc_others.Write()
+Scifi1yQdc_residual.Write()
+Scifi1xQdc_max.Write()
+Scifi1xQdc_others.Write()
 
 V1BarEfficiency.Write()
 V2BarEfficiency.Write()
