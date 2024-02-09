@@ -62,7 +62,7 @@ VetoHitMultiplicity = ROOT.TH1D("VetoHitMultiplicity", "Veto Hit Multiplicity;  
 Cosmic_DSVHits = ROOT.TH1D("Cosmic_DSVHits", "Cosmic_DS Vertical Hits;  ds v channel; entries", DSn_bins, DSx_min, DSx_max) 
 Cosmic_DSHHits = ROOT.TH1D("Cosmic_DSHHits", "Cosmic_DS Horizontal Hits; ds h channel; entries", DSn_bins, DSx_min, DSx_max)
 Cosmic_VetoHits = ROOT.TH1D("Cosmic_VetoHits", "Veto Hits in cosmics events;  veto channel; entries", DSn_bins, DSx_min, DSx_max)
-Cosmic_VetoHitsperBar = ROOT.TH1D("Cosmic_VetoHitsperBar", "Cosmic_Veto Hits per Bar; veto channel; entries", 7, 0, 7)
+Cosmic_VetoHitsperBar = ROOT.TH1D("Cosmic_VetoHitsperBar", "Cosmic_Veto Hits per Bar; veto channel; entries", 9, -.5, 5.5)
 Cosmic_VetoHitsperPosition = ROOT.TH1D("Cosmic_VetoHitsperPosition", "Cosmic_VetoHitsperPosition; ds V channel; entries", DSn_bins, DSx_min, DSx_max)
 Cosmic_VetoHitMultiplicity = ROOT.TH1D("Cosmic_VetoHitMultiplicity", "Veto Hit Multiplicity in cosmic ray events;  hits per event; entries", 20, -.5, 19.5)
 Bkg_VetoHits = ROOT.TH1D("Bkg_VetoHits", "Veto Hits in not cosmics events; veto channel; entries", DSn_bins, DSx_min, DSx_max)
@@ -79,6 +79,18 @@ DSLQdc = ROOT.TH1D("DSLQdc", "DSLQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 DSRQdc = ROOT.TH1D("DSRQdc", "DSRQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 DSVQdc = ROOT.TH1D("DSVQdc", "DSVQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 DSQdc_RvsL = ROOT.TH2D("DSQdc_RvsL", "DSQdc_RvsL; ds R channel; ds L channel", qdcbin, qdc_min, qdc_max, qdcbin, qdc_min, qdc_max)
+DSVQdc_single = ROOT.TH1D("DSVQdc_single", "DSVQdc single hit events; ds v qdc ; entries", qdcbin, qdc_min, qdc_max)
+DSVQdc_max = ROOT.TH1D("DSVQdc_max", "DSVQdc_max; ds v qdc max; entries", qdcbin, qdc_min, qdc_max)
+DSVQdc_others = ROOT.TH1D("DSVQdc_others", "DSVQdc_others; ds v qdc others; entries", qdcbin, qdc_min, qdc_max)
+DSVQDC_max_vs_average = ROOT.TH2D("DSVQDC_max_vs_average", "DSVQDC_max_vs_average; qdc max; average of other hits", qdcbin, qdc_min, qdc_max, qdcbin, qdc_min, qdc_max)
+DSRQdc_single =  ROOT.TH1D("DSRQdc_single", "DSRQdc single hit events; ds R qdc; entries", qdcbin, qdc_min, qdc_max)
+DSRQdc_max =  ROOT.TH1D("DSRQdc_max", "DSRQdc_max; ds R qdc max; entries", qdcbin, qdc_min, qdc_max)
+DSRQdc_others =ROOT.TH1D("DSRQdc_others", "DSRQdc_others; ds R qdc others; entries", qdcbin, qdc_min, qdc_max)
+DSRQDC_max_vs_average = ROOT.TH2D("DSRQDC_max_vs_average", "DSRQDC_max_vs_average; qdc max; average of other hits", qdcbin, qdc_min, qdc_max, qdcbin, qdc_min, qdc_max)
+DSLQdc_single =  ROOT.TH1D("DSLQdc_single", "DSLQdc single hit events; ds L qdc; entries", qdcbin, qdc_min, qdc_max)
+DSLQdc_max =  ROOT.TH1D("DSLQdc_max", "DSLQdc_max; ds L qdc max; entries", qdcbin, qdc_min, qdc_max)
+DSLQdc_others =ROOT.TH1D("DSLQdc_others", "DSLQdc_others; ds L qdc others; entries", qdcbin, qdc_min, qdc_max)
+DSLQDC_max_vs_average = ROOT.TH2D("DSLQDC_max_vs_average", "DSLQDC_max_vs_average; qdc max; average of other hits", qdcbin, qdc_min, qdc_max, qdcbin, qdc_min, qdc_max)
 VetoQdc = ROOT.TH1D("VetoQdc", "VetoQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 VetoQDCPerChannel = ROOT.TH2D("VetoQDCPerChannel", "VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, qdcbin, qdc_min, qdc_max)
 VetoQDCPerPosition = ROOT.TH2D("VetoQDCPerPosition", "VetoQDCPerPosition; dsV channel; qdc ", DSn_bins, DSx_min, DSx_max, qdcbin, qdc_min, qdc_max)
@@ -191,10 +203,40 @@ for i in range(Nentries):
             Rqdc = np.max(RQdc)
             Lqdc = np.max(LQdc)
             Vqdc = np.max(VQdc)
+            
+            if len(LQdc) < 8 : DSLQdc_single.Fill(LQdc[0])
+            if len(RQdc) < 8 : DSLQdc_single.Fill(RQdc[0])
+            if len(VQdc) < 8 : DSLQdc_single.Fill(VQdc[0])
 
             #select hits with the highest qdc value (signal should be > noise)
 
-            if Rqdc > 0 and Lqdc > 0 and Vqdc > 0:
+            if Rqdc > 50 and Lqdc > 50 and Vqdc > 50:
+                
+                if len(DSLID) > 1 and len(DSRID) > 1 and len(DSVID) > 1:
+                    DSVQdc_max.Fill(Vqdc)
+                    DSRQdc_max.Fill(Rqdc)
+                    DSLQdc_max.Fill(Lqdc)
+
+                    average = 0
+                    for v in RQdc: 
+                        if v != Rqdc : average+=v
+                    average = average/(len(RQdc)-1)
+                    DSRQdc_others.Fill(average)
+                    DSRQDC_max_vs_average.Fill(Rqdc, average)
+
+                    average = 0
+                    for v in LQdc: 
+                        if v != Lqdc : average+=v
+                    average = average/(len(LQdc)-1)
+                    DSLQdc_others.Fill(average)
+                    DSLQDC_max_vs_average.Fill(Lqdc, average)
+
+                    average = 0
+                    for v in VQdc: 
+                        if v != Vqdc : average+=v
+                    average = average/(len(VQdc)-1)
+                    DSVQdc_others.Fill(average)
+                    DSVQDC_max_vs_average.Fill(Vqdc, average)
 
                 DSRHitCh = DSRCh[np.array(RQdc).argmax()]
                 DSLHitCh = DSLCh[np.array(LQdc).argmax()]
@@ -240,7 +282,8 @@ for i in range(Nentries):
 
                     if vetoMultiplicity > 0: 
 
-                        if any(i > 30 for i in Cosmic_vetoBarQDC ) :  vetohit = True
+                        #if any(i > 30 for i in Cosmic_vetoBarQDC ) :  vetohit = True
+                        vetohit = True
 
                         Cosmic_VetoHitMultiplicity.Fill(vetoMultiplicity)
 
@@ -352,6 +395,18 @@ DSLQdc.Write()
 DSRQdc.Write()
 DSVQdc.Write()
 DSQdc_RvsL.Write()
+DSLQdc_max.Write()
+DSRQdc_max.Write()
+DSVQdc_max.Write()
+DSLQdc_others.Write()
+DSRQdc_others.Write()
+DSVQdc_others.Write()
+DSRQDC_max_vs_average.Write()
+DSLQDC_max_vs_average.Write()
+DSVQDC_max_vs_average.Write()
+DSVQdc_single.Write()
+DSRQdc_single.Write()
+DSLQdc_single.Write()
 
 #veto qdc distribution
 VetoQDCPerPosition.Write()
