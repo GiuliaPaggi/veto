@@ -34,6 +34,15 @@ def is_single_bar(list):
 
 # scifi 1x [11,17,28] 1y [29,3,30]
 
+scifi_map = {
+    "11" : 0, 
+    "17" : 1, 
+    "28" : 2, 
+    "29" : 0, 
+    "3"  : 1, 
+    "30" : 2
+}
+
 #############
 # read data #
 #############
@@ -65,41 +74,47 @@ DSn_bins = 58
 DSx_min = -.5
 DSx_max = 57.5
 
+nbar = 7
+scifich = 512*3
+vetodim = 40
+
 # Hits info 
 V1LHits = ROOT.TH1D("V1LHits", "V1 L Hits; veto channel; entries", DSn_bins, DSx_min, DSx_max)
-V1LHitsperBar = ROOT.TH1D("V1LHitsperBar", "V1 L Hits per Bar; veto bar; entries", 7, 0, 7)
+V1LHitsperBar = ROOT.TH1D("V1LHitsperBar", "V1 L Hits per Bar; veto bar; entries", nbar, 0, nbar)
 V1RHits = ROOT.TH1D("V1RHits", "V1 R Hits; veto channel; entries", DSn_bins, DSx_min, DSx_max)
-V1RHitsperBar = ROOT.TH1D("V1RHitsperBar", "V1 R Hits per Bar; veto bar; entries", 7, 0, 7)
+V1RHitsperBar = ROOT.TH1D("V1RHitsperBar", "V1 R Hits per Bar; veto bar; entries", nbar, 0, nbar)
 
 V2LHits = ROOT.TH1D("V2LHits", "V2 L Hits; veto channel; entries", DSn_bins, DSx_min, DSx_max)
-V2LHitsperBar = ROOT.TH1D("V2LHitsperBar", "V2 L Hits per Bar; veto bar; entries", 7, 0, 7)
+V2LHitsperBar = ROOT.TH1D("V2LHitsperBar", "V2 L Hits per Bar; veto bar; entries", nbar, 0, nbar)
 V2RHits = ROOT.TH1D("V2RHits", "V2 R Hits; veto channel; entries", DSn_bins, DSx_min, DSx_max)
-V2RHitsperBar = ROOT.TH1D("V2RHitsperBar", "V2 R Hits per Bar; veto bar; entries", 7, 0, 7)
+V2RHitsperBar = ROOT.TH1D("V2RHitsperBar", "V2 R Hits per Bar; veto bar; entries", nbar, 0, nbar)
 
 VetoHits = ROOT.TH1D("VetoHits", "Veto Hits; veto channel; entries", DSn_bins, DSx_min, DSx_max)
-VetoHitsperBar = ROOT.TH1D("VetoHitsperBar", "Veto Hits per Bar; veto bar; entries", 7, 0, 7)
+VetoHitsperBar = ROOT.TH1D("VetoHitsperBar", "Veto Hits per Bar; veto bar; entries", nbar, 0, nbar)
 VetoHitMultiplicity = ROOT.TH1D("VetoHitMultiplicity", "Veto Hit Multiplicity;  Hits per event; entries", 20, -.5, 19.5)
 Cosmic_V1Hits = ROOT.TH1D("Cosmic_V1Hits", "Cosmic Veto 1 Hits;  channel; entries", DSn_bins, DSx_min, DSx_max) 
 Cosmic_V2Hits = ROOT.TH1D("Cosmic_V2Hits", "Cosmic Veto 2 Hits; channel; entries", DSn_bins, DSx_min, DSx_max)
-Cosmic_V1HitsperBar = ROOT.TH1D("Cosmic_V1HitsperBar", "Cosmic Veto 1 Hits perBar;  bar; entries", 7, 0, 7) 
-Cosmic_V2HitsperBar = ROOT.TH1D("Cosmic_V2HitsperBar", "Cosmic Veto 2 Hits perBar; bar; entries", 7, 0, 7)
+Cosmic_V1HitsperBar = ROOT.TH1D("Cosmic_V1HitsperBar", "Cosmic Veto 1 Hits perBar;  bar; entries", nbar, 0, nbar) 
+Cosmic_V2HitsperBar = ROOT.TH1D("Cosmic_V2HitsperBar", "Cosmic Veto 2 Hits perBar; bar; entries", nbar, 0, nbar)
 Cosmic_VetoHits = ROOT.TH1D("Cosmic_VetoHits", "Veto Hits in cosmics events;  veto channel; entries", DSn_bins, DSx_min, DSx_max)
-Cosmic_VetoHitsperBar = ROOT.TH1D("Cosmic_VetoHitsperBar", "Cosmic_Veto Hits per Bar; veto channel; entries", 7, 0, 7)
+Cosmic_VetoHitsperBar = ROOT.TH1D("Cosmic_VetoHitsperBar", "Cosmic_Veto Hits per Bar; veto channel; entries", nbar, 0, nbar)
 Cosmic_VetoHitsperPosition = ROOT.TH1D("Cosmic_VetoHitsperPosition", "Cosmic_VetoHitsperPosition; ds V channel; entries", DSn_bins, DSx_min, DSx_max)
 Cosmic_VetoHitMultiplicity = ROOT.TH1D("Cosmic_VetoHitMultiplicity", "Veto Hit Multiplicity in cosmic ray events;  Hits per event; entries", 20, -.5, 19.5)
 Bkg_VetoHits = ROOT.TH1D("Bkg_VetoHits", "Veto Hits in not cosmics events; veto channel; entries", DSn_bins, DSx_min, DSx_max)
 Bkg_VetoMultiplicity = ROOT.TH1D("Bkg_VetoMultiplicity", "Veto Hit Multiplicity in not cosmics; Hits per event; entries", 20, -.5, 19.5)
 Noise_VetoHits = ROOT.TH1D("Noise_VetoHits", "Veto Hits w/o ds Hits;  veto channel; entries", DSn_bins, DSx_min, DSx_max)
 Noise_VetoMultiplicity = ROOT.TH1D("Noise_VetoMultiplicity", "Veto Hit Multiplicity w/o ds Hits;  Hits per event; entries", 20, -.5, 19.5)
-Simp_perBar = ROOT.TH2D("Simp_perBar", "Simp_perBar", 7, 0, 7, 9, 0, 9)
  
 # qdc
-qdcbin = 220
+
 qdc_min = -20
-qdc_max = 200
+qdc_max = 400
+qdcbin = qdc_max - qdc_min
 
 Scifi1xQdc = ROOT.TH1D("Scifi1xQdc", "Scifi1xQdc; qdc; entries", 100, -24.5, 25.5)
 Scifi1yQdc = ROOT.TH1D("Scifi1yQdc", "Scifi1yQdc; qdc; entries", 100, -24.5, 25.5)
+Scifi1xQdc_single = ROOT.TH1D("Scifi1xQdc_single", "Scifi1xQdc_single; qdc_max; entries", 100, -24.5, 25.5)
+Scifi1yQdc_single = ROOT.TH1D("Scifi1yQdc_single", "Scifi1yQdc_single; qdc_max; entries", 100, -24.5, 25.5)
 Scifi1xQdc_max = ROOT.TH1D("Scifi1xQdc_max", "Scifi1xQdc_max; qdc_max; entries", 100, -24.5, 25.5)
 Scifi1yQdc_max = ROOT.TH1D("Scifi1yQdc_max", "Scifi1yQdc_max; qdc_max; entries", 100, -24.5, 25.5)
 Scifi1xQdc_others = ROOT.TH1D("Scifi1xQdc_others", "Scifi1xQdc_others; qdc_others; entries", 100, -24.5, 25.5)
@@ -107,16 +122,23 @@ Scifi1yQdc_others = ROOT.TH1D("Scifi1yQdc_others", "Scifi1yQdc_others; qdc_other
 Scifi1xQdc_residual = ROOT.TH1D("Scifi1xQdc_residual", "Scifi1xQdc_residual; qdc max - others; entries", 70, 0, 70)
 Scifi1yQdc_residual = ROOT.TH1D("Scifi1yQdc_residual", "Scifi1yQdc_residual; qdc max - others; entries", 70, 0, 70)
 
+Scifi1Pos = ROOT.TH2D("Scifi1xPos", "Scifi1xPos; Pos_max; entries", vetodim, 0, vetodim, vetodim, 0, vetodim)
+Scifi1xPos_diff = ROOT.TH1D("Scifi1xPos_diff", "Scifi1xPos_diff; Pos qdc max - others; entries", 80, -20, 20)
+Scifi1yPos_diff = ROOT.TH1D("Scifi1yPos_diff", "Scifi1yPos_diff; Pos qdc max - others; entries", 80, -20, 20)
+
 V1LQdc = ROOT.TH1D("V1LQdc", "V1LQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 V1RQdc = ROOT.TH1D("V1RQdc", "V1RQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 V1Qdc_RvsL = ROOT.TH2D("V1Qdc_RvsL", "V1Qdc_RvsL; V1 R channel; V1 L channel", qdcbin, qdc_min, qdc_max, qdcbin, qdc_min, qdc_max)
 V1QdcDiff = ROOT.TH1D("V1QdcDiff", "V1Qdc Difference; R-L QDC; Entries", 200, -100, 100)
+V1RQDCPerBar = ROOT.TH2D("V1RQDCPerBar", "V1RQDCPerBar; v1 R channel; qdc ", 8, 0, 8, qdcbin, qdc_min, qdc_max)
+V1LQDCPerBar = ROOT.TH2D("V1LQDCPerBar", "V1LQDCPerBar; v1 L channel; qdc ", 8, 0, 8, qdcbin, qdc_min, qdc_max)
 
 V2LQdc = ROOT.TH1D("V2LQdc", "V2LQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 V2RQdc = ROOT.TH1D("V2RQdc", "V2RQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 V2Qdc_RvsL = ROOT.TH2D("V2Qdc_RvsL", "V2Qdc_RvsL; V2 R channel; V2 L channel", qdcbin, qdc_min, qdc_max, qdcbin, qdc_min, qdc_max)
 V2QdcDiff = ROOT.TH1D("V2QdcDiff", "V2Qdc Difference; R-L QDC; Entries", 200, -100, 100)
-
+V2RQDCPerBar = ROOT.TH2D("V2RQDCPerBar", "V2RQDCPerBar; v2 R channel; qdc ", 8, 0, 8, qdcbin, qdc_min, qdc_max)
+V2LQDCPerBar = ROOT.TH2D("V2LQDCPerBar", "V2LQDCPerBar; v2 L channel; qdc ", 8, 0, 8, qdcbin, qdc_min, qdc_max)
 
 V1RQdc_max = ROOT.TH1D("V1RQdc_max", "V1RQdc_max; v1r qdc; entries", qdcbin, qdc_min, qdc_max)
 V1RQdc_others = ROOT.TH1D("V1RQdc_others", "V1RQdc_others; v1r qdc; entries", qdcbin, qdc_min, qdc_max)
@@ -144,35 +166,37 @@ VetoQDCPerPosition = ROOT.TH2D("VetoQDCPerPosition", "VetoQDCPerPosition; dsV ch
 VetoQDCPerBar = ROOT.TH2D("VetoQDCPerBar", "VetoQDCPerBar; veto channel; qdc ", 8, 0, 8, qdcbin, qdc_min, qdc_max)
 Cosmic_VetoQdc = ROOT.TH1D("Cosmic_VetoQdc", "Cosmic_VetoQdc; veto channel; qdc ", qdcbin, qdc_min, qdc_max)
 Cosmic_VetoQDCPerChannel = ROOT.TH2D("Cosmic_VetoQDCPerChannel", "Cosmic_VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, qdcbin, qdc_min, qdc_max)
-Cosmic_VetoQDCPerBar = ROOT.TH2D("Cosmic_VetoQDCPerBar", "Cosmic_VetoQDCPerBar; veto channel; qdc ", 8, 0, 8, qdcbin, qdc_min, qdc_max)
+Cosmic_VetoQDCPerBar = ROOT.TH2D("Cosmic_VetoQDCPerBar", "Cosmic_VetoQDCPerBar; veto channel; qdc ", 8, 0, 8, 1000, -500, 500)
 Bkg_VetoQdc = ROOT.TH1D("Bkg_VetoQdc", "Bkg_VetoQdc; veto channel; qdc ", qdcbin, qdc_min, qdc_max)
 Noise_VetoQdc = ROOT.TH1D("Noise_VetoQdc", "Noise_VetoQdc; veto channel; qdc ", qdcbin, qdc_min, qdc_max)
 
 # Efficiency
-V1BarEfficiency = ROOT.TEfficiency("V1BarEfficiency", "V1BarEfficiency; V1 bar; v3 efficiency", 7, 0, 7)
-V2BarEfficiency = ROOT.TEfficiency("V2BarEfficiency", "V2BarEfficiency; V2 bar; v3 efficiency", 7, 0, 7)
-Efficiency2D = ROOT.TEfficiency("Efficiency2D", "Efficiency2D; v1 bar; v2 bar", 7, 0, 7, 7, 0, 7)
+V1BarEfficiency = ROOT.TEfficiency("V1BarEfficiency", "V1BarEfficiency; V1 bar; v3 efficiency", nbar, 0, nbar)
+V2BarEfficiency = ROOT.TEfficiency("V2BarEfficiency", "V2BarEfficiency; V2 bar; v3 efficiency", nbar, 0, nbar)
+Efficiency2D = ROOT.TEfficiency("Efficiency2D", "Efficiency2D; v1 bar; v2 bar", nbar, 0, nbar, nbar, 0, nbar)
 
-ScifiEfficiency = ROOT.TEfficiency("ScifiEfficiency", "ScifiEfficiency; scifi x; scifi y", 1536, 0, 1536, 1536, 0, 1536)
+ScifiEfficiency = ROOT.TEfficiency("ScifiEfficiency", "ScifiEfficiency; scifi x; scifi y", vetodim, 0, vetodim, vetodim, 0, vetodim)
 
 #Alignment
 
-V1_vs_V2 = ROOT.TH2D("V1_vs_V2", "V1_vs_V2; v1 bar; v2 bar", 7, 0, 7, 7, 0, 7)
-V1_vs_V3 = ROOT.TH2D("V1_vs_V3", "V1_vs_V3; v1 bar; v3 bar", 7, 0, 7, 7, 0, 7)
-V2_vs_V3 = ROOT.TH2D("V2_vs_V3", "V2_vs_V3; v2 bar; v3 bar", 7, 0, 7, 7, 0, 7)
+V1_vs_V2 = ROOT.TH2D("V1_vs_V2", "V1_vs_V2; v1 bar; v2 bar", nbar, 0, nbar, nbar, 0, nbar)
+V1_vs_V3 = ROOT.TH2D("V1_vs_V3", "V1_vs_V3; v1 bar; v3 bar", nbar, 0, nbar, nbar, 0, nbar)
+V2_vs_V3 = ROOT.TH2D("V2_vs_V3", "V2_vs_V3; v2 bar; v3 bar", nbar, 0, nbar, nbar, 0, nbar)
 
-V1_vs_scifi1x = ROOT.TH2D("V1_vs_scifi1x", "V1_vs_scifi1x; v1 channel; scifi1x channel", 7, 0, 7, 1536, 0, 1536)
-V1_vs_scifi1y = ROOT.TH2D("V1_vs_scifi1y", "V1_vs_scifi1y; v1 channel; scifi1y channel", 7, 0, 7, 1536, 0, 1536)
-V2_vs_scifi1x = ROOT.TH2D("V2_vs_scifi1x", "V2_vs_scifi1x; v2 channel; scifi1x channel", 7, 0, 7, 1536, 0, 1536)
-V2_vs_scifi1y = ROOT.TH2D("V2_vs_scifi1y", "V2_vs_scifi1y; v2 channel; scifi1y channel", 7, 0, 7, 1536, 0, 1536)
-V3_vs_scifi1x = ROOT.TH2D("V3_vs_scifi1x", "V3_vs_scifi1x; v3 channel; scifi1x channel", 7, 0, 7, 1536, 0, 1536)
-V3_vs_scifi1y = ROOT.TH2D("V3_vs_scifi1y", "V3_vs_scifi1y; v3 channel; scifi1y channel", 7, 0, 7, 1536, 0, 1536)
+V1_vs_scifi1x = ROOT.TH2D("V1_vs_scifi1x", "V1_vs_scifi1x; v1 channel; scifi1x channel", nbar, 0, nbar, vetodim, 0, vetodim)
+V1_vs_scifi1y = ROOT.TH2D("V1_vs_scifi1y", "V1_vs_scifi1y; v1 channel; scifi1y channel", nbar, 0, nbar, vetodim, 0, vetodim)
+V2_vs_scifi1x = ROOT.TH2D("V2_vs_scifi1x", "V2_vs_scifi1x; v2 channel; scifi1x channel", nbar, 0, nbar, vetodim, 0, vetodim)
+V2_vs_scifi1y = ROOT.TH2D("V2_vs_scifi1y", "V2_vs_scifi1y; v2 channel; scifi1y channel", nbar, 0, nbar, vetodim, 0, vetodim)
+V3_vs_scifi1x = ROOT.TH2D("V3_vs_scifi1x", "V3_vs_scifi1x; v3 channel; scifi1x channel", nbar, 0, nbar, vetodim, 0, vetodim)
+V3_vs_scifi1y = ROOT.TH2D("V3_vs_scifi1y", "V3_vs_scifi1y; v3 channel; scifi1y channel", nbar, 0, nbar, vetodim, 0, vetodim)
 
 
 ###################
 # loop on entries #
 ###################
+cosmicCounter=0
 vetoCounter = 0
+scifiCounter_single = 0
 scifiCounter = 0
 
 Nentries = data.GetEntries()
@@ -183,11 +207,14 @@ for i in range(Nentries):
     tofChannel = np.uint8(data.tofpet_channel)
     tofID = np.uint8(data.tofpet_id)
     qdc = np.asarray(data.value, float)
+    time = np.asanyarray(data.timestamp, float)
 
+    scifi1xBoard = boardID[(boardID == 11) | (boardID == 17) | (boardID == 28)]
     scifi1xId = tofID[(boardID == 11) | (boardID == 17) | (boardID == 28)]
     scifi1xPin = tofChannel[(boardID == 11) | (boardID == 17) | ( boardID == 28)]
     scifi1xQdc = qdc[(boardID == 11) | (boardID == 17) | (boardID == 28)]
 
+    scifi1yBoard = boardID[(boardID == 29) | (boardID == 3) | (boardID == 30)]
     scifi1yId = tofID[(boardID == 29) | (boardID == 3) | (boardID == 30)]
     scifi1yPin = tofChannel[(boardID == 29) | (boardID == 3) | (boardID == 30)]
     scifi1yQdc = qdc[(boardID == 29) | (boardID == 3) | (boardID == 30)]
@@ -226,18 +253,24 @@ for i in range(Nentries):
     vetoId = tofID[boardID == 58]
     vetoCh = tofChannel[boardID == 58]
     vetoQdc = qdc[boardID == 58]
+    vetoTime = time[boardID == 58]
 
-    v1LId = vetoId[(vetoId<2)]
-    v1RId = vetoId[(vetoId>5)]
-    v2LId = vetoId[(vetoId>1) & (vetoId<4)]
-    v2RId = vetoId[(vetoId>3) & (vetoId<6)]
+    v1LId = vetoId[(vetoId<2)]                      # A: 0-1
+    v1RId = vetoId[(vetoId>5)]                      # D: 6-7
+    v2LId = vetoId[(vetoId>1) & (vetoId<4)]         # B: 2-3
+    v2RId = vetoId[(vetoId>3) & (vetoId<6)]         # C: 4-5
 
     #############################
     # select cosmic rays events #
     #############################
 
     # ask Hits in left and right for both the first two veto planes
-    if len(v1LId) > 0 and len(v1RId) > 0 and len(v2LId) > 0 and len(v2RId) > 0 :       
+    if len(v1LId) > 0 and len(v1RId) > 0 and len(v2LId) > 0 and len(v2RId) > 0 :      
+
+        v1LTime =vetoTime[(vetoId<2)]
+        v1RTime =vetoTime[(vetoId>5)]
+        v2LTime =vetoTime[(vetoId>1) & (vetoId<4)]
+        v2RTime =vetoTime[(vetoId>3) & (vetoId<6)]
         
         v1LPin = vetoCh[(vetoId<2)]
         v1RPin = vetoCh[(vetoId>5)]
@@ -274,6 +307,12 @@ for i in range(Nentries):
             if v2LBarQDC[v2LBars[i]] == -999: v2LBarQDC[v2LBars[i]] = v2LQdc[i]
             else : v2LBarQDC[v2LBars[i]] += v2LQdc[i]
 
+        for i in range(8):
+            if v1RBarQDC[i] != -999 : V1RQDCPerBar.Fill(i, v1RBarQDC[i])
+            if v1LBarQDC[i] != -999 : V1LQDCPerBar.Fill(i, v1LBarQDC[i])
+            if v2RBarQDC[i] != -999 : V2RQDCPerBar.Fill(i, v2RBarQDC[i])
+            if v2LBarQDC[i] != -999 : V2LQDCPerBar.Fill(i, v2LBarQDC[i])
+ 
         #study qdc of single hit events 
         if is_single_bar(v1LBars) and is_single_bar(v1RBars) and is_single_bar(v2RBars) and is_single_bar(v2LBars):
             
@@ -306,22 +345,22 @@ for i in range(Nentries):
             V2RQdc_max.Fill(v2RHitQdc)
 
             for v in v1LBarQDC: 
-                if v != np.max(v1LBarQDC) : 
+                if v != np.max(v1LBarQDC) and v != -999 : 
                     V1LQdc_others.Fill(v)
                     V1LQdc_residual.Fill(v1LHitQdc-v)
 
             for v in v1RBarQDC: 
-                if v != np.max(v1RBarQDC) : 
+                if v != np.max(v1RBarQDC) and v != -999 : 
                     V1RQdc_others.Fill(v)
                     V1RQdc_residual.Fill(v1RHitQdc-v)
 
             for v in v2LBarQDC: 
-                if v != np.max(v2LBarQDC) : 
+                if v != np.max(v2LBarQDC) and v != -999 : 
                     V2LQdc_others.Fill(v)
                     V2LQdc_residual.Fill(v2LHitQdc-v)
 
             for v in v2RBarQDC: 
-                if v != np.max(v2RBarQDC) : 
+                if v != np.max(v2RBarQDC) and v != -999 : 
                     V2RQdc_others.Fill(v)
                     V2RQdc_residual.Fill(v2RHitQdc-v)
 
@@ -346,10 +385,9 @@ for i in range(Nentries):
         for i in range(len(v2RId)) : 
             V2RHits.Fill(return_ch(mapVeto, v2RId[i], v2RPin[i]))
             V2RHitsperBar.Fill(v2RBars[i])
-
-
-        # ask for same bar Hit in left and right
-        if v1LHitBar == v1RHitBar and v2LHitBar == v2RHitBar:
+        
+        # ask for only one bar per veto per side and ask same bar Hit in left and right
+        if is_single_bar(v1LBars) and is_single_bar(v1RBars) and is_single_bar(v2RBars) and is_single_bar(v2LBars) and v1LHitBar == v1RHitBar and v2LHitBar == v2RHitBar:
             
             V1LQdc.Fill(v1LHitQdc)
             V1RQdc.Fill(v1RHitQdc)
@@ -366,7 +404,8 @@ for i in range(Nentries):
             if v1LHitQdc > 0 and v1RHitQdc > 0 and v2RHitQdc > 0 and v2LHitQdc > 0 :
                 
                 # fill veto 3 plots in cosmic events
-                if v3Multiplicity > 0:
+                v3hit = True if (v3Multiplicity > 0) else False
+                if v3hit:
                     v3BarQDC = np.full(8, -999)
                     for i in range(v3Multiplicity):
                         
@@ -377,41 +416,42 @@ for i in range(Nentries):
                         v3BarQDC[v3Bars[i]] += v3Qdc[i]
                     
                     for i in v3Bars :
-                        Cosmic_VetoQDCPerBar.Fill(i, v3BarQDC[i])
                         V1_vs_V3.Fill(v1LHitBar, i)
                         V2_vs_V3.Fill(v2LHitBar, i)
+                    
+                    for i in v3Bars : Cosmic_VetoQDCPerBar.Fill(i, v3BarQDC[i])
 
-                # coincidence of v1 and v2 
+                # coincidence of v1 and v2 ->seen distribution in v1 vs b2 bars entries
+                cosmicCounter+=1
                 if abs(v1LHitBar-v2LHitBar) < 2 : 
                     vetoCounter+=1
-                    V1BarEfficiency.Fill((v3Multiplicity > 0), v1LHitBar)
-                    V2BarEfficiency.Fill((v3Multiplicity > 0), v2LHitBar)
-                    Efficiency2D.Fill((v3Multiplicity > 0), v1LHitBar, v2LHitBar)
+                    V1BarEfficiency.Fill(v3hit, v1LHitBar)
+                    V2BarEfficiency.Fill(v3hit, v2LHitBar)
+                    Efficiency2D.Fill(v3hit, v1LHitBar, v2LHitBar)
                 
                 # study scifi behaviour in cosmics events
                 if len(scifi1xId) > 0  and len(scifi1yId) > 0 :
-                        
-                        scifiCounter +=1 
-                        scifi1xHitCh = [scifi1xId[i]*64 + 63 - scifi1xPin[i] for i in range(len(scifi1xId))]
-                        scifi1yHitCh = [scifi1yId[i]*64 + 63 - scifi1yPin[i] for i in range(len(scifi1yId))]
+                        scifiCounter += 1
+                         
+                        scifi1xHitCh = [scifi_map[str(scifi1xBoard[i])]*512 + scifi1xId[i]*64 + 63 - scifi1xPin[i] for i in range(len(scifi1xId))]
+                        scifi1yHitCh = [scifi_map[str(scifi1yBoard[i])]*512 + scifi1yId[i]*64 + 63 - scifi1yPin[i] for i in range(len(scifi1yId))]
 
-                        for i in scifi1xHitCh : 
-                            V1_vs_scifi1x.Fill(v1LHitBar, i)
-                            V2_vs_scifi1x.Fill(v2LHitBar, i)
-                            for b in v3Bars : V3_vs_scifi1x.Fill(b, i)
-
-                        for i in scifi1yHitCh :
-                            V1_vs_scifi1y.Fill(v1LHitBar, i)
-                            V2_vs_scifi1y.Fill(v2LHitBar, i)
-                            for b in v3Bars : V3_vs_scifi1y.Fill(b, i)
+                        scifi1xHitPos = [(scifi_map[str(scifi1xBoard[i])]*512 + scifi1xId[i]*64 + 63 - scifi1xPin[i])*0.025 for i in range(len(scifi1xId))]
+                        scifi1yHitPos = [(scifi_map[str(scifi1yBoard[i])]*512 + scifi1yId[i]*64 + 63 - scifi1yPin[i])*0.025 for i in range(len(scifi1yId))]
                         
+                        if len(scifi1xId) == 1  and len(scifi1yId) == 1 : 
+                            scifiCounter_single +=1
+                            scifi1xHit = scifi1xHitPos[0]
+                            scifi1yHit = scifi1yHitPos[0]
+                            Scifi1Pos.Fill(scifi1xHit, scifi1yHit)
+                                                
                         if len(scifi1xId) > 1  and len(scifi1yId) > 1 :
                             scifi1xQdcMax = np.max(scifi1xQdc)
                             scifi1yQdcMax = np.max(scifi1yQdc)
 
                             Scifi1xQdc_max.Fill(scifi1xQdcMax)
                             Scifi1yQdc_max.Fill(scifi1yQdcMax)
-
+                            
                             for v in scifi1xQdc :
                                 if v != scifi1xQdcMax : 
                                     Scifi1xQdc_residual.Fill(scifi1xQdcMax - v)
@@ -421,7 +461,43 @@ for i in range(Nentries):
                                 if v != scifi1yQdcMax : 
                                     Scifi1yQdc_residual.Fill(scifi1yQdcMax - v)
                                     Scifi1yQdc_others.Fill(v)
-            
+
+                            scifi1xPosMax = scifi1xHitPos[np.array(scifi1xQdc).argmax()]
+                            scifi1yPosMax = scifi1yHitPos[np.array(scifi1yQdc).argmax()]
+
+                            #cluster closeby hits and taka average as position
+                            scifi1xPosCloseby = []
+                            scifi1yPosCloseby = []
+                            scifi1xPosCloseby.append(scifi1xPosMax)
+                            scifi1yPosCloseby.append(scifi1yPosMax)
+
+                            for p in scifi1xHitPos: 
+                                if p != scifi1xPosMax :
+                                    diff = scifi1xPosMax - p
+                                    Scifi1xPos_diff.Fill(diff)
+                                    if abs(diff) < .5 : scifi1xPosCloseby.append(p)
+                            
+                            for p in scifi1yHitPos:
+                                if p != scifi1yPosMax :
+                                    diff = scifi1yPosMax - p
+                                    Scifi1yPos_diff.Fill(diff)
+                                    if abs(diff) < .5 : scifi1yPosCloseby.append(p)
+
+                            scifi1xHit = sum(scifi1xPosCloseby)/float(len(scifi1xPosCloseby))
+                            scifi1yHit = sum(scifi1yPosCloseby)/float(len(scifi1yPosCloseby))
+
+                        Scifi1Pos.Fill(scifi1xHit, scifi1yHit)
+                        
+                        V1_vs_scifi1x.Fill(v1LHitBar, scifi1xHit)
+                        V2_vs_scifi1x.Fill(v2LHitBar, scifi1xHit)
+                        for b in v3Bars : V3_vs_scifi1x.Fill(b, scifi1xHit)
+
+                        V1_vs_scifi1y.Fill(v1LHitBar, scifi1yHit)
+                        V2_vs_scifi1y.Fill(v2LHitBar, scifi1yHit)
+                        for b in v3Bars : V3_vs_scifi1y.Fill(b, scifi1yHit)
+
+                        ScifiEfficiency.Fill(v3hit, scifi1xHit, scifi1yHit)
+
 ############################
 # write histo to root file #
 ############################
@@ -435,6 +511,10 @@ Scifi1yQdc.Write()
 
 V1QdcDiff.Write()
 V2QdcDiff.Write()
+V1RQDCPerBar.Write()
+V1LQDCPerBar.Write()
+V2RQDCPerBar.Write()
+V2LQDCPerBar.Write()
 
 V1_vs_V2.Write()
 V1_vs_V3.Write()
@@ -482,6 +562,12 @@ Scifi1yQdc_residual.Write()
 Scifi1xQdc_max.Write()
 Scifi1xQdc_others.Write()
 
+Scifi1Pos.Write()
+Scifi1xPos_diff.Write()
+Scifi1yPos_diff.Write()
+# Scifi1xPos_others.Write()
+# Scifi1yPos_others.Write()
+
 V1BarEfficiency.Write()
 V2BarEfficiency.Write()
 Efficiency2D.Write()
@@ -500,4 +586,4 @@ Cosmic_VetoQDCPerBar.Write()
 
 outfile.Close()
 
-print(f'Entries {Nentries} with {vetoCounter} cosmic veto events of which {scifiCounter} also have scifi. \nRatio of veto cosmics {vetoCounter/Nentries}, plus scifi {scifiCounter/Nentries} ')
+print(f'Entries {Nentries} with {cosmicCounter} cosmics events in which {vetoCounter} abs(v1-v2) < 1 events of which {scifiCounter} also have scifi, of which {scifiCounter_single} have 1 hit x and 1 hit y. \nRatio of veto cosmics {vetoCounter/Nentries}, plus scifi {scifiCounter/Nentries} ')
