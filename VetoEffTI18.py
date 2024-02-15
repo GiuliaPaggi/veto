@@ -166,19 +166,11 @@ VetoQDCPerPosition = ROOT.TH2D("VetoQDCPerPosition", "VetoQDCPerPosition; dsV ch
 VetoQDCPerBar = ROOT.TH2D("VetoQDCPerBar", "VetoQDCPerBar; veto channel; qdc ", 8, 0, 8, qdcbin, qdc_min, qdc_max)
 Cosmic_VetoQdc = ROOT.TH1D("Cosmic_VetoQdc", "Cosmic_VetoQdc; veto channel; qdc ", qdcbin, qdc_min, qdc_max)
 Cosmic_VetoQDCPerChannel = ROOT.TH2D("Cosmic_VetoQDCPerChannel", "Cosmic_VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, qdcbin, qdc_min, qdc_max)
-Cosmic_VetoQDCPerBar = ROOT.TH2D("Cosmic_VetoQDCPerBar", "Cosmic_VetoQDCPerBar; veto channel; qdc ", 8, 0, 8, 1000, -500, 500)
+Cosmic_VetoQDCPerBar = ROOT.TH2D("Cosmic_VetoQDCPerBar", "Cosmic_VetoQDCPerBar; veto channel; qdc ",8, 0, 8, qdcbin, qdc_min, qdc_max)
 Bkg_VetoQdc = ROOT.TH1D("Bkg_VetoQdc", "Bkg_VetoQdc; veto channel; qdc ", qdcbin, qdc_min, qdc_max)
 Noise_VetoQdc = ROOT.TH1D("Noise_VetoQdc", "Noise_VetoQdc; veto channel; qdc ", qdcbin, qdc_min, qdc_max)
 
-# Efficiency
-V1BarEfficiency = ROOT.TEfficiency("V1BarEfficiency", "V1BarEfficiency; V1 bar; v3 efficiency", nbar, 0, nbar)
-V2BarEfficiency = ROOT.TEfficiency("V2BarEfficiency", "V2BarEfficiency; V2 bar; v3 efficiency", nbar, 0, nbar)
-Efficiency2D = ROOT.TEfficiency("Efficiency2D", "Efficiency2D; v1 bar; v2 bar", nbar, 0, nbar, nbar, 0, nbar)
-
-ScifiEfficiency = ROOT.TEfficiency("ScifiEfficiency", "ScifiEfficiency; scifi x; scifi y", vetodim, 0, vetodim, vetodim, 0, vetodim)
-
 #Alignment
-
 V1_vs_V2 = ROOT.TH2D("V1_vs_V2", "V1_vs_V2; v1 bar; v2 bar", nbar, 0, nbar, nbar, 0, nbar)
 V1_vs_V3 = ROOT.TH2D("V1_vs_V3", "V1_vs_V3; v1 bar; v3 bar", nbar, 0, nbar, nbar, 0, nbar)
 V2_vs_V3 = ROOT.TH2D("V2_vs_V3", "V2_vs_V3; v2 bar; v3 bar", nbar, 0, nbar, nbar, 0, nbar)
@@ -189,6 +181,16 @@ V2_vs_scifi1x = ROOT.TH2D("V2_vs_scifi1x", "V2_vs_scifi1x; v2 channel; scifi1x c
 V2_vs_scifi1y = ROOT.TH2D("V2_vs_scifi1y", "V2_vs_scifi1y; v2 channel; scifi1y channel", nbar, 0, nbar, vetodim, 0, vetodim)
 V3_vs_scifi1x = ROOT.TH2D("V3_vs_scifi1x", "V3_vs_scifi1x; v3 channel; scifi1x channel", nbar, 0, nbar, vetodim, 0, vetodim)
 V3_vs_scifi1y = ROOT.TH2D("V3_vs_scifi1y", "V3_vs_scifi1y; v3 channel; scifi1y channel", nbar, 0, nbar, vetodim, 0, vetodim)
+
+#timing
+V1TimeDiff = ROOT.TH1D("V1TimeDiff", "V1TimeDiff; R - L time; entries", 60, -2, 2) 
+V2TimeDiff = ROOT.TH1D("V2TimeDiff", "V2TimeDiff; R - L time; entries", 60, -2, 2)
+
+# Efficiency
+V1BarEfficiency = ROOT.TEfficiency("V1BarEfficiency", "V1BarEfficiency; V1 bar; v3 efficiency", nbar, 0, nbar)
+V2BarEfficiency = ROOT.TEfficiency("V2BarEfficiency", "V2BarEfficiency; V2 bar; v3 efficiency", nbar, 0, nbar)
+Efficiency2D = ROOT.TEfficiency("Efficiency2D", "Efficiency2D; v1 bar; v2 bar", nbar, 0, nbar, nbar, 0, nbar)
+ScifiEfficiency = ROOT.TEfficiency("ScifiEfficiency", "ScifiEfficiency; scifi x; scifi y", vetodim, 0, vetodim, vetodim, 0, vetodim)
 
 
 ###################
@@ -226,6 +228,7 @@ for i in range(Nentries):
     v3Id = tofID[boardID == 48]
     v3Pin = tofChannel[boardID == 48]
     v3Qdc = qdc[boardID == 48]
+
 
     v3Multiplicity = len(v3Id)
 
@@ -402,18 +405,21 @@ for i in range(Nentries):
             # cut on qdc signal per bar 
 
             if v1LHitQdc > 0 and v1RHitQdc > 0 and v2RHitQdc > 0 and v2LHitQdc > 0 :
+
+                # study time difference to compute position in x
+                V1TimeDiff.Fill(v1RTime[0] - v1LTime[0])
+                V2TimeDiff.Fill(v2RTime[0] - v2LTime[0])
+                
                 
                 # fill veto 3 plots in cosmic events
                 v3hit = True if (v3Multiplicity > 0) else False
                 if v3hit:
-                    v3BarQDC = np.full(8, -999)
                     for i in range(v3Multiplicity):
                         
                         Cosmic_VetoHits.Fill(v3Ch[i])
                         Cosmic_VetoHitsperBar.Fill(v3Bars[i])
                         Cosmic_VetoQdc.Fill(v3Qdc[i])
                         Cosmic_VetoQDCPerChannel.Fill(v3Ch[i], v3Qdc[i])
-                        v3BarQDC[v3Bars[i]] += v3Qdc[i]
                     
                     for i in v3Bars :
                         V1_vs_V3.Fill(v1LHitBar, i)
@@ -565,12 +571,14 @@ Scifi1xQdc_others.Write()
 Scifi1Pos.Write()
 Scifi1xPos_diff.Write()
 Scifi1yPos_diff.Write()
-# Scifi1xPos_others.Write()
-# Scifi1yPos_others.Write()
+
+V1TimeDiff.Write()
+V2TimeDiff.Write()
 
 V1BarEfficiency.Write()
 V2BarEfficiency.Write()
 Efficiency2D.Write()
+ScifiEfficiency.Write()
 
 VetoHits.Write()
 VetoHitsperBar.Write()
