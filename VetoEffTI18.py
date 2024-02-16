@@ -43,6 +43,8 @@ scifi_map = {
     "30" : 2
 }
 
+LIGHTPROP = 15 #cm/ns
+HALFBAR = 42/2 #half veto bar
 #############
 # read data #
 #############
@@ -51,6 +53,7 @@ runN = sys.argv[1]
 #runDirectory = f"/eos/experiment/sndlhc/raw_data/commissioning/veto/run_{runN}/"
 runDirectory = f"/eos/experiment/sndlhc/raw_data/commissioning/2024/run_00{runN}/"
 
+if not os.path.exists(runDirectory): sys.exit(1)
 
 data = ROOT.TChain("data")
 
@@ -182,9 +185,16 @@ V2_vs_scifi1y = ROOT.TH2D("V2_vs_scifi1y", "V2_vs_scifi1y; v2 channel; scifi1y c
 V3_vs_scifi1x = ROOT.TH2D("V3_vs_scifi1x", "V3_vs_scifi1x; v3 channel; scifi1x channel", nbar, 0, nbar, vetodim, 0, vetodim)
 V3_vs_scifi1y = ROOT.TH2D("V3_vs_scifi1y", "V3_vs_scifi1y; v3 channel; scifi1y channel", nbar, 0, nbar, vetodim, 0, vetodim)
 
+PositionResidual = ROOT.TH1D("PositionResidual", "PositionResidual; v2 pos - v1 pos; entries", 100, -50, 50)
+V1Position = ROOT.TH1D("V1Position", "V1Position; v1 x position; entries", 45, -1, 44)
+V2Position = ROOT.TH1D("V2Position", "V2Position; v2 x position; entries", 45, -1, 44)
+
+V3ExpectedvsSignal = ROOT.TH1D("V3ExpectedvsSignal", "V3ExpectedvsSignal; expected bar - signal bar; entries", 15, -7.5, 7.5)
+
 #timing
-V1TimeDiff = ROOT.TH1D("V1TimeDiff", "V1TimeDiff; R - L time; entries", 60, -2, 2) 
-V2TimeDiff = ROOT.TH1D("V2TimeDiff", "V2TimeDiff; R - L time; entries", 60, -2, 2)
+V1TimeDiff = ROOT.TH1D("V1TimeDiff", "V1TimeDiff; R - L time; entries", 120, -4, 4) 
+V2TimeDiff = ROOT.TH1D("V2TimeDiff", "V2TimeDiff; R - L time; entries", 120, -4, 4)
+VTimeDiff = ROOT.TH1D("VTimeDiff", "VTimeDiff; v1 - v2 time; entries", 120, -4, 4)
 
 # Efficiency
 V1BarEfficiency = ROOT.TEfficiency("V1BarEfficiency", "V1BarEfficiency; V1 bar; v3 efficiency", nbar, 0, nbar)
@@ -407,102 +417,135 @@ for i in range(Nentries):
             if v1LHitQdc > 0 and v1RHitQdc > 0 and v2RHitQdc > 0 and v2LHitQdc > 0 :
 
                 # study time difference to compute position in x
-                V1TimeDiff.Fill(v1RTime[0] - v1LTime[0])
-                V2TimeDiff.Fill(v2RTime[0] - v2LTime[0])
+                v1TimeDiff = v1RTime[0] - v1LTime[0]
+                v2TimeDiff = v2RTime[0] - v2LTime[0]
+                V1TimeDiff.Fill(v1TimeDiff)
+                V2TimeDiff.Fill(v2TimeDiff)
                 
-                
-                # fill veto 3 plots in cosmic events
-                v3hit = True if (v3Multiplicity > 0) else False
-                if v3hit:
-                    for i in range(v3Multiplicity):
-                        
-                        Cosmic_VetoHits.Fill(v3Ch[i])
-                        Cosmic_VetoHitsperBar.Fill(v3Bars[i])
-                        Cosmic_VetoQdc.Fill(v3Qdc[i])
-                        Cosmic_VetoQDCPerChannel.Fill(v3Ch[i], v3Qdc[i])
+                #time cut to ensure it is the same event 
+                v1AverageTime = (v1RTime[0] + v1LTime[0])/2
+                v2AverageTime = (v2RTime[0] + v2LTime[0])/2
+                VTimeDiff.Fill(v1AverageTime-v2AverageTime)
+
+                if abs(v1AverageTime-v2AverageTime) < 1.5 :
+
+                    v1XPos = 21 - v1TimeDiff*LIGHTPROP
+                    v2XPos = 21 - v2TimeDiff*LIGHTPROP
                     
-                    for i in v3Bars :
-                        V1_vs_V3.Fill(v1LHitBar, i)
-                        V2_vs_V3.Fill(v2LHitBar, i)
-                    
-                    for i in v3Bars : Cosmic_VetoQDCPerBar.Fill(i, v3BarQDC[i])
+                    # if the computed position is outside the veto dimension -> uncorrelated events
+                    if v1XPos < 0 or v2XPos < 0: continue
 
-                # coincidence of v1 and v2 ->seen distribution in v1 vs b2 bars entries
-                cosmicCounter+=1
-                if abs(v1LHitBar-v2LHitBar) < 2 : 
-                    vetoCounter+=1
-                    V1BarEfficiency.Fill(v3hit, v1LHitBar)
-                    V2BarEfficiency.Fill(v3hit, v2LHitBar)
-                    Efficiency2D.Fill(v3hit, v1LHitBar, v2LHitBar)
-                
-                # study scifi behaviour in cosmics events
-                if len(scifi1xId) > 0  and len(scifi1yId) > 0 :
-                        scifiCounter += 1
-                         
-                        scifi1xHitCh = [scifi_map[str(scifi1xBoard[i])]*512 + scifi1xId[i]*64 + 63 - scifi1xPin[i] for i in range(len(scifi1xId))]
-                        scifi1yHitCh = [scifi_map[str(scifi1yBoard[i])]*512 + scifi1yId[i]*64 + 63 - scifi1yPin[i] for i in range(len(scifi1yId))]
+                    V1Position.Fill(v1XPos)
+                    V2Position.Fill(v2XPos)
+                    PositionResidual.Fill(v2XPos - v1XPos)
 
-                        scifi1xHitPos = [(scifi_map[str(scifi1xBoard[i])]*512 + scifi1xId[i]*64 + 63 - scifi1xPin[i])*0.025 for i in range(len(scifi1xId))]
-                        scifi1yHitPos = [(scifi_map[str(scifi1yBoard[i])]*512 + scifi1yId[i]*64 + 63 - scifi1yPin[i])*0.025 for i in range(len(scifi1yId))]
+                    expectedPosition = v2XPos -(v2XPos-v1XPos)
+
+                    # if the CR is too bent to be seen in veto 3 go to next event
+                    if expectedPosition > 0 and expectedPosition < 42:
+                        expectedBar = int(np.floor(expectedPosition/6))
                         
-                        if len(scifi1xId) == 1  and len(scifi1yId) == 1 : 
-                            scifiCounter_single +=1
-                            scifi1xHit = scifi1xHitPos[0]
-                            scifi1yHit = scifi1yHitPos[0]
-                            Scifi1Pos.Fill(scifi1xHit, scifi1yHit)
-                                                
-                        if len(scifi1xId) > 1  and len(scifi1yId) > 1 :
-                            scifi1xQdcMax = np.max(scifi1xQdc)
-                            scifi1yQdcMax = np.max(scifi1yQdc)
-
-                            Scifi1xQdc_max.Fill(scifi1xQdcMax)
-                            Scifi1yQdc_max.Fill(scifi1yQdcMax)
+                        # fill veto 3 plots in cosmic events
+                        if v3Multiplicity > 0:
+                            for i in range(v3Multiplicity):
+                                
+                                Cosmic_VetoHits.Fill(v3Ch[i])
+                                Cosmic_VetoHitsperBar.Fill(v3Bars[i])
+                                Cosmic_VetoQdc.Fill(v3Qdc[i])
+                                Cosmic_VetoQDCPerChannel.Fill(v3Ch[i], v3Qdc[i])
                             
-                            for v in scifi1xQdc :
-                                if v != scifi1xQdcMax : 
-                                    Scifi1xQdc_residual.Fill(scifi1xQdcMax - v)
-                                    Scifi1xQdc_others.Fill(v)
+                            for i in v3Bars :
+                                V1_vs_V3.Fill(v1LHitBar, i)
+                                V2_vs_V3.Fill(v2LHitBar, i)
                             
-                            for v in scifi1yQdc:
-                                if v != scifi1yQdcMax : 
-                                    Scifi1yQdc_residual.Fill(scifi1yQdcMax - v)
-                                    Scifi1yQdc_others.Fill(v)
+                            for i in v3Bars : 
+                                if v3BarQDC[i] != -999 : 
+                                    Cosmic_VetoQDCPerBar.Fill(i, v3BarQDC[i])
+                                    V3ExpectedvsSignal.Fill(expectedBar-i)
 
-                            scifi1xPosMax = scifi1xHitPos[np.array(scifi1xQdc).argmax()]
-                            scifi1yPosMax = scifi1yHitPos[np.array(scifi1yQdc).argmax()]
 
-                            #cluster closeby hits and taka average as position
-                            scifi1xPosCloseby = []
-                            scifi1yPosCloseby = []
-                            scifi1xPosCloseby.append(scifi1xPosMax)
-                            scifi1yPosCloseby.append(scifi1yPosMax)
+                        # coincidence of v1 and v2 ->seen distribution in v1 vs b2 bars entries
+                        cosmicCounter+=1
+                        if abs(v1LHitBar-v2LHitBar) < 2 : 
+                            vetoCounter+=1
+                            #veto 3 is efficient if there's signal in the expected bar
+                            v3hit = True if ( v3BarQDC[expectedBar] != -999 ) else False                            
+                            V1BarEfficiency.Fill(v3hit, v1LHitBar)
+                            V2BarEfficiency.Fill(v3hit, v2LHitBar)
+                            Efficiency2D.Fill(v3hit, v1LHitBar, v2LHitBar)
 
-                            for p in scifi1xHitPos: 
-                                if p != scifi1xPosMax :
-                                    diff = scifi1xPosMax - p
-                                    Scifi1xPos_diff.Fill(diff)
-                                    if abs(diff) < .5 : scifi1xPosCloseby.append(p)
-                            
-                            for p in scifi1yHitPos:
-                                if p != scifi1yPosMax :
-                                    diff = scifi1yPosMax - p
-                                    Scifi1yPos_diff.Fill(diff)
-                                    if abs(diff) < .5 : scifi1yPosCloseby.append(p)
+                            #check if there signal in other bars
+                            # if not v3hit :
 
-                            scifi1xHit = sum(scifi1xPosCloseby)/float(len(scifi1xPosCloseby))
-                            scifi1yHit = sum(scifi1yPosCloseby)/float(len(scifi1yPosCloseby))
-
-                        Scifi1Pos.Fill(scifi1xHit, scifi1yHit)
                         
-                        V1_vs_scifi1x.Fill(v1LHitBar, scifi1xHit)
-                        V2_vs_scifi1x.Fill(v2LHitBar, scifi1xHit)
-                        for b in v3Bars : V3_vs_scifi1x.Fill(b, scifi1xHit)
+                        # study scifi behaviour in cosmics events
+                        if len(scifi1xId) > 0  and len(scifi1yId) > 0 :
+                                scifiCounter += 1
+                                
+                                scifi1xHitCh = [scifi_map[str(scifi1xBoard[i])]*512 + scifi1xId[i]*64 + 63 - scifi1xPin[i] for i in range(len(scifi1xId))]
+                                scifi1yHitCh = [scifi_map[str(scifi1yBoard[i])]*512 + scifi1yId[i]*64 + 63 - scifi1yPin[i] for i in range(len(scifi1yId))]
 
-                        V1_vs_scifi1y.Fill(v1LHitBar, scifi1yHit)
-                        V2_vs_scifi1y.Fill(v2LHitBar, scifi1yHit)
-                        for b in v3Bars : V3_vs_scifi1y.Fill(b, scifi1yHit)
+                                scifi1xHitPos = [(scifi_map[str(scifi1xBoard[i])]*512 + scifi1xId[i]*64 + 63 - scifi1xPin[i])*0.025 for i in range(len(scifi1xId))]
+                                scifi1yHitPos = [(scifi_map[str(scifi1yBoard[i])]*512 + scifi1yId[i]*64 + 63 - scifi1yPin[i])*0.025 for i in range(len(scifi1yId))]
+                                
+                                if len(scifi1xId) == 1  and len(scifi1yId) == 1 : 
+                                    scifiCounter_single +=1
+                                    scifi1xHit = scifi1xHitPos[0]
+                                    scifi1yHit = scifi1yHitPos[0]
+                                    Scifi1Pos.Fill(scifi1xHit, scifi1yHit)
+                                                        
+                                else :
+                                    scifi1xQdcMax = np.max(scifi1xQdc)
+                                    scifi1yQdcMax = np.max(scifi1yQdc)
 
-                        ScifiEfficiency.Fill(v3hit, scifi1xHit, scifi1yHit)
+                                    Scifi1xQdc_max.Fill(scifi1xQdcMax)
+                                    Scifi1yQdc_max.Fill(scifi1yQdcMax)
+                                    
+                                    for v in scifi1xQdc :
+                                        if v != scifi1xQdcMax : 
+                                            Scifi1xQdc_residual.Fill(scifi1xQdcMax - v)
+                                            Scifi1xQdc_others.Fill(v)
+                                    
+                                    for v in scifi1yQdc:
+                                        if v != scifi1yQdcMax : 
+                                            Scifi1yQdc_residual.Fill(scifi1yQdcMax - v)
+                                            Scifi1yQdc_others.Fill(v)
+
+                                    scifi1xPosMax = scifi1xHitPos[np.array(scifi1xQdc).argmax()]
+                                    scifi1yPosMax = scifi1yHitPos[np.array(scifi1yQdc).argmax()]
+
+                                    #cluster closeby hits and taka average as position
+                                    scifi1xPosCloseby = []
+                                    scifi1yPosCloseby = []
+                                    scifi1xPosCloseby.append(scifi1xPosMax)
+                                    scifi1yPosCloseby.append(scifi1yPosMax)
+
+                                    for p in scifi1xHitPos: 
+                                        if p != scifi1xPosMax :
+                                            diff = scifi1xPosMax - p
+                                            Scifi1xPos_diff.Fill(diff)
+                                            if abs(diff) < .5 : scifi1xPosCloseby.append(p)
+                                    
+                                    for p in scifi1yHitPos:
+                                        if p != scifi1yPosMax :
+                                            diff = scifi1yPosMax - p
+                                            Scifi1yPos_diff.Fill(diff)
+                                            if abs(diff) < .5 : scifi1yPosCloseby.append(p)
+
+                                    scifi1xHit = sum(scifi1xPosCloseby)/float(len(scifi1xPosCloseby))
+                                    scifi1yHit = sum(scifi1yPosCloseby)/float(len(scifi1yPosCloseby))
+
+                                Scifi1Pos.Fill(scifi1xHit, scifi1yHit)
+                                
+                                V1_vs_scifi1x.Fill(v1LHitBar, scifi1xHit)
+                                V2_vs_scifi1x.Fill(v2LHitBar, scifi1xHit)
+                                for b in v3Bars : V3_vs_scifi1x.Fill(b, scifi1xHit)
+
+                                V1_vs_scifi1y.Fill(v1LHitBar, scifi1yHit)
+                                V2_vs_scifi1y.Fill(v2LHitBar, scifi1yHit)
+                                for b in v3Bars : V3_vs_scifi1y.Fill(b, scifi1yHit)
+
+                                ScifiEfficiency.Fill(v3hit, scifi1xHit, scifi1yHit)
 
 ############################
 # write histo to root file #
@@ -574,6 +617,12 @@ Scifi1yPos_diff.Write()
 
 V1TimeDiff.Write()
 V2TimeDiff.Write()
+VTimeDiff.Write()
+
+PositionResidual.Write()
+V1Position.Write()
+V2Position.Write()
+V3ExpectedvsSignal.Write()
 
 V1BarEfficiency.Write()
 V2BarEfficiency.Write()
