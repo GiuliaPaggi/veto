@@ -13,4 +13,4 @@ for file in "$dir"/output_*; do
     fi
 done
 
-hadd -f "$dir"/prova.root ${files[@]}
+hadd -f "$dir"/analisysResult.root ${files[@]}
