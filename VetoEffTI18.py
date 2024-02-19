@@ -189,8 +189,10 @@ V1Position = ROOT.TH1D("V1Position", "V1Position; v1 x position; entries", 45, -
 V2Position = ROOT.TH1D("V2Position", "V2Position; v2 x position; entries", 45, -1, 44)
 
 V3ExpectedvsSignal = ROOT.TH1D("V3ExpectedvsSignal", "V3ExpectedvsSignal; expected bar - signal bar; entries", 15, -7.5, 7.5)
-V3ExpectedvsScifiPos =  ROOT.TH1D("V3ExpectedvsScifiPos", "V3ExpectedvsScifiPos; expected pos - scifi 1 x; entries", 15, -7.5, 7.5)
+V3ExpectedvsScifiPos =  ROOT.TH1D("V3ExpectedvsScifiPos", "V3ExpectedvsScifiPos; expected pos - scifi 1 x; entries", 100, -50, 50)
 V1V2BarResidual = ROOT.TH1D("V1V2BarResidual", "V1V2BarResidual; v1 - v2 bar; entries", 15, -7.5, 7.5)
+V2PosScifiResidual = ROOT.TH1D("V2PosScifiResidual", "V2PosScifiResidual; v2 x pos - scifi1 x; entries", 100, -50, 50)
+V3_vs_expectedScifi = ROOT.TH1D("V3_vs_expectedScifi", "V3_vs_expectedScifi; v3HitBar - scifiExpectedBar ; entries", 20, -10, 10)
 
 #timing
 V1TimeDiff = ROOT.TH1D("V1TimeDiff", "V1TimeDiff; R - L time; entries", 120, -4, 4) 
@@ -247,7 +249,6 @@ for i in range(Nentries):
     v3Id = tofID[boardID == 48]
     v3Pin = tofChannel[boardID == 48]
     v3Qdc = qdc[boardID == 48]
-
 
     v3Multiplicity = len(v3Id)
 
@@ -455,6 +456,8 @@ for i in range(Nentries):
                             if v3BarQDC[i] != -999 : 
                                 Cosmic_VetoQDCPerBar.Fill(i, v3BarQDC[i])
 
+                        v3HitBar = np.array(v3BarQDC).argmax()
+
                     v1XPos = 21 - v1TimeDiff*LIGHTPROP
                     v2XPos = 21 - v2TimeDiff*LIGHTPROP
                     
@@ -483,10 +486,10 @@ for i in range(Nentries):
                         vetoCounter+=1
 
                         #veto 3 is efficient if there's signal in the expected bar
-                        v3hit = False 
-                        if (expectedBar == 0 and (v3BarQDC[expectedBar] != -999 or v3BarQDC[expectedBar+1] != -999) ) : v3hit = True
-                        elif ( expectedBar == 7 and (v3BarQDC[expectedBar] != -999 or v3BarQDC[expectedBar-1] != -999) ) : v3hit = True                           
-                        elif ( (expectedBar > 0  and expectedBar < 7) and (v3BarQDC[expectedBar] != -999 or v3BarQDC[expectedBar-1] != -999 or v3BarQDC[expectedBar+1] != -999) ) : v3hit = True                           
+                        v3hit = True if ( abs( v3HitBar - expectedBar ) < 2) else False 
+                        # if (expectedBar == 0 and (v3BarQDC[expectedBar] != -999 or v3BarQDC[expectedBar+1] != -999) ) : v3hit = True
+                        # elif ( expectedBar == 7 and (v3BarQDC[expectedBar] != -999 or v3BarQDC[expectedBar-1] != -999) ) : v3hit = True                           
+                        # elif ( (expectedBar > 0  and expectedBar < 7) and (v3BarQDC[expectedBar] != -999 or v3BarQDC[expectedBar-1] != -999 or v3BarQDC[expectedBar+1] != -999) ) : v3hit = True                           
 
                         V1BarEfficiency.Fill(v3hit, v1LHitBar)
                         V2BarEfficiency.Fill(v3hit, v2LHitBar)
@@ -569,9 +572,16 @@ for i in range(Nentries):
                             for b in v3Bars : V3_vs_scifi1y.Fill(b, scifi1yHit)
 
                             #for scifi-> use x position to estimate bar
-                            v3hitScifi = True if ( v3BarQDC[int(np.floor(scifi1xHit/6))] != -999) else False
+                            scifiExpectedBar = int(np.floor(scifi1xHit/6))
+                            v3hitScifi = True if ( abs( v3HitBar - scifiExpectedBar ) < 2) else False
+                            # if (scifiExpectedBar == 0 and (v3BarQDC[scifiExpectedBar] != -999 or v3BarQDC[scifiExpectedBar+1] != -999) ) : v3hitScifi = True
+                            # elif ( scifiExpectedBar == 7 and (v3BarQDC[scifiExpectedBar] != -999 or v3BarQDC[scifiExpectedBar-1] != -999) ) : v3hitScifi = True                           
+                            # elif ( (scifiExpectedBar > 0  and scifiExpectedBar < 7) and (v3BarQDC[scifiExpectedBar] != -999 or v3BarQDC[scifiExpectedBar-1] != -999 or v3BarQDC[scifiExpectedBar+1] != -999) ) : v3hitScifi = True                           
+
                             ScifiEfficiency.Fill(v3hitScifi, scifi1xHit, scifi1yHit)
+                            V3_vs_expectedScifi.Fill(v3HitBar - scifiExpectedBar)
                             V3ExpectedvsScifiPos.Fill(expectedPosition - scifi1xHit)
+                            V2PosScifiResidual.Fill(v2XPos - scifi1xHit)
                             
 
 
@@ -653,6 +663,8 @@ V2Position.Write()
 V3ExpectedvsSignal.Write()
 V3ExpectedvsScifiPos.Write()
 V1V2BarResidual.Write()
+V2PosScifiResidual.Write()
+V3_vs_expectedScifi.Write()
 
 VetoHits.Write()
 VetoHitsperBar.Write()
