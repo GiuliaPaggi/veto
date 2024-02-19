@@ -200,9 +200,17 @@ VTimeDiff = ROOT.TH1D("VTimeDiff", "VTimeDiff; v1 - v2 time; entries", 120, -4, 
 # Efficiency
 V1BarEfficiency = ROOT.TEfficiency("V1BarEfficiency", "V1BarEfficiency; V1 bar; v3 efficiency", nbar, 0, nbar)
 V2BarEfficiency = ROOT.TEfficiency("V2BarEfficiency", "V2BarEfficiency; V2 bar; v3 efficiency", nbar, 0, nbar)
-Efficiency2D = ROOT.TEfficiency("Efficiency2D", "Efficiency2D; expected v3 pos ; v1 bar", vetodim, 0, vetodim, nbar, 0, nbar)
+Efficiency2D = ROOT.TEfficiency("Efficiency2D", "Efficiency2D; expected v3 pos ; v2 bar", vetodim, 0, vetodim, nbar, 0, nbar)
 ScifiEfficiency = ROOT.TEfficiency("ScifiEfficiency", "ScifiEfficiency; scifi x; scifi y", scifidim, 0, scifidim, scifidim, 0, scifidim)
-
+Close_vs_farEfficiency = ROOT.TEfficiency( "Close_vs_farEfficiency", "Close_vs_farEfficiency", 4 , 0, 4)
+Close_vs_farEfficiency_Bar0 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar0", "Close_vs_farEfficiency_Bar0", 4, 0, 4 )
+Close_vs_farEfficiency_Bar1 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar1", "Close_vs_farEfficiency_Bar1", 4, 0, 4 )
+Close_vs_farEfficiency_Bar2 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar2", "Close_vs_farEfficiency_Bar2", 4, 0, 4 )
+Close_vs_farEfficiency_Bar3 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar3", "Close_vs_farEfficiency_Bar3", 4, 0, 4 )
+Close_vs_farEfficiency_Bar4 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar4", "Close_vs_farEfficiency_Bar4", 4, 0, 4 )
+Close_vs_farEfficiency_Bar5 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar5", "Close_vs_farEfficiency_Bar5", 4, 0, 4 )
+Close_vs_farEfficiency_Bar6 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar6", "Close_vs_farEfficiency_Bar6", 4, 0, 4 )
+Close_vs_farEfficiency_Bar7 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar7", "Close_vs_farEfficiency_Bar7", 4, 0, 4 )
 
 ###################
 # loop on entries #
@@ -480,11 +488,19 @@ for i in range(Nentries):
                         elif ( expectedBar == 7 and (v3BarQDC[expectedBar] != -999 or v3BarQDC[expectedBar-1] != -999) ) : v3hit = True                           
                         elif ( (expectedBar > 0  and expectedBar < 7) and (v3BarQDC[expectedBar] != -999 or v3BarQDC[expectedBar-1] != -999 or v3BarQDC[expectedBar+1] != -999) ) : v3hit = True                           
 
-                            
                         V1BarEfficiency.Fill(v3hit, v1LHitBar)
                         V2BarEfficiency.Fill(v3hit, v2LHitBar)
-                        Efficiency2D.Fill(v3hit, expectedPosition, v1LHitBar)
-                    
+                        Efficiency2D.Fill(v3hit, expectedPosition, v2LHitBar)
+                        Close_vs_farEfficiency.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                        if expectedBar == 0 : Close_vs_farEfficiency_Bar0.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                        if expectedBar == 1 : Close_vs_farEfficiency_Bar1.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                        if expectedBar == 2 : Close_vs_farEfficiency_Bar2.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                        if expectedBar == 3 : Close_vs_farEfficiency_Bar3.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                        if expectedBar == 4 : Close_vs_farEfficiency_Bar4.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                        if expectedBar == 5 : Close_vs_farEfficiency_Bar5.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                        if expectedBar == 6 : Close_vs_farEfficiency_Bar6.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                        if expectedBar == 7 : Close_vs_farEfficiency_Bar7.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+
                     # study scifi behaviour in cosmics events
                     if len(scifi1xId) > 0  and len(scifi1yId) > 0 :
                             scifiCounter += 1
@@ -638,11 +654,6 @@ V3ExpectedvsSignal.Write()
 V3ExpectedvsScifiPos.Write()
 V1V2BarResidual.Write()
 
-V1BarEfficiency.Write()
-V2BarEfficiency.Write()
-Efficiency2D.Write()
-ScifiEfficiency.Write()
-
 VetoHits.Write()
 VetoHitsperBar.Write()
 VetoQdc.Write()
@@ -655,6 +666,20 @@ Cosmic_VetoQdc.Write()
 Cosmic_VetoQDCPerChannel.Write()
 Cosmic_VetoQDCPerBar.Write()
 
+V1BarEfficiency.Write()
+V2BarEfficiency.Write()
+Efficiency2D.Write()
+ScifiEfficiency.Write()
+Close_vs_farEfficiency.Write()
+Close_vs_farEfficiency_Bar0.Write()
+Close_vs_farEfficiency_Bar1.Write()
+Close_vs_farEfficiency_Bar2.Write()
+Close_vs_farEfficiency_Bar3.Write()
+Close_vs_farEfficiency_Bar4.Write()
+Close_vs_farEfficiency_Bar5.Write()
+Close_vs_farEfficiency_Bar6.Write()
+Close_vs_farEfficiency_Bar7.Write()
+
 outfile.Close()
 
-print(f'Entries {Nentries} with {cosmicCounter} cosmics events in which {vetoCounter} abs(v1-v2) < 1 events of which {scifiCounter} also have scifi, of which {scifiCounter_single} have 1 hit x and 1 hit y. \nRatio of veto cosmics {vetoCounter/Nentries}, plus scifi {scifiCounter/Nentries} ')
+print(f'Entries {Nentries} with {cosmicCounter} cosmics events in which {vetoCounter} abs(v1-v2) < 1 events of which {scifiCounter} also have scifi. \nRatio of veto cosmics {vetoCounter/Nentries}, plus scifi {scifiCounter/Nentries} ')
