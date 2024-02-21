@@ -180,7 +180,7 @@ Close_vs_farEfficiency_Bar6 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar6", 
 counter_v2scifi1 = 0
 counter_v2scifi12 = 0
 counter_scifi12 = 0
-counter1 = 0
+
 Nentries = data.GetEntries()
 for i in range(Nentries):
     entry = data.GetEntry(i)
@@ -278,16 +278,11 @@ for i in range(Nentries):
         # fill hit histos            
         for i in range(len(v2LId)) : 
             V2LHits.Fill(return_ch(mapVeto, v2LId[i], v2LPin[i]))
-            if int(np.floor(((return_ch(mapVeto, v2LId[i], v2LPin[i]))-1)/8)) != v2LBars[i] : print(f' canale {return_ch(mapVeto, v2LId[i], v2LPin[i])} barra {v2LBars[i]} mi aspetto {np.floor(((return_ch(mapVeto, v2LId[i], v2LPin[i]))-1)/8)}')
-            if int(np.floor(((return_ch(mapVeto, v2LId[i], v2LPin[i]))-1)/8)) == v2LBars[i] and v2LBars[i] == 0 : counter1 +=1
-
-        for b in v2LBars : V2LHitsperBar.Fill(b)
+            V2LHitsperBar.Fill(v2LBars[i])
             
         for i in range(len(v2RId)) : 
             V2RHits.Fill(return_ch(mapVeto, v2RId[i], v2RPin[i]))
-            if int(np.floor(((return_ch(mapVeto, v2RId[i], v2RPin[i]))-1)/8)) != v2RBars[i] : print(f' canale {return_ch(mapVeto, v2RId[i], v2RPin[i])} barra {v2RBars[i]} mi aspetto {np.floor(((return_ch(mapVeto, v2RId[i], v2RPin[i]))-1)/8)}')
-            
-        for b in v2RBars : V2RHitsperBar.Fill(b)
+            V2RHitsperBar.Fill(v2RBars[i])
 
 
         #study qdc
@@ -571,5 +566,3 @@ Bkg_VetoMultiplicity.Write()
 Bkg_VetoBarMultiplicity.Write()
 
 outfile.Close()
-
-print(counter1)
