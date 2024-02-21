@@ -3,7 +3,7 @@
 dir="/afs/cern.ch/work/g/gpsndlhc/veto/results"
 files=()
 
-for file in "$dir"/output_*; do
+for file in "$dir"/runs/output_*; do
     if [ -f "$file" ]; then
         size=$(stat -c %s "$file")
         if (( $size > 1000 )); then 
