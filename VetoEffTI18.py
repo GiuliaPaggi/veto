@@ -43,8 +43,11 @@ scifi_map = {
     "30" : 2
 }
 
+DEFAULT = -999
 LIGHTPROP = 15 #cm/ns
 HALFBAR = 42/2 #half veto bar
+
+
 #############
 # read data #
 #############
@@ -65,7 +68,7 @@ for file in filelist:
 mapVeto = read_csv_file("./SiPMmaps/Veto_SiPM_mapping.csv")
 
 #prepare output file
-filename = f"./results/output_run{runN}.root"
+filename = f"./results/runs/output_run{runN}.root"
 outfile = ROOT.TFile.Open(filename, "RECREATE")
 
 #################
@@ -78,7 +81,7 @@ DSx_max = 57.5
 
 nbar = 7
 scifich = 512*3
-scifidim = 40
+scifidim = 45
 vetodim = 45
 
 # Hits info 
@@ -103,9 +106,11 @@ Cosmic_VetoHits = ROOT.TH1D("Cosmic_VetoHits", "Veto Hits in cosmics events;  ve
 Cosmic_VetoHitsperBar = ROOT.TH1D("Cosmic_VetoHitsperBar", "Cosmic_Veto Hits per Bar; veto channel; entries", nbar, 0, nbar)
 Cosmic_VetoHitsperPosition = ROOT.TH1D("Cosmic_VetoHitsperPosition", "Cosmic_VetoHitsperPosition; ds V channel; entries", DSn_bins, DSx_min, DSx_max)
 Cosmic_VetoHitMultiplicity = ROOT.TH1D("Cosmic_VetoHitMultiplicity", "Veto Hit Multiplicity in cosmic ray events;  Hits per event; entries", 20, -.5, 19.5)
-Bkg_VetoHits = ROOT.TH1D("Bkg_VetoHits", "Veto Hits in not cosmics events; veto channel; entries", DSn_bins, DSx_min, DSx_max)
-Bkg_VetoMultiplicity = ROOT.TH1D("Bkg_VetoMultiplicity", "Veto Hit Multiplicity in not cosmics; Hits per event; entries", 20, -.5, 19.5)
-Noise_VetoHits = ROOT.TH1D("Noise_VetoHits", "Veto Hits w/o ds Hits;  veto channel; entries", DSn_bins, DSx_min, DSx_max)
+Bkg_VetoHits = ROOT.TH1D("Bkg_VetoHits", "Veto Hits far from expectedX position;  veto bar; entries", nbar, 0, nbar)
+Bkg_VetoMultiplicity = ROOT.TH1D("Bkg_VetoMultiplicity", "Veto Hits far from expectedX position;  n veto hits; entries", 20, -.5, 19.5)
+Bkg_VetoBarMultiplicity = ROOT.TH1D("Bkg_VetoBarMultiplicity", "Veto Hits far from expectedX position;  n veto bars; entries", 8, -.5, 7.5)
+
+Noise_VetoHits = ROOT.TH1D("Noise_VetoHits", "Veto Hits far from expectedX position;  veto bar; entries", nbar, 0, nbar)
 Noise_VetoMultiplicity = ROOT.TH1D("Noise_VetoMultiplicity", "Veto Hit Multiplicity w/o ds Hits;  Hits per event; entries", 20, -.5, 19.5)
  
 # qdc
@@ -188,11 +193,14 @@ PositionResidual = ROOT.TH1D("PositionResidual", "PositionResidual; v2 pos - v1 
 V1Position = ROOT.TH1D("V1Position", "V1Position; v1 x position; entries", 45, -1, 44)
 V2Position = ROOT.TH1D("V2Position", "V2Position; v2 x position; entries", 45, -1, 44)
 
-V3ExpectedvsSignal = ROOT.TH1D("V3ExpectedvsSignal", "V3ExpectedvsSignal; expected bar - signal bar; entries", 15, -7.5, 7.5)
-V3ExpectedvsScifiPos =  ROOT.TH1D("V3ExpectedvsScifiPos", "V3ExpectedvsScifiPos; expected pos - scifi 1 x; entries", 100, -50, 50)
+V3expectedXvsSignal = ROOT.TH1D("V3expectedXvsSignal", "V3expectedXvsSignal; expectedX bar - signal bar; entries", 15, -7.5, 7.5)
+V3expectedXvsScifiPos =  ROOT.TH1D("V3expectedXvsScifiPos", "V3expectedXvsScifiPos; expectedX pos - scifi 1 x; entries", 100, -50, 50)
 V1V2BarResidual = ROOT.TH1D("V1V2BarResidual", "V1V2BarResidual; v1 - v2 bar; entries", 15, -7.5, 7.5)
 V2PosScifiResidual = ROOT.TH1D("V2PosScifiResidual", "V2PosScifiResidual; v2 x pos - scifi1 x; entries", 100, -50, 50)
-V3_vs_expectedScifi = ROOT.TH1D("V3_vs_expectedScifi", "V3_vs_expectedScifi; v3HitBar - scifiExpectedBar ; entries", 20, -10, 10)
+V3_vs_expectedXScifi = ROOT.TH1D("V3_vs_expectedXScifi", "V3_vs_expectedXScifi; v3HitBar - scifiexpectedXBar ; entries", 20, -10, 10)
+V2PosYScifiResidual = ROOT.TH1D("V2PosYScifiResidual", "V2PosYScifiResidual; v2 hit bar - scifiexpectedyBar ; entries", 20, -10, 10)
+
+Bkg_V3expectedXvsSignal = ROOT.TH1D("Bkg_V3expectedXvsSignal", "Bkg_V3expectedXvsSignal; expectedX bar - signal bar; entries", 15, -7.5, 7.5)
 
 #timing
 V1TimeDiff = ROOT.TH1D("V1TimeDiff", "V1TimeDiff; R - L time; entries", 120, -4, 4) 
@@ -202,7 +210,7 @@ VTimeDiff = ROOT.TH1D("VTimeDiff", "VTimeDiff; v1 - v2 time; entries", 120, -4, 
 # Efficiency
 V1BarEfficiency = ROOT.TEfficiency("V1BarEfficiency", "V1BarEfficiency; V1 bar; v3 efficiency", nbar, 0, nbar)
 V2BarEfficiency = ROOT.TEfficiency("V2BarEfficiency", "V2BarEfficiency; V2 bar; v3 efficiency", nbar, 0, nbar)
-Efficiency2D = ROOT.TEfficiency("Efficiency2D", "Efficiency2D; expected v3 pos ; v2 bar", vetodim, 0, vetodim, nbar, 0, nbar)
+Efficiency2D = ROOT.TEfficiency("Efficiency2D", "Efficiency2D; expectedX v3 pos ; v2 bar", vetodim, 0, vetodim, nbar, 0, nbar)
 ScifiEfficiency = ROOT.TEfficiency("ScifiEfficiency", "ScifiEfficiency; scifi x; scifi y", scifidim, 0, scifidim, scifidim, 0, scifidim)
 Close_vs_farEfficiency = ROOT.TEfficiency( "Close_vs_farEfficiency", "Close_vs_farEfficiency", 4 , 0, 4)
 Close_vs_farEfficiency_Bar0 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar0", "Close_vs_farEfficiency_Bar0", 4, 0, 4 )
@@ -251,6 +259,7 @@ for i in range(Nentries):
     v3Qdc = qdc[boardID == 48]
 
     v3Multiplicity = len(v3Id)
+    v3BarMultiplicity = 0
 
     if v3Multiplicity > 0:        
 
@@ -259,18 +268,20 @@ for i in range(Nentries):
         v3Bars = [return_bar(mapVeto, v3Id[i], v3Pin[i]) for i in range(v3Multiplicity)]
         v3Ch = [return_ch(mapVeto, v3Id[i], v3Pin[i]) for i in range(v3Multiplicity)]
 
-        v3BarQDC = np.full(8, -999)
+        v3BarQDC = np.full(8, DEFAULT)
 
         for i in range(v3Multiplicity):
                         
             VetoHits.Fill(v3Ch[i])
             VetoHitsperBar.Fill(v3Bars[i])
-            if v3BarQDC[v3Bars[i]] == -999: v3BarQDC[v3Bars[i]] = v3Qdc[i]
+            if v3BarQDC[v3Bars[i]] == DEFAULT: v3BarQDC[v3Bars[i]] = v3Qdc[i]
             else : v3BarQDC[v3Bars[i]] += v3Qdc[i]
             VetoQdc.Fill(v3Qdc[i])
             VetoQDCPerChannel.Fill(v3Ch[i], v3Qdc[i])
         
         for i in v3Bars : VetoQDCPerBar.Fill(i, v3BarQDC[i])
+    
+        v3BarMultiplicity = (v3BarQDC > DEFAULT).sum()
     
     # get veto 1 and 2 events 
     vetoId = tofID[boardID == 58]
@@ -310,31 +321,31 @@ for i in range(Nentries):
         v2LBars = [return_bar(mapVeto, v2LId[i], v2LPin[i]) for i in range(len(v2LId))]
         v2RBars = [return_bar(mapVeto, v2RId[i], v2RPin[i]) for i in range(len(v2RId))]
         
-        v1RBarQDC = np.full(8, -999)
+        v1RBarQDC = np.full(8, DEFAULT)
         for i in range(len(v1RId)) : 
-            if v1RBarQDC[v1RBars[i]] == -999: v1RBarQDC[v1RBars[i]] = v1RQdc[i]
+            if v1RBarQDC[v1RBars[i]] == DEFAULT: v1RBarQDC[v1RBars[i]] = v1RQdc[i]
             else : v1RBarQDC[v1RBars[i]] += v1RQdc[i]
         
-        v1LBarQDC = np.full(8, -999)
+        v1LBarQDC = np.full(8, DEFAULT)
         for i in range(len(v1LId)) : 
-            if v1LBarQDC[v1LBars[i]] == -999: v1LBarQDC[v1LBars[i]] = v1LQdc[i]
+            if v1LBarQDC[v1LBars[i]] == DEFAULT: v1LBarQDC[v1LBars[i]] = v1LQdc[i]
             else : v1LBarQDC[v1LBars[i]] += v1LQdc[i]
 
-        v2RBarQDC = np.full(8, -999)
+        v2RBarQDC = np.full(8, DEFAULT)
         for i in range(len(v2RId)) :
-            if v2RBarQDC[v2RBars[i]] == -999: v2RBarQDC[v2RBars[i]] = v2RQdc[i]
+            if v2RBarQDC[v2RBars[i]] == DEFAULT: v2RBarQDC[v2RBars[i]] = v2RQdc[i]
             else : v2RBarQDC[v2RBars[i]] += v2RQdc[i]
 
-        v2LBarQDC = np.full(8, -999)
+        v2LBarQDC = np.full(8, DEFAULT)
         for i in range(len(v2LId)) : 
-            if v2LBarQDC[v2LBars[i]] == -999: v2LBarQDC[v2LBars[i]] = v2LQdc[i]
+            if v2LBarQDC[v2LBars[i]] == DEFAULT: v2LBarQDC[v2LBars[i]] = v2LQdc[i]
             else : v2LBarQDC[v2LBars[i]] += v2LQdc[i]
 
         for i in range(8):
-            if v1RBarQDC[i] != -999 : V1RQDCPerBar.Fill(i, v1RBarQDC[i])
-            if v1LBarQDC[i] != -999 : V1LQDCPerBar.Fill(i, v1LBarQDC[i])
-            if v2RBarQDC[i] != -999 : V2RQDCPerBar.Fill(i, v2RBarQDC[i])
-            if v2LBarQDC[i] != -999 : V2LQDCPerBar.Fill(i, v2LBarQDC[i])
+            if v1RBarQDC[i] != DEFAULT : V1RQDCPerBar.Fill(i, v1RBarQDC[i])
+            if v1LBarQDC[i] != DEFAULT : V1LQDCPerBar.Fill(i, v1LBarQDC[i])
+            if v2RBarQDC[i] != DEFAULT : V2RQDCPerBar.Fill(i, v2RBarQDC[i])
+            if v2LBarQDC[i] != DEFAULT : V2LQDCPerBar.Fill(i, v2LBarQDC[i])
  
         #study qdc of single hit events 
         if is_single_bar(v1LBars) and is_single_bar(v1RBars) and is_single_bar(v2RBars) and is_single_bar(v2LBars):
@@ -368,22 +379,22 @@ for i in range(Nentries):
             V2RQdc_max.Fill(v2RHitQdc)
 
             for v in v1LBarQDC: 
-                if v != np.max(v1LBarQDC) and v != -999 : 
+                if v != np.max(v1LBarQDC) and v != DEFAULT : 
                     V1LQdc_others.Fill(v)
                     V1LQdc_residual.Fill(v1LHitQdc-v)
 
             for v in v1RBarQDC: 
-                if v != np.max(v1RBarQDC) and v != -999 : 
+                if v != np.max(v1RBarQDC) and v != DEFAULT : 
                     V1RQdc_others.Fill(v)
                     V1RQdc_residual.Fill(v1RHitQdc-v)
 
             for v in v2LBarQDC: 
-                if v != np.max(v2LBarQDC) and v != -999 : 
+                if v != np.max(v2LBarQDC) and v != DEFAULT : 
                     V2LQdc_others.Fill(v)
                     V2LQdc_residual.Fill(v2LHitQdc-v)
 
             for v in v2RBarQDC: 
-                if v != np.max(v2RBarQDC) and v != -999 : 
+                if v != np.max(v2RBarQDC) and v != DEFAULT : 
                     V2RQdc_others.Fill(v)
                     V2RQdc_residual.Fill(v2RHitQdc-v)
 
@@ -423,8 +434,7 @@ for i in range(Nentries):
             V1_vs_V2.Fill(v1LHitBar, v2LHitBar)
 
             # cut on qdc signal per bar 
-
-            if v1LHitQdc > 0 and v1RHitQdc > 0 and v2RHitQdc > 0 and v2LHitQdc > 0 :
+            if v1LHitQdc > -5 and v1RHitQdc > -5 and v2RHitQdc > -5 and v2LHitQdc > -5 :
 
                 # study time difference to compute position in x
                 v1TimeDiff = v1RTime[0] - v1LTime[0]
@@ -453,10 +463,11 @@ for i in range(Nentries):
                             V2_vs_V3.Fill(v2LHitBar, i)
                         
                         for i in v3Bars : 
-                            if v3BarQDC[i] != -999 : 
+                            if v3BarQDC[i] != DEFAULT : 
                                 Cosmic_VetoQDCPerBar.Fill(i, v3BarQDC[i])
 
-                        v3HitBar = np.array(v3BarQDC).argmax()
+                    
+                    v3HitBar = np.array(v3BarQDC).argmax() if max(v3BarQDC) != DEFAULT else DEFAULT
 
                     v1XPos = 21 - v1TimeDiff*LIGHTPROP
                     v2XPos = 21 - v2TimeDiff*LIGHTPROP
@@ -468,41 +479,43 @@ for i in range(Nentries):
                     V2Position.Fill(v2XPos)
                     PositionResidual.Fill(v2XPos - v1XPos)
 
-                    expectedPosition = v2XPos -(v2XPos-v1XPos)
+                    expectedXPosition = v2XPos - (v2XPos - v1XPos)
 
                     # if the CR is too bent to be seen in veto 3 go to next event
-                    if expectedPosition < 0 and expectedPosition > 42: continue
-                    expectedBar = int(np.floor(expectedPosition/6)) 
+                    if expectedXPosition < 0 and expectedXPosition > 42: continue
+                    expectedXBar = int(np.floor(expectedXPosition/6)) 
+
+                    #compute expectedX y position to remove from denominator cr that end up outside of acceptance, veto 1 and 2 are staggered by 2 cm
+                    V1V2BarResidual.Fill(v1LHitBar - v2LHitBar)
+
+                    expectedYBar = v2LHitBar - (v2LHitBar - v1LHitBar)
+                    if expectedYBar < 0 or expectedYBar > 7: continue
 
                     for i in v3Bars :
-                        V3ExpectedvsSignal.Fill(expectedBar-i)
+                        V3expectedXvsSignal.Fill(expectedXBar-i)
                         
-
                     # coincidence of v1 and v2 ->seen distribution in v1 vs b2 bars entries
                     cosmicCounter+=1
-                    V1V2BarResidual.Fill(v1LHitBar-v2LHitBar)
 
-                    if True : #abs(v1LHitBar-v2LHitBar) < 2 : 
-                        vetoCounter+=1
+                    #veto 3 is efficient if there's signal in the expectedX bar
+                    v3hit = False
+                    if (expectedXBar == 0 and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar+1] != DEFAULT) ) : v3hit = True
+                    elif ( expectedXBar == 7 and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar-1] != DEFAULT) ) : v3hit = True                           
+                    elif ( (expectedXBar > 0  and expectedXBar < 7) and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar-1] != DEFAULT or v3BarQDC[expectedXBar+1] != DEFAULT) ) : v3hit = True                           
 
-                        #veto 3 is efficient if there's signal in the expected bar
-                        v3hit = True if ( abs( v3HitBar - expectedBar ) < 2) else False 
-                        # if (expectedBar == 0 and (v3BarQDC[expectedBar] != -999 or v3BarQDC[expectedBar+1] != -999) ) : v3hit = True
-                        # elif ( expectedBar == 7 and (v3BarQDC[expectedBar] != -999 or v3BarQDC[expectedBar-1] != -999) ) : v3hit = True                           
-                        # elif ( (expectedBar > 0  and expectedBar < 7) and (v3BarQDC[expectedBar] != -999 or v3BarQDC[expectedBar-1] != -999 or v3BarQDC[expectedBar+1] != -999) ) : v3hit = True                           
-
-                        V1BarEfficiency.Fill(v3hit, v1LHitBar)
-                        V2BarEfficiency.Fill(v3hit, v2LHitBar)
-                        Efficiency2D.Fill(v3hit, expectedPosition, v2LHitBar)
-                        Close_vs_farEfficiency.Fill(v3hit, int(np.floor(v2LHitBar/2)))
-                        if expectedBar == 0 : Close_vs_farEfficiency_Bar0.Fill(v3hit, int(np.floor(v2LHitBar/2)))
-                        if expectedBar == 1 : Close_vs_farEfficiency_Bar1.Fill(v3hit, int(np.floor(v2LHitBar/2)))
-                        if expectedBar == 2 : Close_vs_farEfficiency_Bar2.Fill(v3hit, int(np.floor(v2LHitBar/2)))
-                        if expectedBar == 3 : Close_vs_farEfficiency_Bar3.Fill(v3hit, int(np.floor(v2LHitBar/2)))
-                        if expectedBar == 4 : Close_vs_farEfficiency_Bar4.Fill(v3hit, int(np.floor(v2LHitBar/2)))
-                        if expectedBar == 5 : Close_vs_farEfficiency_Bar5.Fill(v3hit, int(np.floor(v2LHitBar/2)))
-                        if expectedBar == 6 : Close_vs_farEfficiency_Bar6.Fill(v3hit, int(np.floor(v2LHitBar/2)))
-                        if expectedBar == 7 : Close_vs_farEfficiency_Bar7.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                    if v3hit : vetoCounter+=1
+                    V1BarEfficiency.Fill(v3hit, v1LHitBar)
+                    V2BarEfficiency.Fill(v3hit, v2LHitBar)
+                    Efficiency2D.Fill(v3hit, expectedXPosition, expectedYBar)
+                    Close_vs_farEfficiency.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                    if expectedXBar == 0 : Close_vs_farEfficiency_Bar0.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                    if expectedXBar == 1 : Close_vs_farEfficiency_Bar1.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                    if expectedXBar == 2 : Close_vs_farEfficiency_Bar2.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                    if expectedXBar == 3 : Close_vs_farEfficiency_Bar3.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                    if expectedXBar == 4 : Close_vs_farEfficiency_Bar4.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                    if expectedXBar == 5 : Close_vs_farEfficiency_Bar5.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                    if expectedXBar == 6 : Close_vs_farEfficiency_Bar6.Fill(v3hit, int(np.floor(v2LHitBar/2)))
+                    if expectedXBar == 7 : Close_vs_farEfficiency_Bar7.Fill(v3hit, int(np.floor(v2LHitBar/2)))
 
                     # study scifi behaviour in cosmics events
                     if len(scifi1xId) > 0  and len(scifi1yId) > 0 :
@@ -560,7 +573,9 @@ for i in range(Nentries):
 
                                 scifi1xHit = sum(scifi1xPosCloseby)/float(len(scifi1xPosCloseby))
                                 scifi1yHit = sum(scifi1yPosCloseby)/float(len(scifi1yPosCloseby))
+                            
 
+                            
                             Scifi1Pos.Fill(scifi1xHit, scifi1yHit)
                             
                             V1_vs_scifi1x.Fill(v1LHitBar, scifi1xHit)
@@ -571,18 +586,36 @@ for i in range(Nentries):
                             V2_vs_scifi1y.Fill(v2LHitBar, scifi1yHit)
                             for b in v3Bars : V3_vs_scifi1y.Fill(b, scifi1yHit)
 
+                            #try to realign with v2
+                            scifi1xHit = scifi1xHit+3
+                            
                             #for scifi-> use x position to estimate bar
-                            scifiExpectedBar = int(np.floor(scifi1xHit/6))
-                            v3hitScifi = True if ( abs( v3HitBar - scifiExpectedBar ) < 2) else False
-                            # if (scifiExpectedBar == 0 and (v3BarQDC[scifiExpectedBar] != -999 or v3BarQDC[scifiExpectedBar+1] != -999) ) : v3hitScifi = True
-                            # elif ( scifiExpectedBar == 7 and (v3BarQDC[scifiExpectedBar] != -999 or v3BarQDC[scifiExpectedBar-1] != -999) ) : v3hitScifi = True                           
-                            # elif ( (scifiExpectedBar > 0  and scifiExpectedBar < 7) and (v3BarQDC[scifiExpectedBar] != -999 or v3BarQDC[scifiExpectedBar-1] != -999 or v3BarQDC[scifiExpectedBar+1] != -999) ) : v3hitScifi = True                           
+                            scifiexpectedXBar = int(np.floor(scifi1xHit/6))
+
+                            v3hitScifi = False
+                            if (scifiexpectedXBar == 0 and (v3BarQDC[scifiexpectedXBar] != DEFAULT or v3BarQDC[scifiexpectedXBar+1] != DEFAULT) ) : v3hitScifi = True
+                            elif ( scifiexpectedXBar == 7 and (v3BarQDC[scifiexpectedXBar] != DEFAULT or v3BarQDC[scifiexpectedXBar-1] != DEFAULT) ) : v3hitScifi = True                           
+                            elif ( (scifiexpectedXBar > 0  and scifiexpectedXBar < 7) and (v3BarQDC[scifiexpectedXBar] != DEFAULT or v3BarQDC[scifiexpectedXBar-1] != DEFAULT or v3BarQDC[scifiexpectedXBar+1] != DEFAULT) ) : v3hitScifi = True                           
 
                             ScifiEfficiency.Fill(v3hitScifi, scifi1xHit, scifi1yHit)
-                            V3_vs_expectedScifi.Fill(v3HitBar - scifiExpectedBar)
-                            V3ExpectedvsScifiPos.Fill(expectedPosition - scifi1xHit)
+                            V3_vs_expectedXScifi.Fill(v3HitBar - scifiexpectedXBar)
+                            V3expectedXvsScifiPos.Fill(expectedXPosition - scifi1xHit)
                             V2PosScifiResidual.Fill(v2XPos - scifi1xHit)
-                            
+
+                            #study y position
+                            scifiexpectedYBar = int(np.floor(scifi1yHit/6))
+                            V2PosYScifiResidual.Fill(v2LHitBar - scifiexpectedYBar)
+
+                    # hits not compatible 
+                    if not v3hit:
+                        Bkg_VetoHits.Fill(v3HitBar)
+                        Bkg_VetoMultiplicity.Fill(v3Multiplicity)
+                        Bkg_VetoBarMultiplicity.Fill(v3BarMultiplicity)
+                        if v3BarMultiplicity > 0 :
+                            for i in range(8): 
+                                if v3BarQDC[i] != DEFAULT : 
+                                    Bkg_V3expectedXvsSignal.Fill(expectedXBar - i)
+                                    Bkg_VetoQdc.Fill(v3BarQDC[i])
 
 
 ############################
@@ -660,11 +693,12 @@ VTimeDiff.Write()
 PositionResidual.Write()
 V1Position.Write()
 V2Position.Write()
-V3ExpectedvsSignal.Write()
-V3ExpectedvsScifiPos.Write()
+V3expectedXvsSignal.Write()
+V3expectedXvsScifiPos.Write()
 V1V2BarResidual.Write()
 V2PosScifiResidual.Write()
-V3_vs_expectedScifi.Write()
+V3_vs_expectedXScifi.Write()
+V2PosYScifiResidual.Write()
 
 VetoHits.Write()
 VetoHitsperBar.Write()
@@ -691,6 +725,11 @@ Close_vs_farEfficiency_Bar4.Write()
 Close_vs_farEfficiency_Bar5.Write()
 Close_vs_farEfficiency_Bar6.Write()
 Close_vs_farEfficiency_Bar7.Write()
+
+Bkg_VetoHits.Write()
+Bkg_VetoMultiplicity.Write()
+Bkg_VetoBarMultiplicity.Write()
+Bkg_V3expectedXvsSignal.Write()
 
 outfile.Close()
 
