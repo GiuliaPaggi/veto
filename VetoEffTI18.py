@@ -17,14 +17,14 @@ def return_ch(map, tofpet_id, tofpet_channel):
     for row in map:
         if (row[4] == str(tofpet_channel) and row[3] == str(tofpet_id%2)):
             return int(row[0])
-    return -1
+    return DEFAULT
 
 def return_bar(map, tofpet_id, tofpet_channel):    
     for row in map:
         if (row[4] == str(tofpet_channel) and row[3] == str(tofpet_id%2)):
             if int(np.floor((int(row[0])-1)/8)) == 7 : print('nope')
             return int(np.floor((int(row[0])-1)/8))
-    return -1
+    return DEFAULT
 
 def is_single_bar(list):
     if all(i == list[0] for i in list) :
@@ -180,6 +180,7 @@ Close_vs_farEfficiency_Bar6 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar6", 
 counter_v2scifi1 = 0
 counter_v2scifi12 = 0
 counter_scifi12 = 0
+counter1 = 0
 Nentries = data.GetEntries()
 for i in range(Nentries):
     entry = data.GetEntry(i)
@@ -251,8 +252,6 @@ for i in range(Nentries):
     vetoQdc = qdc[boardID == 58]
     vetoTime = time[boardID == 58]
 
-    v1LId = vetoId[(vetoId<2)]                      # A: 0-1
-    v1RId = vetoId[(vetoId>5)]                      # D: 6-7
     v2LId = vetoId[(vetoId>1) & (vetoId<4)]         # B: 2-3
     v2RId = vetoId[(vetoId>3) & (vetoId<6)]         # C: 4-5
 
@@ -260,29 +259,38 @@ for i in range(Nentries):
     # select cosmic rays events #
     #############################
 
-    # ask Hits in left and right for both the first two veto planes
-    if len(v1LId) > 0 and len(v1RId) > 0 and len(v2LId) > 0 and len(v2RId) > 0 :      
+    # ask Hits in left and right for v2
+    if len(v2LId) > 0 and len(v2RId) > 0 :      
 
-        v1LTime =vetoTime[(vetoId<2)]
-        v1RTime =vetoTime[(vetoId>5)]
         v2LTime =vetoTime[(vetoId>1) & (vetoId<4)]
         v2RTime =vetoTime[(vetoId>3) & (vetoId<6)]
         
-        v1LPin = vetoCh[(vetoId<2)]
-        v1RPin = vetoCh[(vetoId>5)]
         v2LPin = vetoCh[(vetoId>1) & (vetoId<4)]
         v2RPin = vetoCh[(vetoId>3) & (vetoId<6)]
 
-        v1LQdc = vetoQdc[(vetoId<2)]
-        v1RQdc = vetoQdc[(vetoId>5)]
         v2LQdc = vetoQdc[(vetoId>1) & (vetoId<4)]
         v2RQdc = vetoQdc[(vetoId>3) & (vetoId<6)]
 
-        v1LBars = [return_bar(mapVeto, v1LId[i], v1LPin[i]) for i in range(len(v1LId))]
-        v1RBars = [return_bar(mapVeto, v1RId[i], v1RPin[i]) for i in range(len(v1RId))]
         v2LBars = [return_bar(mapVeto, v2LId[i], v2LPin[i]) for i in range(len(v2LId))]
         v2RBars = [return_bar(mapVeto, v2RId[i], v2RPin[i]) for i in range(len(v2RId))]
-        
+
+
+        # fill hit histos            
+        for i in range(len(v2LId)) : 
+            V2LHits.Fill(return_ch(mapVeto, v2LId[i], v2LPin[i]))
+            if int(np.floor(((return_ch(mapVeto, v2LId[i], v2LPin[i]))-1)/8)) != v2LBars[i] : print(f' canale {return_ch(mapVeto, v2LId[i], v2LPin[i])} barra {v2LBars[i]} mi aspetto {np.floor(((return_ch(mapVeto, v2LId[i], v2LPin[i]))-1)/8)}')
+            if int(np.floor(((return_ch(mapVeto, v2LId[i], v2LPin[i]))-1)/8)) == v2LBars[i] and v2LBars[i] == 0 : counter1 +=1
+
+        for b in v2LBars : V2LHitsperBar.Fill(b)
+            
+        for i in range(len(v2RId)) : 
+            V2RHits.Fill(return_ch(mapVeto, v2RId[i], v2RPin[i]))
+            if int(np.floor(((return_ch(mapVeto, v2RId[i], v2RPin[i]))-1)/8)) != v2RBars[i] : print(f' canale {return_ch(mapVeto, v2RId[i], v2RPin[i])} barra {v2RBars[i]} mi aspetto {np.floor(((return_ch(mapVeto, v2RId[i], v2RPin[i]))-1)/8)}')
+            
+        for b in v2RBars : V2RHitsperBar.Fill(b)
+
+
+        #study qdc
         v2RBarQDC = np.full(7, DEFAULT)
         for i in range(len(v2RId)) :
             if v2RBarQDC[v2RBars[i]] == DEFAULT: v2RBarQDC[v2RBars[i]] = v2RQdc[i]
@@ -314,16 +322,7 @@ for i in range(Nentries):
 
             v2LHitBar = np.array(v2LBarQDC).argmax()
             v2RHitBar = np.array(v2RBarQDC).argmax()
-
-        # fill hit histos            
-        for i in range(len(v2LId)) : 
-            V2LHits.Fill(return_ch(mapVeto, v2LId[i], v2LPin[i]))
-            V2LHitsperBar.Fill(v2LBars[i])
             
-        for i in range(len(v2RId)) : 
-            V2RHits.Fill(return_ch(mapVeto, v2RId[i], v2RPin[i]))
-            V2RHitsperBar.Fill(v2RBars[i])
-        
         # ask for veto 2 and scifi 1 -> deve essere passato da v3
         if is_single_bar(v2RBars) and is_single_bar(v2LBars) and v2LHitBar == v2RHitBar and len(scifi1xId) > 0 and len(scifi1yId) > 0:
             
@@ -572,3 +571,5 @@ Bkg_VetoMultiplicity.Write()
 Bkg_VetoBarMultiplicity.Write()
 
 outfile.Close()
+
+print(counter1)
