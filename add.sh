@@ -7,7 +7,7 @@ unfinished=0
 for file in "$dir"/runs/output_*; do
     if [ -f "$file" ]; then
         size=$(stat -c %s "$file")
-        if (( $size > 100 )); then 
+        if (( $size > 1000 )); then 
             files+=("$file")
             #hadd -f "$dir"/prova.root $file
         else 
