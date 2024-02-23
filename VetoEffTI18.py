@@ -105,20 +105,14 @@ VetoHits = ROOT.TH1D("VetoHits", "Veto Hits; veto channel; entries", DSn_bins, D
 VetoHitsperBar = ROOT.TH1D("VetoHitsperBar", "Veto Hits per Bar; veto bar; entries", nbar, bar_min, bar_max)
 VetoHitMultiplicity = ROOT.TH1D("VetoHitMultiplicity", "Veto Hit Multiplicity;  Hits per event; entries", 20, -.5, 19.5)
 
-Cosmic_V2Hits = ROOT.TH1D("Cosmic_V2Hits", "Cosmic Veto 2 Hits; channel; entries", DSn_bins, DSx_min, DSx_max)
 Cosmic_V2HitsperBar = ROOT.TH1D("Cosmic_V2HitsperBar", "Cosmic Veto 2 Hits perBar; bar; entries", nbar, bar_min, bar_max)
 Cosmic_VetoHits = ROOT.TH1D("Cosmic_VetoHits", "Veto Hits in cosmics events;  veto channel; entries", DSn_bins, DSx_min, DSx_max)
 Cosmic_VetoHitsperBar = ROOT.TH1D("Cosmic_VetoHitsperBar", "Cosmic_Veto Hits per Bar; veto channel; entries", nbar, bar_min, bar_max)
-Cosmic_VetoHitsperPosition = ROOT.TH1D("Cosmic_VetoHitsperPosition", "Cosmic_VetoHitsperPosition; ds V channel; entries", DSn_bins, DSx_min, DSx_max)
-Cosmic_VetoHitMultiplicity = ROOT.TH1D("Cosmic_VetoHitMultiplicity", "Veto Hit Multiplicity in cosmic ray events;  Hits per event; entries", 20, -.5, 19.5)
 
 Bkg_VetoHits = ROOT.TH1D("Bkg_VetoHits", "Veto Hits far from expectedX position;  veto bar; entries", nbar, 0, nbar)
 Bkg_VetoMultiplicity = ROOT.TH1D("Bkg_VetoMultiplicity", "Veto Hits far from expectedX position;  n veto hits; entries", 20, -.5, 19.5)
 Bkg_VetoBarMultiplicity = ROOT.TH1D("Bkg_VetoBarMultiplicity", "Veto Hits far from expectedX position;  n veto bars; entries", 8, -.5, 7.5)
 
-Noise_VetoHits = ROOT.TH1D("Noise_VetoHits", "Veto Hits far from expectedX position;  veto bar; entries", nbar, 0, nbar)
-Noise_VetoMultiplicity = ROOT.TH1D("Noise_VetoMultiplicity", "Veto Hit Multiplicity w/o ds Hits;  Hits per event; entries", 20, -.5, 19.5)
- 
 # qdc
 qdc_min = -20
 qdc_max = 400
@@ -138,22 +132,19 @@ Scifi1yPos_diff = ROOT.TH1D("Scifi1yPos_diff", "Scifi1yPos_diff; Pos qdc max - o
 
 V2LQdc = ROOT.TH1D("V2LQdc", "V2LQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 V2RQdc = ROOT.TH1D("V2RQdc", "V2RQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
-V2Qdc_RvsL = ROOT.TH2D("V2Qdc_RvsL", "V2Qdc_RvsL; V2 R channel; V2 L channel", qdcbin, qdc_min, qdc_max, qdcbin, qdc_min, qdc_max)
 V2RQDCPerBar = ROOT.TH2D("V2RQDCPerBar", "V2RQDCPerBar; v2 R channel; qdc ", nbar, bar_min, bar_max, qdcbin, qdc_min, qdc_max)
 V2LQDCPerBar = ROOT.TH2D("V2LQDCPerBar", "V2LQDCPerBar; v2 L channel; qdc ", nbar, bar_min, bar_max, qdcbin, qdc_min, qdc_max)
 
 VetoQdc = ROOT.TH1D("VetoQdc", "VetoQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 VetoQDCPerChannel = ROOT.TH2D("VetoQDCPerChannel", "VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, qdcbin, qdc_min, qdc_max)
-VetoQDCPerPosition = ROOT.TH2D("VetoQDCPerPosition", "VetoQDCPerPosition; dsV channel; qdc ", DSn_bins, DSx_min, DSx_max, qdcbin, qdc_min, qdc_max)
 VetoQDCPerBar = ROOT.TH2D("VetoQDCPerBar", "VetoQDCPerBar; veto channel; qdc ", nbar, bar_min, bar_max, qdcbin, qdc_min, qdc_max)
 Cosmic_VetoQdc = ROOT.TH1D("Cosmic_VetoQdc", "Cosmic_VetoQdc; veto channel; qdc ", qdcbin, qdc_min, qdc_max)
 Cosmic_VetoQDCPerChannel = ROOT.TH2D("Cosmic_VetoQDCPerChannel", "Cosmic_VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, qdcbin, qdc_min, qdc_max)
 Cosmic_VetoQDCPerBar = ROOT.TH2D("Cosmic_VetoQDCPerBar", "Cosmic_VetoQDCPerBar; veto channel; qdc ", nbar, bar_min, bar_max, qdcbin, qdc_min, qdc_max)
 Bkg_VetoQdc = ROOT.TH1D("Bkg_VetoQdc", "Bkg_VetoQdc; veto channel; qdc ", qdcbin, qdc_min, qdc_max)
-Noise_VetoQdc = ROOT.TH1D("Noise_VetoQdc", "Noise_VetoQdc; veto channel; qdc ", qdcbin, qdc_min, qdc_max)
 
 #Alignment
-Scifi1Pos = ROOT.TH2D("Scifi1xPos", "Scifi1xPos; scifi1x; scifi1y", scifidim, scifi_min, scifi_max, scifidim, scifi_min, scifi_max)
+Scifi1Pos = ROOT.TH2D("Scifi1Pos", "Scifi1Pos; scifi1x; scifi1y", scifidim, scifi_min, scifi_max, scifidim, scifi_min, scifi_max)
 Scifi2Pos = ROOT.TH2D("Scifi2Pos", "Scifi2Pos; scifi2x; scifi2y", scifidim, scifi_min, scifi_max, scifidim, scifi_min, scifi_max)
 
 V2_vs_V3 = ROOT.TH2D("V2_vs_V3", "V2_vs_V3; v2 bar; v3 bar", nbar, bar_min, bar_max, nbar, bar_min, bar_max)
@@ -162,22 +153,14 @@ V2_vs_scifi1y = ROOT.TH2D("V2_vs_scifi1y", "V2_vs_scifi1y; v2 channel; scifi1y c
 V3_vs_scifi1x = ROOT.TH2D("V3_vs_scifi1x", "V3_vs_scifi1x; v3 channel; scifi1x channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
 V3_vs_scifi1y = ROOT.TH2D("V3_vs_scifi1y", "V3_vs_scifi1y; v3 channel; scifi1y channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
 
-ExpectedBarV2Residual = ROOT.TH1D("ExpectedBarV2Residual", "ExpectedBarV2Residual; expected bar from scifi1 - v2 hit bar; entries", 17, -8.5, 8.5)
 ExpectedBarV3Residual = ROOT.TH1D("ExpectedBarV3Residual", "ExpectedBarV3Residual; expected bar from scifi1 and 2 - v3 hit bar; entries", 17, -8.5, 8.5)
-V3_vs_expectedXScifi = ROOT.TH1D("V3_vs_expectedXScifi", "V3_vs_expectedXScifi; v3HitBar - scifiexpectedXBar ; entries", 20, -10, 10)
-
-ExpectedY = ROOT.TH1D("ExpectedY", "Y bar computed; y bar computed - hit in v2; entries", 17, -8.5, 8.5)
 ExpectedPos = ROOT.TH2D("ExpectedPos", "ExpectedPos using scifi 1 and scifi 2; expected x ; expected y", scifidim, scifi_min, scifi_max, scifidim, scifi_min, scifi_max)
 
 
 # Efficiency
 Efficiency = ROOT.TEfficiency("Efficiency", "Efficiency; scifi 1 x; scifi 1 y", scifidim, scifi_min, scifi_max, scifidim, scifi_min, scifi_max)
-EfficiencyX = ROOT.TEfficiency("EfficiencyX", "Efficiency; scifi 1 x; efficiency", scifidim, scifi_min, scifi_max)
-EfficiencyY = ROOT.TEfficiency("EfficiencyY", "Efficiency; scifi 1 y; efficiency", scifidim, scifi_min, scifi_max)
-
-Scifi12Efficiency = ROOT.TEfficiency("Scifi12Efficiency", "Efficiency using scifi 1 e 2; expectedX v3 pos ; expected v3 y ", scifidim, scifi_min, scifi_max, scifidim, scifi_min, scifi_max)
-Scifi12EfficiencyX = ROOT.TEfficiency("Scifi12EfficiencyX", "Efficiency using scifi 1 e 2; expectedX v3 pos ; efficiency ", 43, -0.5, 42.5)
-Scifi12EfficiencyY = ROOT.TEfficiency("Scifi12EfficiencyY", "Efficiency using scifi 1 e 2; expectedY v3 pos ; efficiency ", 43, -0.5, 42.5)
+EfficiencyX = ROOT.TEfficiency("EfficiencyX", "Efficiency x; expected v3 x", scifidim, scifi_min, scifi_max)
+EfficiencyY = ROOT.TEfficiency("EfficiencyY", "Efficiency y; expected v3 y", scifidim, scifi_min, scifi_max)
 
 Close_vs_farEfficiency = ROOT.TEfficiency( "Close_vs_farEfficiency", "Close_vs_farEfficiency", 4 , 0, 4)
 Close_vs_farEfficiency_Bar0 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar0", "Close_vs_farEfficiency_Bar0", 4, 0, 4 )
@@ -192,9 +175,6 @@ Close_vs_farEfficiency_Bar6 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar6", 
 ###################
 # loop on entries #
 ###################
-counter_v2scifi1 = 0
-counter_v2scifi12 = 0
-counter_scifi12 = 0
  
 Nentries = data.GetEntries()
 for i in range(Nentries):
@@ -225,8 +205,6 @@ for i in range(Nentries):
     scifi2yId = tofID[(boardID == 16) | (boardID == 14) | (boardID == 18)]
     scifi2yPin = tofChannel[(boardID == 16) | (boardID == 14) | ( boardID == 18)]
     scifi2yQdc = qdc[(boardID == 16) | (boardID == 14) | (boardID == 18)]
-
-    if len(scifi1xId) > 0 and len(scifi1yId) > 0 and len(scifi2xId) > 0 and len(scifi2yId) > 0 : counter_scifi12 += 1 
 
     for v in scifi1xQdc: Scifi1xQdc.Fill(v)
     for v in scifi1yQdc: Scifi1yQdc.Fill(v)
@@ -336,8 +314,6 @@ for i in range(Nentries):
         # ask for veto 2 and scifi 1 -> must have passed through v3
         if is_single_bar(v2RBars) and is_single_bar(v2LBars) and v2LHitBar == v2RHitBar and len(scifi1xId) > 0 and len(scifi1yId) > 0:
             
-            counter_v2scifi1 += 1
-            
             V2LQdc.Fill(v2LHitQdc)
             V2RQdc.Fill(v2RHitQdc)
     
@@ -403,64 +379,32 @@ for i in range(Nentries):
 
             V2_vs_scifi1y.Fill(v2LHitBar, scifi1yHit)
             for b in v3Bars : V3_vs_scifi1y.Fill(b, scifi1yHit)
-
-            # fill veto 3 plots in cosmic events
-            if v3Multiplicity > 0:
-                for i in range(v3Multiplicity):
-                    
-                    Cosmic_VetoHits.Fill(v3Ch[i])
-                    Cosmic_VetoHitsperBar.Fill(v3Bars[i])
-                    Cosmic_VetoQdc.Fill(v3Qdc[i])
-                    Cosmic_VetoQDCPerChannel.Fill(v3Ch[i], v3Qdc[i])
-                
-                for i in v3Bars :
-                    V2_vs_V3.Fill(v2LHitBar, i)
-                
-                for i in v3Bars : 
-                    if v3BarQDC[i] != DEFAULT : 
-                        Cosmic_VetoQDCPerBar.Fill(i, v3BarQDC[i])
-
-            v3HitBar = np.array(v3BarQDC).argmax() if max(v3BarQDC) != DEFAULT else DEFAULT
             
-            #for scifi-> use x position to estimate bar
-            expectedXBar = int(np.floor(scifi1xHit/6))
-
-            #check average distance 
-            expectedYBar = int(np.floor(scifi1yHit/6))
-            ExpectedBarV2Residual.Fill(expectedYBar-v2LHitBar)
-
-            #try to compute expected position in y in V2 using bars as unit
-            expYBar = v2LHitBar - (VETODISTANCE * (expectedYBar - v2LHitBar)/(VETODISTANCE+EMULSIONDIM))
-            ExpectedY.Fill(expYBar - expectedYBar)
-
-            v3hit = False
-            if (expectedXBar == 0 and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar+1] != DEFAULT) ) : v3hit = True
-            elif ( expectedXBar == 6 and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar-1] != DEFAULT) ) : v3hit = True                           
-            elif ( (expectedXBar > 0  and expectedXBar < 6) and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar-1] != DEFAULT or v3BarQDC[expectedXBar+1] != DEFAULT) ) : v3hit = True                           
-
-            Efficiency.Fill(v3hit, scifi1xHit, scifi1yHit)
-            EfficiencyX.Fill(v3hit, scifi1xHit)
-            EfficiencyY.Fill(v3hit, scifi1yHit)
-            Close_vs_farEfficiency.Fill(v3hit, int(np.floor(v2LHitBar/2)))
-        
-            if not v3hit : V3_vs_expectedXScifi.Fill(v3HitBar - expectedXBar)
-
-            # hits not compatible 
-            if not v3hit:
-                Bkg_VetoHits.Fill(v3HitBar)
-                Bkg_VetoMultiplicity.Fill(v3Multiplicity)
-                Bkg_VetoBarMultiplicity.Fill(v3BarMultiplicity)
-                if v3BarMultiplicity > 0 :
-                    for i in range(7): 
-                        if v3BarQDC[i] != DEFAULT : 
-                            Bkg_VetoQdc.Fill(v3BarQDC[i])
-            
-
-            # check if there's also scifi 2 
+            # ask also scifi 2 
             if len(scifi2xId) > 0 and len(scifi2yId) > 0 : 
-                
-                counter_v2scifi12 += 1
 
+                # fill veto 3 plots in cosmic events
+                if v3Multiplicity > 0:
+                    for i in range(v3Multiplicity):
+                    
+                        Cosmic_VetoHits.Fill(v3Ch[i])
+                        Cosmic_VetoHitsperBar.Fill(v3Bars[i])
+                        Cosmic_VetoQdc.Fill(v3Qdc[i])
+                        Cosmic_VetoQDCPerChannel.Fill(v3Ch[i], v3Qdc[i])
+                    
+                    for i in v3Bars :
+                        V2_vs_V3.Fill(v2LHitBar, i)
+                    
+                    for i in v3Bars : 
+                        if v3BarQDC[i] != DEFAULT : 
+                            Cosmic_VetoQDCPerBar.Fill(i, v3BarQDC[i])
+
+                v3HitBar = np.array(v3BarQDC).argmax() if max(v3BarQDC) != DEFAULT else DEFAULT
+
+                # check cosmic distribution in V2 bars
+                Cosmic_V2HitsperBar.Fill(v2LHitBar)
+
+                #find position for scifi 2 hit
                 scifi2xHitCh = [scifi_map[str(scifi2xBoard[i])]*512 + scifi2xId[i]*64 + 63 - scifi2xPin[i] for i in range(len(scifi2xId))]
                 scifi2yHitCh = [scifi_map[str(scifi2yBoard[i])]*512 + scifi2yId[i]*64 + 63 - scifi2yPin[i] for i in range(len(scifi2yId))]
                 
@@ -507,24 +451,35 @@ for i in range(Nentries):
                 ExpectedBarV3Residual.Fill(v3HitBar- int(np.floor(v3xExpectedPos/6)) )
 
                 if v3xExpectedPos >= 0 and v3xExpectedPos <=42 and v3yExpectedPos >=0 and v3yExpectedPos <=42 :
-                    scifiexpectedXBar = int(np.floor(v3xExpectedPos/6))
+                    expectedXBar = int(np.floor(v3xExpectedPos/6))
                     
-                    v3hitScifi12 = False
-                    if (scifiexpectedXBar == 0 and (v3BarQDC[scifiexpectedXBar] != DEFAULT or v3BarQDC[scifiexpectedXBar+1] != DEFAULT) ) : v3hitScifi12 = True
-                    elif ( scifiexpectedXBar == 6 and (v3BarQDC[scifiexpectedXBar] != DEFAULT or v3BarQDC[scifiexpectedXBar-1] != DEFAULT) ) : v3hitScifi12 = True                           
-                    elif ( (scifiexpectedXBar > 0  and scifiexpectedXBar < 6) and (v3BarQDC[scifiexpectedXBar] != DEFAULT or v3BarQDC[scifiexpectedXBar-1] != DEFAULT or v3BarQDC[scifiexpectedXBar+1] != DEFAULT) ) : v3hitScifi12 = True          
+                    v3hit = False
+                    if (expectedXBar == 0 and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar+1] != DEFAULT) ) : v3hit = True
+                    elif ( expectedXBar == 6 and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar-1] != DEFAULT) ) : v3hit = True                           
+                    elif ( (expectedXBar > 0  and expectedXBar < 6) and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar-1] != DEFAULT or v3BarQDC[expectedXBar+1] != DEFAULT) ) : v3hit = True          
 
-                    Scifi12Efficiency.Fill(v3hitScifi12, v3xExpectedPos, v3yExpectedPos)
-                    Scifi12EfficiencyX.Fill(v3hitScifi12, v3xExpectedPos)
-                    Scifi12EfficiencyY.Fill(v3hitScifi12, v3yExpectedPos)
+                    Efficiency.Fill(v3hit, v3xExpectedPos, v3yExpectedPos)
+                    EfficiencyX.Fill(v3hit, v3xExpectedPos)
+                    EfficiencyY.Fill(v3hit, v3yExpectedPos)
 
-                    if scifiexpectedXBar == 0 : Close_vs_farEfficiency_Bar0.Fill(v3hit, int(v3yExpectedPos/3))
-                    if scifiexpectedXBar == 1 : Close_vs_farEfficiency_Bar1.Fill(v3hit, int(v3yExpectedPos/3))
-                    if scifiexpectedXBar == 2 : Close_vs_farEfficiency_Bar2.Fill(v3hit, int(v3yExpectedPos/3))
-                    if scifiexpectedXBar == 3 : Close_vs_farEfficiency_Bar3.Fill(v3hit, int(v3yExpectedPos/3))
-                    if scifiexpectedXBar == 4 : Close_vs_farEfficiency_Bar4.Fill(v3hit, int(v3yExpectedPos/3))
-                    if scifiexpectedXBar == 5 : Close_vs_farEfficiency_Bar5.Fill(v3hit, int(v3yExpectedPos/3))
-                    if scifiexpectedXBar == 6 : Close_vs_farEfficiency_Bar6.Fill(v3hit, int(v3yExpectedPos/3))
+                    if expectedXBar == 0 : Close_vs_farEfficiency_Bar0.Fill(v3hit, int(v3yExpectedPos/3))
+                    if expectedXBar == 1 : Close_vs_farEfficiency_Bar1.Fill(v3hit, int(v3yExpectedPos/3))
+                    if expectedXBar == 2 : Close_vs_farEfficiency_Bar2.Fill(v3hit, int(v3yExpectedPos/3))
+                    if expectedXBar == 3 : Close_vs_farEfficiency_Bar3.Fill(v3hit, int(v3yExpectedPos/3))
+                    if expectedXBar == 4 : Close_vs_farEfficiency_Bar4.Fill(v3hit, int(v3yExpectedPos/3))
+                    if expectedXBar == 5 : Close_vs_farEfficiency_Bar5.Fill(v3hit, int(v3yExpectedPos/3))
+                    if expectedXBar == 6 : Close_vs_farEfficiency_Bar6.Fill(v3hit, int(v3yExpectedPos/3))
+
+                    # hits not compatible 
+                    if not v3hit:
+                        Bkg_VetoHits.Fill(v3HitBar)
+                        Bkg_VetoMultiplicity.Fill(v3Multiplicity)
+                        Bkg_VetoBarMultiplicity.Fill(v3BarMultiplicity)
+                        if v3BarMultiplicity > 0 :
+                            for i in range(7): 
+                                if v3BarQDC[i] != DEFAULT : 
+                                    Bkg_VetoQdc.Fill(v3BarQDC[i])
+            
 
 
 ############################
@@ -555,18 +510,16 @@ Scifi1xQdc_residual.Write()
 Scifi1xQdc_max.Write()
 Scifi1xQdc_others.Write()
 Scifi1yQdc_residual.Write()
-Scifi1xQdc_max.Write()
-Scifi1xQdc_others.Write()
+Scifi1yQdc_max.Write()
+Scifi1yQdc_others.Write()
 
 Scifi1Pos.Write()
 Scifi2Pos.Write()
 Scifi1xPos_diff.Write()
 Scifi1yPos_diff.Write()
 
-ExpectedBarV2Residual.Write()
 ExpectedBarV3Residual.Write()
-V3_vs_expectedXScifi.Write()
-ExpectedY.Write()
+ExpectedPos.Write()
 
 VetoHits.Write()
 VetoHitsperBar.Write()
@@ -574,6 +527,7 @@ VetoQdc.Write()
 VetoQDCPerChannel.Write()
 VetoQDCPerBar.Write()
 
+Cosmic_V2HitsperBar.Write()
 Cosmic_VetoHits.Write()
 Cosmic_VetoHitsperBar.Write()
 Cosmic_VetoQdc.Write()
@@ -583,9 +537,6 @@ Cosmic_VetoQDCPerBar.Write()
 Efficiency.Write()
 EfficiencyX.Write()
 EfficiencyY.Write()
-Scifi12Efficiency.Write()
-Scifi12EfficiencyX.Write()
-Scifi12EfficiencyY.Write()
 Close_vs_farEfficiency.Write()
 Close_vs_farEfficiency_Bar0.Write()
 Close_vs_farEfficiency_Bar1.Write()
@@ -598,5 +549,6 @@ Close_vs_farEfficiency_Bar6.Write()
 Bkg_VetoHits.Write()
 Bkg_VetoMultiplicity.Write()
 Bkg_VetoBarMultiplicity.Write()
+Bkg_VetoQdc.Write()
 
 outfile.Close()
