@@ -160,6 +160,7 @@ ExpectedPos = ROOT.TH2D("ExpectedPos", "ExpectedPos using scifi 1 and scifi 2; e
 # Efficiency
 Efficiency = ROOT.TEfficiency("Efficiency", "Efficiency; scifi 1 x; scifi 1 y", scifidim, scifi_min, scifi_max, scifidim, scifi_min, scifi_max)
 EfficiencyX = ROOT.TEfficiency("EfficiencyX", "Efficiency x; expected v3 x", scifidim, scifi_min, scifi_max)
+EfficiencyBarX = ROOT.TEfficiency("EfficiencyBarX", "Efficiency x; expected v3 bar", nbar, bar_min, bar_max)
 EfficiencyY = ROOT.TEfficiency("EfficiencyY", "Efficiency y; expected v3 y", scifidim, scifi_min, scifi_max)
 
 Close_vs_farEfficiency = ROOT.TEfficiency( "Close_vs_farEfficiency", "Close_vs_farEfficiency", 4 , 0, 4)
@@ -460,6 +461,7 @@ for i in range(Nentries):
 
                     Efficiency.Fill(v3hit, v3xExpectedPos, v3yExpectedPos)
                     EfficiencyX.Fill(v3hit, v3xExpectedPos)
+                    EfficiencyBarX.Fill(v3hit, expectedXBar)
                     EfficiencyY.Fill(v3hit, v3yExpectedPos)
 
                     if expectedXBar == 0 : Close_vs_farEfficiency_Bar0.Fill(v3hit, int(v3yExpectedPos/3))
@@ -536,6 +538,7 @@ Cosmic_VetoQDCPerBar.Write()
 
 Efficiency.Write()
 EfficiencyX.Write()
+EfficiencyBarX.Write()
 EfficiencyY.Write()
 Close_vs_farEfficiency.Write()
 Close_vs_farEfficiency_Bar0.Write()
