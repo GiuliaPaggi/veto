@@ -455,14 +455,14 @@ for i in range(Nentries):
                     expectedXBar = int(np.floor(v3xExpectedPos/6))
                     
                     v3hit = False
-                    if (expectedXBar == 0 and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar+1] != DEFAULT) ) : v3hit = True
-                    elif ( expectedXBar == 6 and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar-1] != DEFAULT) ) : v3hit = True                           
-                    elif ( (expectedXBar > 0  and expectedXBar < 6) and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar-1] != DEFAULT or v3BarQDC[expectedXBar+1] != DEFAULT) ) : v3hit = True          
+                    
+                    if v3BarQDC[expectedXBar] != DEFAULT : v3hit = True
 
                     Efficiency.Fill(v3hit, v3xExpectedPos, v3yExpectedPos)
                     EfficiencyX.Fill(v3hit, v3xExpectedPos)
                     EfficiencyBarX.Fill(v3hit, expectedXBar)
                     EfficiencyY.Fill(v3hit, v3yExpectedPos)
+                    Close_vs_farEfficiency.Fill(v3hit, int(v3yExpectedPos/3))
 
                     if expectedXBar == 0 : Close_vs_farEfficiency_Bar0.Fill(v3hit, int(v3yExpectedPos/3))
                     if expectedXBar == 1 : Close_vs_farEfficiency_Bar1.Fill(v3hit, int(v3yExpectedPos/3))
