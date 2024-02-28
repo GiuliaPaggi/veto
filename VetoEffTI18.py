@@ -93,7 +93,9 @@ scifich = 512*3
 scifidim = 39
 scifi_min = -0.5 
 scifi_max = 38.5
-vetobin = 45
+vetobin = 43
+veto_min = -.5
+veto_max = 42.5
 
 
 # Hits info 
@@ -158,10 +160,10 @@ ExpectedPos = ROOT.TH2D("ExpectedPos", "ExpectedPos using scifi 1 and scifi 2; e
 
 
 # Efficiency
-Efficiency = ROOT.TEfficiency("Efficiency", "Efficiency; scifi 1 x; scifi 1 y", scifidim, scifi_min, scifi_max, scifidim, scifi_min, scifi_max)
-EfficiencyX = ROOT.TEfficiency("EfficiencyX", "Efficiency x; expected v3 x", scifidim, scifi_min, scifi_max)
+Efficiency = ROOT.TEfficiency("Efficiency", "Efficiency; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
+EfficiencyX = ROOT.TEfficiency("EfficiencyX", "Efficiency x; expected v3 x", vetobin, veto_min, veto_max)
 EfficiencyBarX = ROOT.TEfficiency("EfficiencyBarX", "Efficiency x; expected v3 bar", nbar, bar_min, bar_max)
-EfficiencyY = ROOT.TEfficiency("EfficiencyY", "Efficiency y; expected v3 y", scifidim, scifi_min, scifi_max)
+EfficiencyY = ROOT.TEfficiency("EfficiencyY", "Efficiency y; expected v3 y", vetobin, veto_min, veto_max)
 
 Close_vs_farEfficiency = ROOT.TEfficiency( "Close_vs_farEfficiency", "Close_vs_farEfficiency", 4 , 0, 4)
 Close_vs_farEfficiency_Bar0 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar0", "Close_vs_farEfficiency_Bar0", 4, 0, 4 )
@@ -321,8 +323,8 @@ for i in range(Nentries):
             scifi1xHitCh = [scifi_map[str(scifi1xBoard[i])]*512 + scifi1xId[i]*64 + 63 - scifi1xPin[i] for i in range(len(scifi1xId))]
             scifi1yHitCh = [scifi_map[str(scifi1yBoard[i])]*512 + scifi1yId[i]*64 + 63 - scifi1yPin[i] for i in range(len(scifi1yId))]
 
-            scifi1xHitPos = [(scifi_map[str(scifi1xBoard[i])]*512 + scifi1xId[i]*64 + 63 - scifi1xPin[i])*0.025 for i in range(len(scifi1xId))]
-            scifi1yHitPos = [(scifi_map[str(scifi1yBoard[i])]*512 + scifi1yId[i]*64 + 63 - scifi1yPin[i])*0.025 for i in range(len(scifi1yId))]
+            scifi1xHitPos = [scifi1xHitCh[i]*0.025 for i in range(len(scifi1xId))]
+            scifi1yHitPos = [scifi1yHitCh[i]*0.025 for i in range(len(scifi1yId))]
             
             #find position of scifi hit
             # if there's exactly one easy
@@ -449,14 +451,16 @@ for i in range(Nentries):
                 v3xExpectedPos = scifi1xHit + (scifi1xHit - scifi2xHit)
 
                 ExpectedPos.Fill(v3xExpectedPos, v3yExpectedPos)
-                ExpectedBarV3Residual.Fill(v3HitBar- int(np.floor(v3xExpectedPos/6)) )
+                ExpectedBarV3Residual.Fill(v3HitBar - int(np.floor(v3xExpectedPos/6)) )
 
-                if v3xExpectedPos >= 0 and v3xExpectedPos <=42 and v3yExpectedPos >=0 and v3yExpectedPos <=42 :
+                if v3xExpectedPos >= 0 and v3xExpectedPos <= 42 and v3yExpectedPos >= 0 and v3yExpectedPos <= 42 :
                     expectedXBar = int(np.floor(v3xExpectedPos/6))
                     
                     v3hit = False
                     
-                    if v3BarQDC[expectedXBar] != DEFAULT : v3hit = True
+                    if (expectedXBar == 0 and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar+1] != DEFAULT) ) : v3hit = True
+                    elif ( expectedXBar == 6 and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar-1] != DEFAULT) ) : v3hit = True                           
+                    elif ( (expectedXBar > 0  and expectedXBar < 6) and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar-1] != DEFAULT or v3BarQDC[expectedXBar+1] != DEFAULT) ) : v3hit = True          
 
                     Efficiency.Fill(v3hit, v3xExpectedPos, v3yExpectedPos)
                     EfficiencyX.Fill(v3hit, v3xExpectedPos)
