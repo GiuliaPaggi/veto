@@ -5,22 +5,44 @@ import ROOT
 
 f = ROOT.TFile.Open(f'./results/analisysResult.root', 'read')
 eff = f.Get('Close_vs_farEfficiency')
+errors = [0]*3
+barErrors = ([0,0,0])*7
 barEff = [None]*7
 relBarEff = [0]*7
+relBarError = [0]*7
+
 for i in range(7):
     barEff[i]= f.Get(f'Close_vs_farEfficiency_Bar{i}')
 
 # compute relative efficiency
 
-relEff = eff.GetEfficiency(1)/eff.GetEfficiency(3)
+relEff = eff.GetEfficiency(1)/eff.GetEfficiency(4)
+
+for i in range(1, 5, 2) : 
+    low = eff.GetEfficiencyErrorLow(i)
+    up = eff.GetEfficiencyErrorUp(i)
+    errors[i-1] = low if (low > up) else up
+
+# in division propagation of error -> relative error is sum of relatives error
+eff_error = ((errors[0]/eff.GetEfficiency(1)) + (errors[2]/eff.GetEfficiency(4))) * relEff
+#eff.GetPassedHistogram().GetBinContent(1)
 
 for i in range(7):
-    relBarEff[i] = barEff[i].GetEfficiency(1)/barEff[i].GetEfficiency(3)
+    relBarEff[i] = barEff[i].GetEfficiency(1)/barEff[i].GetEfficiency(4)
+
+    for j in range(1, 5, 2) : 
+        print(i,j, (3*i+(j-1)))
+        low = eff.GetEfficiencyErrorLow(j)
+        up = eff.GetEfficiencyErrorUp(j)
+        barErrors[3*i+(j-1)] = low if (low > up) else up
+    
+    relBarError[i] = ( ( barErrors[3*i] / barEff[i].GetEfficiency(1) ) + ( barErrors[(3*i)+2] / barEff[i].GetEfficiency(4) ) ) * relBarEff[i]
+
 
 with open(f'./results/RelEff.txt', 'w') as f:
-    f.write(f'Veto relative efficiency is {relEff}')
+    f.write(f'Veto relative efficiency is {round(relEff,4)} pm {round(eff_error,4)}')
     for i in range(7) :
-        f.write(f'\nVeto bar {i} relative efficiency is {relBarEff[i]}')
+        f.write(f'\nVeto bar {i} relative efficiency is {round(relBarEff[i],4)} pm {round(relBarError[i], 4)}')
 
 # draw superimposed 7 bars
 colors = [ROOT.kRed,ROOT.kGreen,ROOT.kBlue,ROOT.kMagenta,ROOT.kCyan,ROOT.kOrange,ROOT.kOrange+3,ROOT.kTeal,ROOT.kSpring,ROOT.kViolet,ROOT.kYellow]
