@@ -158,12 +158,19 @@ V3_vs_scifi1y = ROOT.TH2D("V3_vs_scifi1y", "V3_vs_scifi1y; v3 channel; scifi1y c
 ExpectedBarV3Residual = ROOT.TH1D("ExpectedBarV3Residual", "ExpectedBarV3Residual; expected bar from scifi1 and 2 - v3 hit bar; entries", 17, -8.5, 8.5)
 ExpectedPos = ROOT.TH2D("ExpectedPos", "ExpectedPos using scifi 1 and scifi 2; expected x ; expected y", scifidim, scifi_min, scifi_max, scifidim, scifi_min, scifi_max)
 
-
 # Efficiency
 Efficiency = ROOT.TEfficiency("Efficiency", "Efficiency; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
-EfficiencyX = ROOT.TEfficiency("EfficiencyX", "Efficiency x; expected v3 x", vetobin, veto_min, veto_max)
-EfficiencyBarX = ROOT.TEfficiency("EfficiencyBarX", "Efficiency x; expected v3 bar", nbar, bar_min, bar_max)
-EfficiencyY = ROOT.TEfficiency("EfficiencyY", "Efficiency y; expected v3 y", vetobin, veto_min, veto_max)
+EfficiencyX = ROOT.TEfficiency("EfficiencyX", "Efficiency x; expected x (cm); efficiency", vetobin, veto_min, veto_max)
+EfficiencyBarX = ROOT.TEfficiency("EfficiencyBarX", "Efficiency x; expected bar; efficiency", nbar, bar_min, bar_max)
+EfficiencyY = ROOT.TEfficiency("EfficiencyY", "Efficiency y; expected y(cm); efficiency", vetobin, veto_min, veto_max)
+
+EfficiencyY_Bar0 = ROOT.TEfficiency("EfficiencyY_Bar0", "Efficiency y_Bar0; expected y(cm); efficiency", vetobin, veto_min, veto_max)
+EfficiencyY_Bar1 = ROOT.TEfficiency("EfficiencyY_Bar1", "Efficiency y_Bar1; expected y(cm); efficiency", vetobin, veto_min, veto_max)
+EfficiencyY_Bar2 = ROOT.TEfficiency("EfficiencyY_Bar2", "Efficiency y_Bar2; expected y(cm); efficiency", vetobin, veto_min, veto_max)
+EfficiencyY_Bar3 = ROOT.TEfficiency("EfficiencyY_Bar3", "Efficiency y_Bar3; expected y(cm); efficiency", vetobin, veto_min, veto_max)
+EfficiencyY_Bar4 = ROOT.TEfficiency("EfficiencyY_Bar4", "Efficiency y_Bar4; expected y(cm); efficiency", vetobin, veto_min, veto_max)
+EfficiencyY_Bar5 = ROOT.TEfficiency("EfficiencyY_Bar5", "Efficiency y_Bar5; expected y(cm); efficiency", vetobin, veto_min, veto_max)
+EfficiencyY_Bar6 = ROOT.TEfficiency("EfficiencyY_Bar6", "Efficiency y_Bar6; expected y(cm); efficiency", vetobin, veto_min, veto_max)
 
 Close_vs_farEfficiency = ROOT.TEfficiency( "Close_vs_farEfficiency", "Close_vs_farEfficiency", 4 , 0, 4)
 Close_vs_farEfficiency_Bar0 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar0", "Close_vs_farEfficiency_Bar0", 4, 0, 4 )
@@ -173,7 +180,6 @@ Close_vs_farEfficiency_Bar3 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar3", 
 Close_vs_farEfficiency_Bar4 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar4", "Close_vs_farEfficiency_Bar4", 4, 0, 4 )
 Close_vs_farEfficiency_Bar5 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar5", "Close_vs_farEfficiency_Bar5", 4, 0, 4 )
 Close_vs_farEfficiency_Bar6 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar6", "Close_vs_farEfficiency_Bar6", 4, 0, 4 )
-
 
 ###################
 # loop on entries #
@@ -411,8 +417,8 @@ for i in range(Nentries):
                 scifi2xHitCh = [scifi_map[str(scifi2xBoard[i])]*512 + scifi2xId[i]*64 + 63 - scifi2xPin[i] for i in range(len(scifi2xId))]
                 scifi2yHitCh = [scifi_map[str(scifi2yBoard[i])]*512 + scifi2yId[i]*64 + 63 - scifi2yPin[i] for i in range(len(scifi2yId))]
                 
-                scifi2xHitPos = [(scifi_map[str(scifi2xBoard[i])]*512 + scifi2xId[i]*64 + 63 - scifi2xPin[i])*0.025 for i in range(len(scifi2xId))]
-                scifi2yHitPos = [(scifi_map[str(scifi2yBoard[i])]*512 + scifi2yId[i]*64 + 63 - scifi2yPin[i])*0.025 for i in range(len(scifi2yId))]
+                scifi2xHitPos = [scifi2xHitCh[i]*0.025 for i in range(len(scifi2xId))]
+                scifi2yHitPos = [scifi2yHitCh[i]*0.025 for i in range(len(scifi2yId))]
                 
                 if len(scifi2xId) == 1 and len(scifi2yId) == 1 : 
                     scifi2xHit = scifi2xHitPos[0]
@@ -453,7 +459,7 @@ for i in range(Nentries):
                 ExpectedPos.Fill(v3xExpectedPos, v3yExpectedPos)
                 ExpectedBarV3Residual.Fill(v3HitBar - int(np.floor(v3xExpectedPos/6)) )
 
-                if v3xExpectedPos >= 0 and v3xExpectedPos <= 42 and v3yExpectedPos >= 0 and v3yExpectedPos <= 42 :
+                if v3xExpectedPos >= 0 and v3xExpectedPos <= 42 and v3yExpectedPos >= 0 and v3yExpectedPos <= 42 and compatibleV2:
                     expectedXBar = int(np.floor(v3xExpectedPos/6))
                     
                     v3hit = False
@@ -468,13 +474,27 @@ for i in range(Nentries):
                     EfficiencyY.Fill(v3hit, v3yExpectedPos)
                     Close_vs_farEfficiency.Fill(v3hit, int(v3yExpectedPos/3))
 
-                    if expectedXBar == 0 : Close_vs_farEfficiency_Bar0.Fill(v3hit, int(v3yExpectedPos/3))
-                    if expectedXBar == 1 : Close_vs_farEfficiency_Bar1.Fill(v3hit, int(v3yExpectedPos/3))
-                    if expectedXBar == 2 : Close_vs_farEfficiency_Bar2.Fill(v3hit, int(v3yExpectedPos/3))
-                    if expectedXBar == 3 : Close_vs_farEfficiency_Bar3.Fill(v3hit, int(v3yExpectedPos/3))
-                    if expectedXBar == 4 : Close_vs_farEfficiency_Bar4.Fill(v3hit, int(v3yExpectedPos/3))
-                    if expectedXBar == 5 : Close_vs_farEfficiency_Bar5.Fill(v3hit, int(v3yExpectedPos/3))
-                    if expectedXBar == 6 : Close_vs_farEfficiency_Bar6.Fill(v3hit, int(v3yExpectedPos/3))
+                    if expectedXBar == 0 : 
+                        Close_vs_farEfficiency_Bar0.Fill(v3hit, int(v3yExpectedPos/3))
+                        EfficiencyY_Bar0.Fill(v3hit, v3yExpectedPos)
+                    if expectedXBar == 1 : 
+                        Close_vs_farEfficiency_Bar1.Fill(v3hit, int(v3yExpectedPos/3))
+                        EfficiencyY_Bar1.Fill(v3hit, v3yExpectedPos)
+                    if expectedXBar == 2 : 
+                        Close_vs_farEfficiency_Bar2.Fill(v3hit, int(v3yExpectedPos/3))
+                        EfficiencyY_Bar2.Fill(v3hit, v3yExpectedPos)
+                    if expectedXBar == 3 : 
+                        Close_vs_farEfficiency_Bar3.Fill(v3hit, int(v3yExpectedPos/3))
+                        EfficiencyY_Bar3.Fill(v3hit, v3yExpectedPos)
+                    if expectedXBar == 4 : 
+                        Close_vs_farEfficiency_Bar4.Fill(v3hit, int(v3yExpectedPos/3))
+                        EfficiencyY_Bar4.Fill(v3hit, v3yExpectedPos)
+                    if expectedXBar == 5 : 
+                        Close_vs_farEfficiency_Bar5.Fill(v3hit, int(v3yExpectedPos/3))
+                        EfficiencyY_Bar5.Fill(v3hit, v3yExpectedPos)
+                    if expectedXBar == 6 : 
+                        Close_vs_farEfficiency_Bar6.Fill(v3hit, int(v3yExpectedPos/3))
+                        EfficiencyY_Bar6.Fill(v3hit, v3yExpectedPos)
 
                     # hits not compatible 
                     if not v3hit:
@@ -544,6 +564,13 @@ Efficiency.Write()
 EfficiencyX.Write()
 EfficiencyBarX.Write()
 EfficiencyY.Write()
+EfficiencyY_Bar0.Write()
+EfficiencyY_Bar1.Write()
+EfficiencyY_Bar2.Write()
+EfficiencyY_Bar3.Write()
+EfficiencyY_Bar4.Write()
+EfficiencyY_Bar5.Write()
+EfficiencyY_Bar6.Write()
 Close_vs_farEfficiency.Write()
 Close_vs_farEfficiency_Bar0.Write()
 Close_vs_farEfficiency_Bar1.Write()
