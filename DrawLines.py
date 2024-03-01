@@ -25,7 +25,7 @@ def drawLineCh(name) :
     c.Update()
     
     valuescm = [8, 16, 24, 32, 40, 48]
-    lines = [ROOT.TLine(x, gPad.GetUymin(), x, gPad.GetUymax() ) for x in valuescm]
+    lines = [ROOT.TLine(x+.5, gPad.GetUymin(), x+.5, gPad.GetUymax() ) for x in valuescm]
 
     for line in lines:    
         line.SetLineColor(ROOT.kRed)
