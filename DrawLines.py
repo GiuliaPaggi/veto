@@ -1,11 +1,14 @@
 import sys
 from glob import glob
-from ROOT import TFile, TChain, gROOT, TCanvas, TLegend, TLine, gPad
+from ROOT import TFile, TChain, gROOT, TCanvas, TLegend, TLine, gPad, gStyle
 import ROOT
+
+CANVASDIM = 1000
+gStyle.SetOptStat("ne")
 
 def drawLineCm(name) :
     plot = f.Get(f"{name}")
-    c = ROOT.TCanvas(f"{name}", f"{name}")
+    c = ROOT.TCanvas(f"{name}", f"{name}", CANVASDIM+500, CANVASDIM, CANVASDIM+500, CANVASDIM)
     c.Range( 0, 0, 42, 42 )
     plot.Draw()
     valuescm = [6, 12, 18, 24, 30, 36]
@@ -20,7 +23,7 @@ def drawLineCm(name) :
 
 def drawLineCh(name) :
     plot = f.Get(f"{name}")
-    c = ROOT.TCanvas(f"{name}", f"{name}")
+    c = ROOT.TCanvas(f"{name}", f"{name}", CANVASDIM+500, CANVASDIM, CANVASDIM+500, CANVASDIM)
     plot.Draw()
     c.Update()
     
@@ -35,8 +38,10 @@ def drawLineCh(name) :
     c.SaveAs(f"./images/{name}.png")
 
 
-f = ROOT.TFile.Open(f'./results/analisysResult_allfiles.root', 'read')
+f = ROOT.TFile.Open(f'./results/analisysResult_plotforcm.root', 'read')
 
 drawLineCm('Efficiency')
 drawLineCh('Cosmic_VetoHits')
 drawLineCh('Cosmic_VetoQDCPerChannel')
+drawLineCh('VetoHits')
+drawLineCh('VetoQDCPerChannel')
