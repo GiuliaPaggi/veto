@@ -24,6 +24,7 @@ def return_bar(map, tofpet_id, tofpet_channel):
         if (row[4] == str(tofpet_channel) and row[3] == str(tofpet_id%2)):
             if int(np.floor((int(row[0])-1)/8)) == 7 : print('nope')
             return int(np.floor((int(row[0])-1)/8))
+        
     return DEFAULT
 
 def is_single_bar(list):
@@ -35,16 +36,16 @@ def is_single_bar(list):
 # scifi 1x [11,17,28] 1y [29,3,30]
 
 scifi_map = {
-    "11" : 0, 
+    "11" : 0, #scifi1x
     "17" : 1, 
     "28" : 2, 
-    "29" : 0, 
+    "29" : 0, #scifi1y
     "3"  : 1, 
     "30" : 2, 
-    "23" : 0, 
+    "23" : 0, #scifi2x
     "2"  : 1, 
     "25" : 2,
-    "16" : 0,
+    "16" : 0, #scifi2y
     "14" : 1,
     "18" : 2
 }
@@ -150,13 +151,18 @@ Scifi1Pos = ROOT.TH2D("Scifi1Pos", "Scifi1Pos; scifi1x; scifi1y", scifidim, scif
 Scifi2Pos = ROOT.TH2D("Scifi2Pos", "Scifi2Pos; scifi2x; scifi2y", scifidim, scifi_min, scifi_max, scifidim, scifi_min, scifi_max)
 
 V2_vs_V3 = ROOT.TH2D("V2_vs_V3", "V2_vs_V3; v2 bar; v3 bar", nbar, bar_min, bar_max, nbar, bar_min, bar_max)
-V2_vs_scifi1x = ROOT.TH2D("V2_vs_scifi1x", "V2_vs_scifi1x; v2 channel; scifi1x channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
-V2_vs_scifi1y = ROOT.TH2D("V2_vs_scifi1y", "V2_vs_scifi1y; v2 channel; scifi1y channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
-V3_vs_scifi1x = ROOT.TH2D("V3_vs_scifi1x", "V3_vs_scifi1x; v3 channel; scifi1x channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
-V3_vs_scifi1y = ROOT.TH2D("V3_vs_scifi1y", "V3_vs_scifi1y; v3 channel; scifi1y channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
+V2L_vs_V2R = ROOT.TH2D("V2L_vs_V2R", "V2L_vs_V2R; v2 L; v3 R", nbar, bar_min, bar_max, nbar, bar_min, bar_max)
+V2_vs_scifi1x = ROOT.TH2D("V2_vs_scifi1x", "V2_vs_scifi1x; v2 bar; scifi1x channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
+V2_vs_scifi1y = ROOT.TH2D("V2_vs_scifi1y", "V2_vs_scifi1y; v2 bar; scifi1y channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
+V2_vs_scifi2x = ROOT.TH2D("V2_vs_scifi2x", "V2_vs_scifi2x; v2 bar; scifi2x channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
+V2_vs_scifi2y = ROOT.TH2D("V2_vs_scifi2y", "V2_vs_scifi2y; v2 bar; scifi2y channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
+V3_vs_scifi1x = ROOT.TH2D("V3_vs_scifi1x", "V3_vs_scifi1x; v3 bar; scifi1x channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
+V3_vs_scifi1y = ROOT.TH2D("V3_vs_scifi1y", "V3_vs_scifi1y; v3 bar; scifi1y channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
 
 ExpectedBarV3Residual = ROOT.TH1D("ExpectedBarV3Residual", "ExpectedBarV3Residual; expected bar from scifi1 and 2 - v3 hit bar; entries", 17, -8.5, 8.5)
-ExpectedPos = ROOT.TH2D("ExpectedPos", "ExpectedPos using scifi 1 and scifi 2; expected x ; expected y", scifidim, scifi_min, scifi_max, scifidim, scifi_min, scifi_max)
+ExpectedPos = ROOT.TH2D("ExpectedPos", "ExpectedPos using scifi 1 and scifi 2; expected x ; expected y", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
+ExpectedPosX = ROOT.TH1D("ExpectedPosX", "ExpectedPos using scifi 1 and scifi 2; expected x ; entries", vetobin, veto_min, veto_max)
+ExpectedPosY = ROOT.TH1D("ExpectedPosY", "ExpectedPos using scifi 1 and scifi 2; expected x ; entries", vetobin, veto_min, veto_max)
 
 # Efficiency
 Efficiency = ROOT.TEfficiency("Efficiency", "Efficiency; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
@@ -275,7 +281,9 @@ for i in range(Nentries):
 
         v2LBars = [return_bar(mapVeto, v2LId[i], v2LPin[i]) for i in range(len(v2LId))]
         v2RBars = [return_bar(mapVeto, v2RId[i], v2RPin[i]) for i in range(len(v2RId))]
-
+        
+        for bL in v2LBars:
+            for bR in v2RBars: V2L_vs_V2R.Fill(bL, bR)
 
         # fill hit histos            
         for i in range(len(v2LId)) : 
@@ -452,14 +460,29 @@ for i in range(Nentries):
                     scifi2yHit = sum(scifi2yPosCloseby)/float(len(scifi2yPosCloseby))
                 
                 Scifi2Pos.Fill(scifi2xHit, scifi2yHit)
+                V2_vs_scifi2x.Fill(v2LHitBar, scifi2xHit)
+                V2_vs_scifi2y.Fill(v2LHitBar, scifi2yHit)
+                
                 
                 v3yExpectedPos = scifi1yHit + (scifi1yHit - scifi2yHit)
                 v3xExpectedPos = scifi1xHit + (scifi1xHit - scifi2xHit)
-
+                
                 ExpectedPos.Fill(v3xExpectedPos, v3yExpectedPos)
+                ExpectedPosX.Fill(v3xExpectedPos)
+                ExpectedPosY.Fill(v3yExpectedPos)
+
+                # compatibleV2 = False
+                # if (scifi1yHit - scifi2yHit) > 0 : # dal basso verso l'alto
+                #     compatibleV2 = (v3yExpectedPos <= (v2LHitBar*6))
+                # else :
+                #     compatibleV2 = (v3yExpectedPos >= (v2LHitBar*6))
+                
+                # print(v3xExpectedPos, v3yExpectedPos, (v2LHitBar*6), (scifi1yHit - scifi2yHit), compatibleV2)
+
                 ExpectedBarV3Residual.Fill(v3HitBar - int(np.floor(v3xExpectedPos/6)) )
 
-                if v3xExpectedPos >= 0 and v3xExpectedPos <= 42 and v3yExpectedPos >= 0 and v3yExpectedPos <= 42 and compatibleV2:
+                if v3xExpectedPos >= 0 and v3xExpectedPos <= 42 and v3yExpectedPos >= 0 and v3yExpectedPos <= 42:
+
                     expectedXBar = int(np.floor(v3xExpectedPos/6))
                     
                     v3hit = False
@@ -472,28 +495,28 @@ for i in range(Nentries):
                     EfficiencyX.Fill(v3hit, v3xExpectedPos)
                     EfficiencyBarX.Fill(v3hit, expectedXBar)
                     EfficiencyY.Fill(v3hit, v3yExpectedPos)
-                    Close_vs_farEfficiency.Fill(v3hit, int(v3yExpectedPos/3))
+                    Close_vs_farEfficiency.Fill(v3hit, int(v3yExpectedPos/7))
 
                     if expectedXBar == 0 : 
-                        Close_vs_farEfficiency_Bar0.Fill(v3hit, int(v3yExpectedPos/3))
+                        Close_vs_farEfficiency_Bar0.Fill(v3hit, int(v3yExpectedPos/6))
                         EfficiencyY_Bar0.Fill(v3hit, v3yExpectedPos)
                     if expectedXBar == 1 : 
-                        Close_vs_farEfficiency_Bar1.Fill(v3hit, int(v3yExpectedPos/3))
+                        Close_vs_farEfficiency_Bar1.Fill(v3hit, int(v3yExpectedPos/6))
                         EfficiencyY_Bar1.Fill(v3hit, v3yExpectedPos)
                     if expectedXBar == 2 : 
-                        Close_vs_farEfficiency_Bar2.Fill(v3hit, int(v3yExpectedPos/3))
+                        Close_vs_farEfficiency_Bar2.Fill(v3hit, int(v3yExpectedPos/6))
                         EfficiencyY_Bar2.Fill(v3hit, v3yExpectedPos)
                     if expectedXBar == 3 : 
-                        Close_vs_farEfficiency_Bar3.Fill(v3hit, int(v3yExpectedPos/3))
+                        Close_vs_farEfficiency_Bar3.Fill(v3hit, int(v3yExpectedPos/6))
                         EfficiencyY_Bar3.Fill(v3hit, v3yExpectedPos)
                     if expectedXBar == 4 : 
-                        Close_vs_farEfficiency_Bar4.Fill(v3hit, int(v3yExpectedPos/3))
+                        Close_vs_farEfficiency_Bar4.Fill(v3hit, int(v3yExpectedPos/6))
                         EfficiencyY_Bar4.Fill(v3hit, v3yExpectedPos)
                     if expectedXBar == 5 : 
-                        Close_vs_farEfficiency_Bar5.Fill(v3hit, int(v3yExpectedPos/3))
+                        Close_vs_farEfficiency_Bar5.Fill(v3hit, int(v3yExpectedPos/6))
                         EfficiencyY_Bar5.Fill(v3hit, v3yExpectedPos)
                     if expectedXBar == 6 : 
-                        Close_vs_farEfficiency_Bar6.Fill(v3hit, int(v3yExpectedPos/3))
+                        Close_vs_farEfficiency_Bar6.Fill(v3hit, int(v3yExpectedPos/6))
                         EfficiencyY_Bar6.Fill(v3hit, v3yExpectedPos)
 
                     # hits not compatible 
@@ -521,8 +544,11 @@ V2RQDCPerBar.Write()
 V2LQDCPerBar.Write()
 
 V2_vs_V3.Write()
+V2L_vs_V2R.Write()
 V2_vs_scifi1x.Write()
 V2_vs_scifi1y.Write()
+V2_vs_scifi2x.Write()
+V2_vs_scifi2y.Write()
 V3_vs_scifi1x.Write()
 V3_vs_scifi1y.Write()
 
@@ -546,6 +572,8 @@ Scifi1yPos_diff.Write()
 
 ExpectedBarV3Residual.Write()
 ExpectedPos.Write()
+ExpectedPosX.Write()
+ExpectedPosY.Write()
 
 VetoHits.Write()
 VetoHitsperBar.Write()
