@@ -6,10 +6,10 @@ import ROOT
 CANVASDIM = 1000
 gStyle.SetOptStat("ne")
 
-f = ROOT.TFile.Open(f'./results/analisysResult_plotforcm.root', 'read')
+f = ROOT.TFile.Open(f'./results/analisysResult.root', 'read')
 eff = f.Get('Close_vs_farEfficiency')
-errors = [0]*3
-barErrors = ([0,0,0])*7
+errors = [0]*6
+barErrors = ([0,0,0,0,0,0])*7
 barEff = [None]*7
 relBarEff = [0]*7
 relBarError = [0]*7
@@ -19,26 +19,28 @@ for i in range(7):
 
 # compute relative efficiency
 
-relEff = eff.GetEfficiency(1)/eff.GetEfficiency(4)
+relEff = eff.GetEfficiency(2)/eff.GetEfficiency(6)
 
-for i in range(1, 5, 2) : 
+bin = [2, 6]
+
+for i in bin : 
     low = eff.GetEfficiencyErrorLow(i)
     up = eff.GetEfficiencyErrorUp(i)
     errors[i-1] = low if (low > up) else up
 
 # in division propagation of error -> relative error is sum of relatives error
-eff_error = ((errors[0]/eff.GetEfficiency(1)) + (errors[2]/eff.GetEfficiency(4))) * relEff
+eff_error = ((errors[1]/eff.GetEfficiency(2)) + (errors[5]/eff.GetEfficiency(6))) * relEff
 #eff.GetPassedHistogram().GetBinContent(1)
 
 for i in range(7):
-    relBarEff[i] = barEff[i].GetEfficiency(1)/barEff[i].GetEfficiency(4)
+    relBarEff[i] = barEff[i].GetEfficiency(2)/barEff[i].GetEfficiency(6)
 
-    for j in range(1, 5, 2) : 
+    for j in bin : 
         low = eff.GetEfficiencyErrorLow(j)
         up = eff.GetEfficiencyErrorUp(j)
         barErrors[3*i+(j-1)] = low if (low > up) else up
     
-    relBarError[i] = ( ( barErrors[3*i] / barEff[i].GetEfficiency(1) ) + ( barErrors[(3*i)+2] / barEff[i].GetEfficiency(4) ) ) * relBarEff[i]
+    relBarError[i] = ( ( barErrors[(3*i)+1] / barEff[i].GetEfficiency(2) ) + ( barErrors[(3*i)+5] / barEff[i].GetEfficiency(6) ) ) * relBarEff[i]
 
 
 with open(f'./results/RelEff.txt', 'w') as f:

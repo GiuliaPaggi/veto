@@ -19,7 +19,7 @@ def drawLineCm(name) :
         line.SetLineWidth(2)
         line.Draw()
         
-    c.SaveAs(f"./images/{name}.png")
+    c.SaveAs(f"./images/prova/{name}.png")
 
 def drawLineCh(name) :
     plot = f.Get(f"{name}")
@@ -35,10 +35,10 @@ def drawLineCh(name) :
         line.SetLineWidth(2)
         line.Draw()
         
-    c.SaveAs(f"./images/{name}.png")
+    c.SaveAs(f"./images/prova/{name}.png")
 
 
-f = ROOT.TFile.Open(f'./results/analisysResult_plotforcm.root', 'read')
+f = ROOT.TFile.Open(f'./results/analisysResult.root', 'read')
 
 drawLineCm('Efficiency')
 drawLineCh('Cosmic_VetoHits')
