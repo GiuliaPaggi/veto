@@ -178,14 +178,14 @@ EfficiencyY_Bar4 = ROOT.TEfficiency("EfficiencyY_Bar4", "Efficiency y_Bar4; expe
 EfficiencyY_Bar5 = ROOT.TEfficiency("EfficiencyY_Bar5", "Efficiency y_Bar5; expected y(cm); efficiency", vetobin, veto_min, veto_max)
 EfficiencyY_Bar6 = ROOT.TEfficiency("EfficiencyY_Bar6", "Efficiency y_Bar6; expected y(cm); efficiency", vetobin, veto_min, veto_max)
 
-Close_vs_farEfficiency = ROOT.TEfficiency( "Close_vs_farEfficiency", "Close_vs_farEfficiency", 4 , 0, 4)
-Close_vs_farEfficiency_Bar0 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar0", "Close_vs_farEfficiency_Bar0", 4, 0, 4 )
-Close_vs_farEfficiency_Bar1 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar1", "Close_vs_farEfficiency_Bar1", 4, 0, 4 )
-Close_vs_farEfficiency_Bar2 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar2", "Close_vs_farEfficiency_Bar2", 4, 0, 4 )
-Close_vs_farEfficiency_Bar3 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar3", "Close_vs_farEfficiency_Bar3", 4, 0, 4 )
-Close_vs_farEfficiency_Bar4 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar4", "Close_vs_farEfficiency_Bar4", 4, 0, 4 )
-Close_vs_farEfficiency_Bar5 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar5", "Close_vs_farEfficiency_Bar5", 4, 0, 4 )
-Close_vs_farEfficiency_Bar6 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar6", "Close_vs_farEfficiency_Bar6", 4, 0, 4 )
+Close_vs_farEfficiency = ROOT.TEfficiency( "Close_vs_farEfficiency", "Close_vs_farEfficiency", 7 , 0, 7)
+Close_vs_farEfficiency_Bar0 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar0", "Close_vs_farEfficiency_Bar0", 7, 0, 7)
+Close_vs_farEfficiency_Bar1 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar1", "Close_vs_farEfficiency_Bar1", 7, 0, 7)
+Close_vs_farEfficiency_Bar2 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar2", "Close_vs_farEfficiency_Bar2", 7, 0, 7)
+Close_vs_farEfficiency_Bar3 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar3", "Close_vs_farEfficiency_Bar3", 7, 0, 7)
+Close_vs_farEfficiency_Bar4 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar4", "Close_vs_farEfficiency_Bar4", 7, 0, 7)
+Close_vs_farEfficiency_Bar5 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar5", "Close_vs_farEfficiency_Bar5", 7, 0, 7)
+Close_vs_farEfficiency_Bar6 = ROOT.TEfficiency ( "Close_vs_farEfficiency_Bar6", "Close_vs_farEfficiency_Bar6", 7, 0, 7)
 
 ###################
 # loop on entries #
@@ -329,7 +329,7 @@ for i in range(Nentries):
             v2RHitBar = np.array(v2RBarQDC).argmax()
             
         # ask for veto 2 and scifi 1 -> must have passed through v3
-        if is_single_bar(v2RBars) and is_single_bar(v2LBars) and v2LHitBar == v2RHitBar and len(scifi1xId) > 0 and len(scifi1yId) > 0:
+        if is_single_bar(v2RBars) and is_single_bar(v2LBars) and v2LHitBar == v2RHitBar and len(scifi1xId) > 0 and len(scifi1yId) > 0 :
             
             V2LQdc.Fill(v2LHitQdc)
             V2RQdc.Fill(v2RHitQdc)
@@ -386,6 +386,9 @@ for i in range(Nentries):
                         Scifi1yPos_diff.Fill(diff)
                         if abs(diff) < .5 : scifi1yPosCloseby.append(p)
 
+                if ( len(scifi1yPosCloseby)-len(scifi1yId) ) != 0 or ( len(scifi1xPosCloseby)-len(scifi1xId) ) != 0  :
+                    continue
+
                 scifi1xHit = sum(scifi1xPosCloseby)/float(len(scifi1xPosCloseby))
                 scifi1yHit = sum(scifi1yPosCloseby)/float(len(scifi1yPosCloseby))
                                     
@@ -432,7 +435,7 @@ for i in range(Nentries):
                     scifi2xHit = scifi2xHitPos[0]
                     scifi2yHit = scifi2yHitPos[0]
 
-                # if there's more cluster around the max qdc   
+                # if there's more, cluster-> if more than one I can't say anything
                 else :
                     scifi2xQdcMax = np.max(scifi2xQdc)
                     scifi2yQdcMax = np.max(scifi2yQdc)
@@ -455,6 +458,9 @@ for i in range(Nentries):
                         if p != scifi2yPosMax :
                             diff = scifi2yPosMax - p
                             if abs(diff) < .5 : scifi2yPosCloseby.append(p)
+                   
+                    if ( len(scifi2yPosCloseby)-len(scifi2yId) ) != 0 or ( len(scifi2xPosCloseby)-len(scifi2xId) ) != 0  :
+                        continue
 
                     scifi2xHit = sum(scifi2xPosCloseby)/float(len(scifi2xPosCloseby))
                     scifi2yHit = sum(scifi2yPosCloseby)/float(len(scifi2yPosCloseby))
