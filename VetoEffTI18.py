@@ -139,7 +139,7 @@ V2RQdc = ROOT.TH1D("V2RQdc", "V2RQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
 V2RQDCPerBar = ROOT.TH2D("V2RQDCPerBar", "V2RQDCPerBar; v2 R channel; qdc ", nbar, bar_min, bar_max, qdcbin, qdc_min, qdc_max)
 V2LQDCPerBar = ROOT.TH2D("V2LQDCPerBar", "V2LQDCPerBar; v2 L channel; qdc ", nbar, bar_min, bar_max, qdcbin, qdc_min, qdc_max)
 
-VetoQdc = ROOT.TH1D("VetoQdc", "VetoQdc; qdc; entries", qdcbin, qdc_min, qdc_max)
+VetoQdc = ROOT.TH1D("VetoQdc", "VetoQdc; qdc; entries", 100, -10, 40)
 VetoQDCPerChannel = ROOT.TH2D("VetoQDCPerChannel", "VetoQDCPerChannel; veto channel; qdc ", DSn_bins, DSx_min, DSx_max, qdcbin, qdc_min, qdc_max)
 VetoQDCPerBar = ROOT.TH2D("VetoQDCPerBar", "VetoQDCPerBar; veto channel; qdc ", nbar, bar_min, bar_max, qdcbin, qdc_min, qdc_max)
 Cosmic_VetoQdc = ROOT.TH1D("Cosmic_VetoQdc", "Cosmic_VetoQdc; veto channel; qdc ", qdcbin, qdc_min, qdc_max)
@@ -160,8 +160,8 @@ V2_vs_scifi2y = ROOT.TH2D("V2_vs_scifi2y", "V2_vs_scifi2y; v2 bar; scifi2y chann
 V3_vs_scifi1x = ROOT.TH2D("V3_vs_scifi1x", "V3_vs_scifi1x; v3 bar; scifi1x channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
 V3_vs_scifi1y = ROOT.TH2D("V3_vs_scifi1y", "V3_vs_scifi1y; v3 bar; scifi1y channel", nbar, bar_min, bar_max, scifidim, scifi_min, scifi_max)
 
-CR_per_Dx = ROOT.TH1D("CR_per_Dx", "CR_per_Dx; Dx; Entries", 200, -100, 100)
-CR_per_Dy = ROOT.TH1D("CR_per_Dy", "CR_per_Dy; Dy; Entries", 200, -100, 100)
+DeltaX_Distribution = ROOT.TH1D("DeltaX_Distribution", "DeltaX_Distribution; Dx; Entries", 51, -25.5, 25.5)
+DeltaY_Distribution = ROOT.TH1D("DeltaY_Distribution", "DeltaY_Distribution; Dy; Entries", 51, -25.5, 25.5)
 
 ExpectedBarV3Residual = ROOT.TH1D("ExpectedBarV3Residual", "ExpectedBarV3Residual; expected bar from scifi1 and 2 - v3 hit bar; entries", 17, -8.5, 8.5)
 ExpectedPos = ROOT.TH2D("ExpectedPos", "ExpectedPos using scifi 1 and scifi 2; expected x ; expected y", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
@@ -169,11 +169,18 @@ ExpectedPosX = ROOT.TH1D("ExpectedPosX", "ExpectedPos using scifi 1 and scifi 2;
 ExpectedPosY = ROOT.TH1D("ExpectedPosY", "ExpectedPos using scifi 1 and scifi 2; expected x ; entries", vetobin, veto_min, veto_max)
 
 # Efficiency
-Denominator = ROOT.TH2D("Denominator", "Denominator; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
-Numerator = ROOT.TH2D("Numerator", "Numerator; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
+Denominator_straightMu = ROOT.TH2D("Denominator_straightMu", "Denominator_straightMu; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
+Numerator_straightMu = ROOT.TH2D("Numerator_straightMu", "Numerator_straightMu; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
+Denominator_CR = ROOT.TH2D("Denominator_CR", "Denominator_CR; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
+Numerator_CR = ROOT.TH2D("Numerator_CR", "Numerator_CR; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
+
 Efficiency = ROOT.TEfficiency("Efficiency", "Efficiency; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
+Efficiency_straightMu = ROOT.TEfficiency("Efficiency_straightMu", "Efficiency_straightMu; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
+Efficiency_CR = ROOT.TEfficiency("Efficiency_CR", "Efficiency_CR; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
 Efficiency_dyge0 = ROOT.TEfficiency("Efficiency_dyge0", "Efficiency_dyge0; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
 Efficiency_dyl0 = ROOT.TEfficiency("Efficiency_dyl0", "Efficiency_dyl0; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
+Efficiency_dxge0 = ROOT.TEfficiency("Efficiency_dxge0", "Efficiency_dxge0; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
+Efficiency_dxl0 = ROOT.TEfficiency("Efficiency_dxl0", "Efficiency_dxl0; expected position x (cm) ; expected position y (cm)", vetobin, veto_min, veto_max, vetobin, veto_min, veto_max)
 EfficiencyX = ROOT.TEfficiency("EfficiencyX", "Efficiency x; expected x (cm); efficiency", vetobin, veto_min, veto_max)
 EfficiencyBarX = ROOT.TEfficiency("EfficiencyBarX", "Efficiency x; expected bar; efficiency", nbar, bar_min, bar_max)
 EfficiencyY = ROOT.TEfficiency("EfficiencyY", "Efficiency y; expected y(cm); efficiency", vetobin, veto_min, veto_max)
@@ -508,8 +515,8 @@ for i in range(Nentries):
 
                 if v3xExpectedPos >= 0 and v3xExpectedPos <= 42 and v3yExpectedPos >= 0 and v3yExpectedPos <= 42 and compatibleV2:
 
-                    CR_per_Dx.Fill(dy)
-                    CR_per_Dy.Fill(dx)
+                    DeltaX_Distribution.Fill(dy)
+                    DeltaY_Distribution.Fill(dx)
 
                     v3hit = False
                     
@@ -517,41 +524,53 @@ for i in range(Nentries):
                     elif ( expectedXBar == 6 and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar-1] != DEFAULT) ) : v3hit = True                           
                     elif ( (expectedXBar > 0  and expectedXBar < 6) and (v3BarQDC[expectedXBar] != DEFAULT or v3BarQDC[expectedXBar-1] != DEFAULT or v3BarQDC[expectedXBar+1] != DEFAULT) ) : v3hit = True          
 
-                    Denominator.Fill(v3xExpectedPos, v3yExpectedPos)
-                    if v3hit : Numerator.Fill(v3xExpectedPos, v3yExpectedPos)
+                    straight = True if abs(dx) <= 1.5 and abs(dy) <= 1.5 else False
+                    if straight : Denominator_straightMu.Fill(v3xExpectedPos, v3yExpectedPos)
+                    else : Denominator_CR.Fill(v3xExpectedPos, v3yExpectedPos)
+
+                    if v3hit and straight : Numerator_straightMu.Fill(v3xExpectedPos, v3yExpectedPos)
+                    elif v3hit and not straight : Numerator_CR.Fill(v3xExpectedPos, v3yExpectedPos)
+
                     Efficiency.Fill(v3hit, v3xExpectedPos, v3yExpectedPos)
 
                     if dy >= 0 : Efficiency_dyge0.Fill(v3hit, v3xExpectedPos, v3yExpectedPos)
                     else : Efficiency_dyl0.Fill(v3hit, v3xExpectedPos, v3yExpectedPos)
 
+                    if dx >= 0 : Efficiency_dxge0.Fill(v3hit, v3xExpectedPos, v3yExpectedPos)
+                    else : Efficiency_dxl0.Fill(v3hit, v3xExpectedPos, v3yExpectedPos)
+
+                    if straight : Efficiency_straightMu.Fill(v3hit, v3xExpectedPos, v3yExpectedPos)
+                    else : Efficiency_CR.Fill(v3hit, v3xExpectedPos, v3yExpectedPos)
+
                     EfficiencyX.Fill(v3hit, v3xExpectedPos)
                     EfficiencyBarX.Fill(v3hit, expectedXBar)
                     EfficiencyY.Fill(v3hit, v3yExpectedPos)
-                    Close_vs_farEfficiency.Fill(v3hit, int(v3yExpectedPos/7))
+                    if straight: Close_vs_farEfficiency.Fill(v3hit, int(v3yExpectedPos/7))
                     Efficiency_dx.Fill(v3hit, dx)
                     Efficiency_dy.Fill(v3hit, dy)
 
-                    if expectedXBar == 0 : 
-                        Close_vs_farEfficiency_Bar0.Fill(v3hit, int(v3yExpectedPos/6))
-                        EfficiencyY_Bar0.Fill(v3hit, v3yExpectedPos)
-                    if expectedXBar == 1 : 
-                        Close_vs_farEfficiency_Bar1.Fill(v3hit, int(v3yExpectedPos/6))
-                        EfficiencyY_Bar1.Fill(v3hit, v3yExpectedPos)
-                    if expectedXBar == 2 : 
-                        Close_vs_farEfficiency_Bar2.Fill(v3hit, int(v3yExpectedPos/6))
-                        EfficiencyY_Bar2.Fill(v3hit, v3yExpectedPos)
-                    if expectedXBar == 3 : 
-                        Close_vs_farEfficiency_Bar3.Fill(v3hit, int(v3yExpectedPos/6))
-                        EfficiencyY_Bar3.Fill(v3hit, v3yExpectedPos)
-                    if expectedXBar == 4 : 
-                        Close_vs_farEfficiency_Bar4.Fill(v3hit, int(v3yExpectedPos/6))
-                        EfficiencyY_Bar4.Fill(v3hit, v3yExpectedPos)
-                    if expectedXBar == 5 : 
-                        Close_vs_farEfficiency_Bar5.Fill(v3hit, int(v3yExpectedPos/6))
-                        EfficiencyY_Bar5.Fill(v3hit, v3yExpectedPos)
-                    if expectedXBar == 6 : 
-                        Close_vs_farEfficiency_Bar6.Fill(v3hit, int(v3yExpectedPos/6))
-                        EfficiencyY_Bar6.Fill(v3hit, v3yExpectedPos)
+                    if straight: 
+                        if expectedXBar == 0 : 
+                            Close_vs_farEfficiency_Bar0.Fill(v3hit, int(v3yExpectedPos/6))
+                            EfficiencyY_Bar0.Fill(v3hit, v3yExpectedPos)
+                        if expectedXBar == 1 : 
+                            Close_vs_farEfficiency_Bar1.Fill(v3hit, int(v3yExpectedPos/6))
+                            EfficiencyY_Bar1.Fill(v3hit, v3yExpectedPos)
+                        if expectedXBar == 2 : 
+                            Close_vs_farEfficiency_Bar2.Fill(v3hit, int(v3yExpectedPos/6))
+                            EfficiencyY_Bar2.Fill(v3hit, v3yExpectedPos)
+                        if expectedXBar == 3 : 
+                            Close_vs_farEfficiency_Bar3.Fill(v3hit, int(v3yExpectedPos/6))
+                            EfficiencyY_Bar3.Fill(v3hit, v3yExpectedPos)
+                        if expectedXBar == 4 : 
+                            Close_vs_farEfficiency_Bar4.Fill(v3hit, int(v3yExpectedPos/6))
+                            EfficiencyY_Bar4.Fill(v3hit, v3yExpectedPos)
+                        if expectedXBar == 5 : 
+                            Close_vs_farEfficiency_Bar5.Fill(v3hit, int(v3yExpectedPos/6))
+                            EfficiencyY_Bar5.Fill(v3hit, v3yExpectedPos)
+                        if expectedXBar == 6 : 
+                            Close_vs_farEfficiency_Bar6.Fill(v3hit, int(v3yExpectedPos/6))
+                            EfficiencyY_Bar6.Fill(v3hit, v3yExpectedPos)
 
                     # hits not compatible 
                     if not v3hit:
@@ -609,8 +628,8 @@ ExpectedPos.Write()
 ExpectedPosX.Write()
 ExpectedPosY.Write()
 
-CR_per_Dx.Write()
-CR_per_Dy.Write()
+DeltaX_Distribution.Write()
+DeltaY_Distribution.Write()
 
 VetoHits.Write()
 VetoHitsperBar.Write()
@@ -625,11 +644,17 @@ Cosmic_VetoQdc.Write()
 Cosmic_VetoQDCPerChannel.Write()
 Cosmic_VetoQDCPerBar.Write()
 
-Denominator.Write()
-Numerator.Write()
+Denominator_straightMu.Write()
+Numerator_straightMu.Write()
+Denominator_CR.Write()
+Numerator_CR.Write()
 Efficiency.Write()
 Efficiency_dyge0.Write()
 Efficiency_dyl0.Write()
+Efficiency_dxge0.Write()
+Efficiency_dxl0.Write()
+Efficiency_straightMu.Write()
+Efficiency_CR.Write()
 EfficiencyX.Write()
 EfficiencyBarX.Write()
 EfficiencyY.Write()
