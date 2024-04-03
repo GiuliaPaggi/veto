@@ -41,7 +41,7 @@ mapVeto = read_csv_file("./SiPMmaps/Veto_SiPM_mapping.csv")
 calibration = read_csv_file(f"{runDirectory}qdc_cal.csv")
 
 #prepare output file
-filename = f"./results/output_run{runN}.root"
+filename = f"./results/blg29/output_run{runN}.root"
 outfile = ROOT.TFile.Open(filename, "RECREATE")
 
 #################
@@ -62,7 +62,7 @@ VetoHitMultiplicity = ROOT.TH1D("VetoHitMultiplicity", "Veto Hit Multiplicity;  
 Cosmic_DSVHits = ROOT.TH1D("Cosmic_DSVHits", "Cosmic_DS Vertical Hits;  ds v channel; entries", DSn_bins, DSx_min, DSx_max) 
 Cosmic_DSHHits = ROOT.TH1D("Cosmic_DSHHits", "Cosmic_DS Horizontal Hits; ds h channel; entries", DSn_bins, DSx_min, DSx_max)
 Cosmic_VetoHits = ROOT.TH1D("Cosmic_VetoHits", "Veto Hits in cosmics events;  veto channel; entries", DSn_bins, DSx_min, DSx_max)
-Cosmic_VetoHitsperBar = ROOT.TH1D("Cosmic_VetoHitsperBar", "Cosmic_Veto Hits per Bar; veto channel; entries", 9, -.5, 5.5)
+Cosmic_VetoHitsperBar = ROOT.TH1D("Cosmic_VetoHitsperBar", "Cosmic_Veto Hits per Bar; veto channel; entries", 9, -.5, 8.5)
 Cosmic_VetoHitsperPosition = ROOT.TH1D("Cosmic_VetoHitsperPosition", "Cosmic_VetoHitsperPosition; ds V channel; entries", DSn_bins, DSx_min, DSx_max)
 Cosmic_VetoHitMultiplicity = ROOT.TH1D("Cosmic_VetoHitMultiplicity", "Veto Hit Multiplicity in cosmic ray events;  hits per event; entries", 20, -.5, 19.5)
 Bkg_VetoHits = ROOT.TH1D("Bkg_VetoHits", "Veto Hits in not cosmics events; veto channel; entries", DSn_bins, DSx_min, DSx_max)
@@ -283,7 +283,8 @@ for i in range(Nentries):
                     if vetoMultiplicity > 0: 
 
                         #if any(i > 30 for i in Cosmic_vetoBarQDC ) :  vetohit = True
-                        vetohit = True
+                        if any((i > 30 ) and (i < 140) for i in Cosmic_vetoBarQDC ) : vetohit = True 
+                        else : vetohit = False
 
                         Cosmic_VetoHitMultiplicity.Fill(vetoMultiplicity)
 
@@ -302,13 +303,14 @@ for i in range(Nentries):
                             DsV_vs_Veto.Fill(DSVBar, vetoBars[i])
 
                             veto_cut = 30
-                            if   (10 < DSRBar < 33  and vetoBarId[i] == 6 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                            elif (15 < DSRBar < 36  and vetoBarId[i] == 5 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                            elif (20 < DSRBar < 42  and vetoBarId[i] == 4 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                            elif (25 < DSRBar < 50  and vetoBarId[i] == 3 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                            elif (32 < DSRBar < 55  and vetoBarId[i] == 2 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                            elif (38 < DSRBar < 58  and vetoBarId[i] == 1 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
-                            elif (45 < DSRBar < 60  and vetoBarId[i] == 0 and vetoQdc[i] > veto_cut) : PositionCut_vetohit = True
+                            veto_max_cut = 140
+                            if   (10 < DSRBar < 33  and vetoBarId[i] == 6 and vetoQdc[i] > veto_cut and vetoQdc[i] < veto_max_cut) : PositionCut_vetohit = True
+                            elif (15 < DSRBar < 36  and vetoBarId[i] == 5 and vetoQdc[i] > veto_cut and vetoQdc[i] < veto_max_cut) : PositionCut_vetohit = True
+                            elif (20 < DSRBar < 42  and vetoBarId[i] == 4 and vetoQdc[i] > veto_cut and vetoQdc[i] < veto_max_cut) : PositionCut_vetohit = True
+                            elif (25 < DSRBar < 50  and vetoBarId[i] == 3 and vetoQdc[i] > veto_cut and vetoQdc[i] < veto_max_cut) : PositionCut_vetohit = True
+                            elif (32 < DSRBar < 55  and vetoBarId[i] == 2 and vetoQdc[i] > veto_cut and vetoQdc[i] < veto_max_cut) : PositionCut_vetohit = True
+                            elif (38 < DSRBar < 58  and vetoBarId[i] == 1 and vetoQdc[i] > veto_cut and vetoQdc[i] < veto_max_cut) : PositionCut_vetohit = True
+                            elif (45 < DSRBar < 60  and vetoBarId[i] == 0 and vetoQdc[i] > veto_cut and vetoQdc[i] < veto_max_cut) : PositionCut_vetohit = True
         
                     Eff_Hch.Fill(vetohit, DSLBar)
                     Eff_Vch.Fill(vetohit, DSVBar)
